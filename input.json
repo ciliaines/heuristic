@@ -1,0 +1,240 @@
+{
+        "switches": [
+                {
+                        "name": "0",
+                        "scheduleType": "hypercycle",
+                        "defaultTimeToTravel": 1,
+                        "defaultPortSpeed": 125,
+                        "ports": [
+                                {
+                                        "name": "eth0",
+                                        "connectsTo": "1",
+                                        "timeToTravel": 1,
+                                        "scheduleType": "microcycle",
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth1",
+                                        "connectsTo": "3",
+                                        "timeToTravel": 1,
+                                        "scheduleType": "microcycle",
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth2",
+                                        "connectsTo": "dev0",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                }
+                        ]
+                },
+                {
+                        "name": "1",
+                        "scheduleType": "hypercycle",
+                        "defaultTimeToTravel": 1,
+                        "defaultPortSpeed": 125,
+                        "ports": [
+                                {
+                                        "name": "eth0",
+                                        "connectsTo": "0",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth1",
+                                        "connectsTo": "3",
+                                        "timeToTravel": 1,
+                                        "scheduleType": "microcycle",
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth2",
+                                        "connectsTo": "dev1",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                }
+                        ]
+                },
+                {
+                        "name": "2",
+                        "scheduleType": "hypercycle",
+                        "defaultTimeToTravel": 1,
+                        "defaultPortSpeed": 125,
+                        "ports": [
+                                {
+                                        "name": "eth0",
+                                        "connectsTo": "3",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth1",
+                                        "connectsTo": "dev2",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                }
+                        ]
+                },
+                {
+                        "name": "3",
+                        "scheduleType": "hypercycle",
+                        "defaultTimeToTravel": 1,
+                        "defaultPortSpeed": 125,
+                        "ports": [
+                                {
+                                        "name": "eth0",
+                                        "connectsTo": "0",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth1",
+                                        "connectsTo": "1",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth2",
+                                        "connectsTo": "2",
+                                        "timeToTravel": 1,
+                                        "scheduleType": "microcycle",
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth3",
+                                        "connectsTo": "dev3",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                }
+                        ]
+                },
+                {
+                        "name": "4",
+                        "scheduleType": "hypercycle",
+                        "defaultTimeToTravel": 1,
+                        "defaultPortSpeed": 125,
+                        "ports": [
+                                {
+                                        "name": "eth0",
+                                        "connectsTo": "3",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                },
+                                {
+                                        "name": "eth1",
+                                        "connectsTo": "dev4",
+                                        "timeToTravel": 1,
+                                        "maximumSlotDuration": 50,
+                                        "cycleStart": 0
+                                }
+                        ]
+
+                }
+        ],
+        "devices": [
+                {
+                        "name": "dev0",
+                        "defaultFirstSendingTime": 0,
+                        "defaultPacketPeriodicity": 2500,
+                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53
+                },
+                {
+                        "name": "dev1",
+                        "defaultFirstSendingTime": 0,
+                        "defaultPacketPeriodicity": 2500,
+                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53
+                },
+                {
+                        "name": "dev2",
+                        "defaultFirstSendingTime": 0,
+                        "defaultPacketPeriodicity": 1000,
+                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53
+                },
+                {
+                        "name": "dev3",
+                        "defaultFirstSendingTime": 0,
+                        "defaultPacketPeriodicity": 1000,
+                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53
+                },
+                {
+                        "name": "dev4",
+                        "defaultFirstSendingTime": 0,
+                        "defaultPacketPeriodicity": 5000,
+                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53
+                }
+        ],
+        "flows": [
+                {
+                        "name": "flow1",
+                        "type": "unicast",
+                        "sourceDevice": "0",
+                        "endDevices": [
+                                "2"
+                        ],
+                        "hops": [
+                                {
+                                        "currentNodeName": "0",
+                                        "nextNodeName": "3"
+                                },
+                                {
+                                        "currentNodeName": "3",
+                                        "nextNodeName": "2"
+                                }
+                        ]
+                },
+                {
+                        "name": "flow2",
+                        "type": "unicast",
+                        "sourceDevice": "1",
+                        "endDevices": [
+                                "2"
+                        ],
+                        "hops": [
+                                {
+                                        "currentNodeName": "1",
+                                        "nextNodeName": "3"
+                                },
+                                {
+                                        "currentNodeName": "3",
+                                        "nextNodeName": "2"
+                                }
+                        ]
+                },
+                {
+                        "name": "flow3",
+                        "type": "unicast",
+                        "sourceDevice": "4",
+                        "endDevices": [
+                                "2"
+                        ],
+                        "hops": [
+                                {
+                                        "currentNodeName": "4",
+                                        "nextNodeName": "3"
+                                },
+                                {
+                                        "currentNodeName": "3",
+                                        "nextNodeName": "2"
+                                }
+                        ]
+                }
+        ]
+}
