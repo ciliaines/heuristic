@@ -11,7 +11,9 @@ from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from pyomo.core import Var
 
-def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Streams):
+Result_offsets = []
+
+def Evaluation_function_generator(Number_of_edges, Connection_probability,Number_of_Streams):
     Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
     Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
     network = Network_Topology(Adjacency_Matrix) 
@@ -30,13 +32,15 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     #print("Frame_duration ", Frame_Duration)
 
 
-    Result_offsets = Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, instance.Num_Queues, 
+    Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, instance.Num_Queues, 
         Streams_paths, Num_of_Frames) # aqui se convierte en flows
 
     return Result_offsets, Num_of_Frames, Streams_Period
 
 def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, 
     Links, Num_Queues, Streams_paths, Num_of_Frames):
+    Result_offsets = []
+
     #Ordenar los flows para su tratamiento
     Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
     #print("SHORT STREAMS   ",Sort_Stream_Source_Destination)
@@ -59,7 +63,9 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
         queue_assignment = 1
 
         while not success:
-            booleano, Result_offsets = Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],Streams_paths_Dic[key],Streams_Period[key], Network_links_Dic)
+            booleano= Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],Streams_paths_Dic[key],Streams_Period[key], Network_links_Dic)
+            #Result_offsets.append(Result_offsets_gen)
+
             if booleano == True:
                 #resultado del "algoritmo principal"
                 print("SOLO ENTRA SI ES TRUE")
@@ -72,7 +78,7 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
                     #print("total cola  ", Queue_total[key])
                     #print("cuenta  ", queue_assignment)
                     success = True
-    return Result_offsets
+    #return Result_offsets
 
 
 
@@ -83,7 +89,6 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
     print("Streams_Period  ", Streams_Period)
     print("Num_of_Frames  ",Num_of_Frames)
     print("Streams_paths   ",Streams_paths)
-    Result_offsets = []
     matriz_offset = {}
 
     for frame in range(Num_of_Frames): #tramas de cada link
@@ -108,18 +113,7 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
         contador=1
         while contador < len(Streams_paths):
             print("")
-            print("link  ", link)
-            #FRAME_INDICATOR 
-            print("Network_links   ",Network_links_Dic)
-            key_link = next(key_link for key, value in matriz_offset.items() if value == link or value == reversed(link))
-
-            print("key  ",key,"  key_link  ")
-
-            frame_indicator = ("S", key, "L", j, "F", k)
-
-
-
-            
+           
             link_anterior = (Streams_paths[a-1],Streams_paths[b-1])
             lower_bound = Lower_bound(frame, send_link, link, link_anterior, matriz_offset)
             Bound_dic = (lower_bound, Bound_dic[1])
@@ -134,6 +128,20 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
             else:
                 matriz_offset[link].append(tiempo)
             print("matriz_offset ",matriz_offset)
+
+            #FRAME_INDICATOR 
+            print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
+            print("link   ",link, "   rever   ",tuple(reversed(link)))
+            print("Network_links_Dic   ",Network_links_Dic)
+            key_link = next((key for key, value in Network_links_Dic.items() if value == link or value == tuple(reversed(link))),None)
+            frame_indicator = ("S", key, "L", key_link, "F", frame)
+            print("frane_indicator ", frame_indicator)
+
+            helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
+            print("helper    ",helper)
+            Result_offsets.append(helper)
+            print("Result offset  ",Result_offsets)
+            print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
 
             if tiempo[-1] == float('inf'):
                 return False
@@ -162,7 +170,7 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
                 b -= 1
                 link = [Streams_paths[a], Streams_paths[b]] 
             contador +=1
-    return False, Result_offsets 
+    return False#, Result_offsets 
 
 def Earliest_offset(link, matriz_offset,Bound_dic):
     #EARLIEST OFFSET
@@ -180,7 +188,6 @@ def Earliest_offset(link, matriz_offset,Bound_dic):
         tiempo = (Bound_dic[0],Bound_dic[0]+100)
         print("no existe ",tiempo)
     return tiempo,matriz_offset
-
 
 def Latest_queue_available_time(link, Streams_Period, matriz_offset):
     if matriz_offset.get(link)is not None:
@@ -210,13 +217,10 @@ def Lower_bound(frame, send_link, link, link_anterior, matriz_offset):
         print("4-lower_bound ",a,b, max(a,b))
         return max(a,b)
 
-
 #Listar colas asociadas a la clave del link
 def List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic, Num_Queues, Streams_paths):
     #print("Stream_Source_Destination_Dic ",Sort_Stream_Source_Destination)
     #print("other",Network_links, Num_Queues, Streams_paths)
-
-
     Queue_total = {}
 
     for vector in Streams_paths:
@@ -296,7 +300,7 @@ for n in [4]:
 
     for i in range(1):
         # Evaluation_Function(number_of_nodes, connection_probability, number of streams)
-        Evaluation_function(2, 1, n)#, instance.Links, instance.Num_Queues)
+        Evaluation_function_generator(2, 1, n)#, instance.Links, instance.Num_Queues)
         
 
 
