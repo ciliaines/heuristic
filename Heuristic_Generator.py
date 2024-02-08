@@ -22,7 +22,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     instance, results = scheduler.instance, scheduler.results
 
     Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
-    Num_of_Frames = [1,2,3]
+    Num_of_Frames = [1,1,1]
     #print("---frames---",Num_of_Frames,"---",Max_frames)
     Streams_size=[10,20,30]
 
@@ -30,8 +30,10 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     #print("Frame_duration ", Frame_Duration)
 
 
-    Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, instance.Num_Queues, Streams_paths, Num_of_Frames) # aqui se convierte en flows
+    Result_offsets = Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, instance.Num_Queues, 
+        Streams_paths, Num_of_Frames) # aqui se convierte en flows
 
+    return Result_offsets, Num_of_Frames, Streams_Period
 
 def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, 
     Links, Num_Queues, Streams_paths, Num_of_Frames):
@@ -43,15 +45,22 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
     #print("num of frames dic " ,Num_of_Frames_Dic)
     Streams_paths_Dic = {key: value for key, value in enumerate(Streams_paths)}
     #print("stream path  dic  ", Streams_paths_Dic)
+    
+    Network_links_Dic = {key: value for key, value in enumerate(Network_links)}
+    Queue_Link_Dic = {}
+    for key, value in Network_links_Dic.items():
+        Queue_Link_Dic[key] = (Network_links_Dic[key], Num_Queues[key].value)
+    #print("Queue_Link_Dic ",Queue_Link_Dic)
 
     #Cola total de cada uno de los flows
-    Queue_total = List_queue(Sort_Stream_Source_Destination, Network_links, Num_Queues, Streams_paths)
+    Queue_total = List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic, Num_Queues, Streams_paths)
     for key, value in Sort_Stream_Source_Destination.items():
         success = False
         queue_assignment = 1
 
         while not success:
-            if Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],Streams_paths_Dic[key],Streams_Period[key]) == True:
+            booleano, Result_offsets = Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],Streams_paths_Dic[key],Streams_Period[key], Network_links_Dic)
+            if booleano == True:
                 #resultado del "algoritmo principal"
                 print("SOLO ENTRA SI ES TRUE")
                 success = True
@@ -63,28 +72,31 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
                     #print("total cola  ", Queue_total[key])
                     #print("cuenta  ", queue_assignment)
                     success = True
+    return Result_offsets
 
 
 
-def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_Period):
+def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_Period, Network_links_Dic):
     #Definir uns estrucutre que enlace 
     #ENLACE(STEAMPATHS[A],STREAMPATHS[B])- (LOWERBOUND,UPPERBOUND)
     print("---------------------------------------------------------------------------------------------------")
     print("Streams_Period  ", Streams_Period)
     print("Num_of_Frames  ",Num_of_Frames)
     print("Streams_paths   ",Streams_paths)
-   
+    Result_offsets = []
     matriz_offset = {}
 
     for frame in range(Num_of_Frames): #tramas de cada link
         frame = frame + 1
         print("")
         print("Frames  ",frame)
+
         #BOUND_DIC  generamos una lsita con el lower y el upper bound
         lower_bound = 0.0
         Bound_dic = (lower_bound, Streams_Period)
         print("Bound_dic   ",Bound_dic)
         
+
         #LINK, bus queda del link, del link de revivo y del envio
         a = 0
         b = 1
@@ -95,8 +107,19 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
         
         contador=1
         while contador < len(Streams_paths):
-            print("", contador ,"", len(Streams_paths))
+            print("")
             print("link  ", link)
+            #FRAME_INDICATOR 
+            print("Network_links   ",Network_links_Dic)
+            key_link = next(key_link for key, value in matriz_offset.items() if value == link or value == reversed(link))
+
+            print("key  ",key,"  key_link  ")
+
+            frame_indicator = ("S", key, "L", j, "F", k)
+
+
+
+            
             link_anterior = (Streams_paths[a-1],Streams_paths[b-1])
             lower_bound = Lower_bound(frame, send_link, link, link_anterior, matriz_offset)
             Bound_dic = (lower_bound, Bound_dic[1])
@@ -139,13 +162,13 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
                 b -= 1
                 link = [Streams_paths[a], Streams_paths[b]] 
             contador +=1
-    return False;
+    return False, Result_offsets 
 
 def Earliest_offset(link, matriz_offset,Bound_dic):
     #EARLIEST OFFSET
     tiempo= 0.0
     if matriz_offset.get(link)is not None:
-        print("len ",len(matriz_offset[link]))
+        #print("len ",len(matriz_offset[link]))
         if len(matriz_offset[link]) == 1:
             print("value  ",matriz_offset[link][-1])
             tiempo = (matriz_offset[link][-1][-1], matriz_offset[link][-1][-1]+100)
@@ -178,7 +201,7 @@ def Lower_bound(frame, send_link, link, link_anterior, matriz_offset):
         print("2-lower_bound ",matriz_offset[link][-1][0]+100)
         return matriz_offset[link][-1][0] + 100 
     elif frame == 1 and link != send_link:
-        print(matriz_offset[link_anterior][frame-1])
+        #print(matriz_offset[link_anterior][frame-1])
         print("3-lower_bound ",matriz_offset[link_anterior][frame-1][0] + 100 +  0.8)
         return matriz_offset[link_anterior][frame-1][0] + 100 +  0.8
     else:
@@ -189,17 +212,12 @@ def Lower_bound(frame, send_link, link, link_anterior, matriz_offset):
 
 
 #Listar colas asociadas a la clave del link
-def List_queue(Sort_Stream_Source_Destination, Network_links, Num_Queues, Streams_paths):
+def List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic, Num_Queues, Streams_paths):
     #print("Stream_Source_Destination_Dic ",Sort_Stream_Source_Destination)
     #print("other",Network_links, Num_Queues, Streams_paths)
 
-    Network_links_Dic = {key: value for key, value in enumerate(Network_links)}
-    Queue_Link_Dic = {}
-    Queue_total = {}
 
-    for key, value in Network_links_Dic.items():
-        Queue_Link_Dic[key] = (Network_links_Dic[key], Num_Queues[key].value)
-    #print("Queue_Link_Dic ",Queue_Link_Dic)
+    Queue_total = {}
 
     for vector in Streams_paths:
         firts_value = vector[0]

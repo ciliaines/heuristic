@@ -8,6 +8,7 @@ from Djikstra_Path_Calculator import *
 from RandStream_Parameters import *
 from Preprocessing import *
 from ILP_Generator import *
+from Heutistic_Generator import *
 import time
 from read import *
 
@@ -160,63 +161,17 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
 ################################################################
     # Generation of random Network
     try :
-        initial_time = time.time()
-        #Network_nodes, Network_links, Adjacency_Matrix, plot_network = Network_Generator(Number_of_edges, Connection_probability)
-        #Stream_Source_Destination = Flows_generator(Number_of_Streams, Number_of_edges) 
-        ####LEER DEL FICHERO
-        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
-        #print("Stream_Source_Destination   "+str(Stream_Source_Destination))
+        #Result_offsets [{'Task': "('S', 0, 'L', 2, 'F', 0)", 'Start': 200.0, 'Finish': 212.0, 'Color': 2}, {'Task': "('S', 0, 'L', 3, 'F', 0)", 'Start': 100.0, 'Finish': 112.0, 'Color': 3}, 
+        #{'Task': "('S', 1, 'L', 1, 'F', 0)", 'Start': 200.0, 'Finish': 212.0, 'Color': 1}, {'Task': "('S', 1, 'L', 2, 'F', 0)", 'Start': 300.0, 'Finish': 312.0, 'Color': 2}, 
+        #{'Task': "('S', 2, 'L', 2, 'F', 0)", 'Start': 100.0, 'Finish': 112.0, 'Color': 2}, {'Task': "('S', 2, 'L', 4, 'F', 0)", 'Start': -0.0, 'Finish': 12.0, 'Color': 4}]
+        Result_offsets, Repetitions, Streams_Period = Evaluation_function()
         ################################################################
-        #Djikstra scheduler
-        network = Network_Topology(Adjacency_Matrix) # Using the Network Topology class
-        #print("Network_Topology  network   "+str(network))
-        all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
-        #print("Djikstra  all paths matrix    "+str(all_paths_matrix))
-
-        Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
-        Streams_links_paths = Streams_links_paths_generator(Streams_paths)
-        Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
-        ################################################################
-        # Random Streams parameters
-        #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Random_Stream_size_and_period_generator(Number_of_Streams)
-        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
-        Hyperperiod = Hyperperiod_generator(Streams_Period_list)
-        Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
-        ################################################################
-        # Preprocessing
-        Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
-        Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
-        Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
-        Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
-        unused_links = unused_links_generator(Network_links, Link_order_Descriptor)
-
-        ################################################################
-        #SUSTITUIR ESTE APARTADO 
-        ################################################################
-
-
-
-        scheduler = ILP_Raagard_solver(Number_of_Streams, Network_links, \
-                        Link_order_Descriptor, \
-                        Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
-                        Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
-                        Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration)
-        instance, results = scheduler.instance, scheduler.results
-        final_time = time.time()
-        ################################################################
-        Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies  = ILP_results_visualizer(instance, Model_Descriptor_vector)
-        print("Result_offsets", Result_offsets)
         df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
-        information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
-        dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
-                     Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
+        #information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
+        #dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
+        #             Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         ### This will store the results into a txt for further usage
         
-        time_evaluation = final_time - initial_time
-        with open('results_gurobi_local'  + str(Number_of_edges)  + '_'
-                                    + str(Connection_probability) + '_'
-                                    + str(Number_of_Streams) + '.txt', 'a') as f :
-            f.write(str(time_evaluation) + "\n")
     except ValueError:
         print("One error has occurred")
 
