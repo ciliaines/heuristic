@@ -163,10 +163,21 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     try :
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-        #Result_offsets [{'Task': "('S', 0, 'L', 2, 'F', 0)", 'Start': 200.0, 'Finish': 212.0, 'Color': 2}, {'Task': "('S', 0, 'L', 3, 'F', 0)", 'Start': 100.0, 'Finish': 112.0, 'Color': 3}, 
-        #{'Task': "('S', 1, 'L', 1, 'F', 0)", 'Start': 200.0, 'Finish': 212.0, 'Color': 1}, {'Task': "('S', 1, 'L', 2, 'F', 0)", 'Start': 300.0, 'Finish': 312.0, 'Color': 2}, 
-        #{'Task': "('S', 2, 'L', 2, 'F', 0)", 'Start': 100.0, 'Finish': 112.0, 'Color': 2}, {'Task': "('S', 2, 'L', 4, 'F', 0)", 'Start': -0.0, 'Finish': 12.0, 'Color': 4}]
-       
+        #Result_offsets 
+        #[{'Task': "('S', 0, 'L', 2, 'F', 0)", 'Start': 200.0, 'Finish': 212.0, 'Color': 2}, 
+        #{'Task': "('S', 0, 'L', 3, 'F', 0)", 'Start': 100.0, 'Finish': 112.0, 'Color': 3}, 
+        #{'Task': "('S', 1, 'L', 1, 'F', 0)", 'Start': 200.0, 'Finish': 212.0, 'Color': 1}, 
+        #{'Task': "('S', 1, 'L', 2, 'F', 0)", 'Start': 300.0, 'Finish': 312.0, 'Color': 2}, 
+        #{'Task': "('S', 2, 'L', 2, 'F', 0)", 'Start': 100.0, 'Finish': 112.0, 'Color': 2}, 
+        #{'Task': "('S', 2, 'L', 4, 'F', 0)", 'Start': -0.0, 'Finish': 12.0, 'Color': 4}]
+
+#        Result_offsets vis    
+#        [{'Task': "('S', 1, 'L', 1, 'F', 1)", 'Start': 0.0, 'Finish': 100.0, 'Color': 1}, 
+#        {'Task': "('S', 1, 'L', 2, 'F', 1)", 'Start': 100.8, 'Finish': 200.8, 'Color': 2}, 
+#        {'Task': "('S', 0, 'L', 3, 'F', 1)", 'Start': 0.0, 'Finish': 100.0, 'Color': 3}, 
+#        {'Task': "('S', 0, 'L', 2, 'F', 1)", 'Start': 100.8, 'Finish': 200.8, 'Color': 2}, 
+#        {'Task': "('S', 2, 'L', 4, 'F', 1)", 'Start': 0.0, 'Finish': 100.0, 'Color': 4}, 
+#        {'Task': "('S', 2, 'L', 2, 'F', 1)", 'Start': 100.8, 'Finish': 200.8, 'Color': 2}]
 
 
         Result_offsets, Repetitions, Streams_Period = Evaluation_function_generator(2,1,1)

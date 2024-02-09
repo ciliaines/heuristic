@@ -12,8 +12,13 @@ from pyomo.opt import SolverFactory
 from pyomo.core import Var
 
 Result_offsets = []
+#self.Network_links = Network_links
+Network_links = [(0, 1), (1, 3), (2, 3), (3, 0), (4, 3)]
+#self.Max_frames = Max_frames
+Max_frames = 1
 
 def Evaluation_function_generator(Number_of_edges, Connection_probability,Number_of_Streams):
+
     Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
     Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
     network = Network_Topology(Adjacency_Matrix) 
@@ -39,7 +44,6 @@ def Evaluation_function_generator(Number_of_edges, Connection_probability,Number
 
 def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, 
     Links, Num_Queues, Streams_paths, Num_of_Frames):
-    Result_offsets = []
 
     #Ordenar los flows para su tratamiento
     Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
@@ -130,18 +134,18 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
             print("matriz_offset ",matriz_offset)
 
             #FRAME_INDICATOR 
-            print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
-            print("link   ",link, "   rever   ",tuple(reversed(link)))
-            print("Network_links_Dic   ",Network_links_Dic)
+            #print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
+            #print("link   ",link, "   rever   ",tuple(reversed(link)))
+            #@¶print("Network_links_Dic   ",Network_links_Dic)
             key_link = next((key for key, value in Network_links_Dic.items() if value == link or value == tuple(reversed(link))),None)
             frame_indicator = ("S", key, "L", key_link, "F", frame)
-            print("frane_indicator ", frame_indicator)
+            #print("frane_indicator ", frame_indicator)
 
             helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
-            print("helper    ",helper)
+            #print("helper    ",helper)
             Result_offsets.append(helper)
             print("Result offset  ",Result_offsets)
-            print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
+            #print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
 
             if tiempo[-1] == float('inf'):
                 return False
@@ -291,16 +295,16 @@ class Clase_test :
 
 
 
-for n in [4]:
-    
-    #self.Network_links = Network_links
-    Network_links = [(0, 1), (1, 3), (2, 3), (3, 0), (4, 3)]
-    #self.Max_frames = Max_frames
-    Max_frames = 1
+#cfor n in [4]:
+#c    
+#c    #self.Network_links = Network_links
+#c    Network_links = [(0, 1), (1, 3), (2, 3), (3, 0), (4, 3)]
+#c    #self.Max_frames = Max_frames
+#c    Max_frames = 1
 
-    for i in range(1):
-        # Evaluation_Function(number_of_nodes, connection_probability, number of streams)
-        Evaluation_function_generator(2, 1, n)#, instance.Links, instance.Num_Queues)
+#c    for i in range(1):
+#c        # Evaluation_Function(number_of_nodes, connection_probability, number of streams)
+#c        Evaluation_function_generator(2, 1, n)#, instance.Links, instance.Num_Queues)
         
 
 
