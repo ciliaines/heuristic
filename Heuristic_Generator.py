@@ -16,6 +16,7 @@ Result_offsets = []
 Network_links = [(0, 1), (1, 3), (2, 3), (3, 0), (4, 3)]
 #self.Max_frames = Max_frames
 Max_frames = 1
+matriz_offset = {}
 
 def Evaluation_function_generator(Number_of_edges, Connection_probability,Number_of_Streams):
 
@@ -93,7 +94,7 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
     print("Streams_Period  ", Streams_Period)
     print("Num_of_Frames  ",Num_of_Frames)
     print("Streams_paths   ",Streams_paths)
-    matriz_offset = {}
+    
 
     for frame in range(Num_of_Frames): #tramas de cada link
         frame = frame + 1
@@ -119,11 +120,11 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
             print("")
            
             link_anterior = (Streams_paths[a-1],Streams_paths[b-1])
-            lower_bound = Lower_bound(frame, send_link, link, link_anterior, matriz_offset)
+            lower_bound = Lower_bound(frame, send_link, link, link_anterior)
             Bound_dic = (lower_bound, Bound_dic[1])
             print("Bound_dic   ",Bound_dic)
 
-            tiempo, matriz_offset = Earliest_offset(link, matriz_offset,Bound_dic)
+            tiempo = Earliest_offset  (link,Bound_dic)
             print("tiempo schedule flow  ",tiempo)
             #MATRIX OFFSET, añadir valores
             #no se rellena correctamente 
@@ -163,7 +164,7 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
                 print("next link ",next_link)
                 link = next_link
                 #linea 12 
-                upper_boud_posterior = Latest_queue_available_time(link, Streams_Period,matriz_offset)
+                upper_boud_posterior = Latest_queue_available_time(link, Streams_Period)
                 print("Latest queue available time", upper_boud_posterior)
 
             else:
@@ -176,7 +177,7 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
             contador +=1
     return False#, Result_offsets 
 
-def Earliest_offset(link, matriz_offset,Bound_dic):
+def Earliest_offset(link, Bound_dic):
     #EARLIEST OFFSET
     tiempo= 0.0
     if matriz_offset.get(link)is not None:
@@ -191,9 +192,9 @@ def Earliest_offset(link, matriz_offset,Bound_dic):
     else:
         tiempo = (Bound_dic[0],Bound_dic[0]+100)
         print("no existe ",tiempo)
-    return tiempo,matriz_offset
+    return tiempo
 
-def Latest_queue_available_time(link, Streams_Period, matriz_offset):
+def Latest_queue_available_time(link, Streams_Period):
     if matriz_offset.get(link)is not None:
         tiempo = matriz_offset[link][-1][-1]
         print("existe ",tiempo)
@@ -202,7 +203,7 @@ def Latest_queue_available_time(link, Streams_Period, matriz_offset):
         print("no existe ",tiempo)
     return tiempo
 
-def Lower_bound(frame, send_link, link, link_anterior, matriz_offset):
+def Lower_bound(frame, send_link, link, link_anterior):
    #print("link anterior  ",link_anterior, "frame   ",frame)
     if frame == 1 and link == send_link:
         print("1-lower_bound ",0.0)
