@@ -12,6 +12,10 @@ from pyomo.opt import SolverFactory
 from pyomo.core import Var
 
 Result_offsets = []
+Clean_offsets_collector = []
+Feasibility_indicator = 0
+
+                     
 #self.Network_links = Network_links
 Network_links = [(0, 1), (1, 3), (2, 3), (3, 0), (4, 3)]
 #self.Max_frames = Max_frames
@@ -143,9 +147,15 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
             #print("frane_indicator ", frame_indicator)
 
             helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
+            clean_offset = { "Task" :str(frame_indicator), "Start": tiempo[0] }
+
             #print("helper    ",helper)
             Result_offsets.append(helper)
+            Clean_offsets_collector.append(clean_offset)
+
+
             print("Result offset  ",Result_offsets)
+
             #print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
 
             if tiempo[-1] == float('inf'):

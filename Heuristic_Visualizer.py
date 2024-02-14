@@ -12,54 +12,6 @@ from Heuristic_Generator import *
 import time
 from read import *
 
-def ILP_results_visualizer(instance, Model_Descriptor_vector):
-    #print("############### This is the set of offsets ######################")
-    Result_offsets = []
-    Clean_offsets_collector = []
-    Feasibility_indicator = 0
-    for i in instance.Streams:
-        for j in instance.Links:
-            for k in instance.Frames:
-                if Model_Descriptor_vector [i][k][j] :
-                    print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
-                    frame_indicator = ("S", i, "L", j, "F", k)
-                    helper = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value, "Finish" : (instance.Frame_Offset[i,j,k].value +12), "Color" : j }
-                    clean_offset = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value }
-                    Result_offsets.append(helper)
-                    Clean_offsets_collector.append(clean_offset)
-                    if instance.Frame_Offset[i,j,k].value != 1 :
-                        Feasibility_indicator = Feasibility_indicator + 1         
-    #print("############### This is the set of latencies ######################")
-    Results_latencies = []
-    for stream in instance.Streams:
-        #print("The latency of Stream", stream, "is",instance.Latency[stream].value)
-        Results_latencies.append(instance.Latency[stream].value)
-
-    #print("############### This is the set of queues ######################")
-    for link in instance.Links:
-        print("The number of queues of link ", link, "is",instance.Num_Queues[link].value)
-        print("heloo ",link)
-
-    #print("############### This is the set of queues per stream and link######################")
-#    for stream in instance.Streams:
-#        for link in instance.Links:
-            #print("The number of queues of Link",link , "Stream" , stream, "is", instance.Queue_Assignment[stream, link].value)
-
-    #print("############### This is the set of auxiliar queues variables######################")
-#    for stream in instance.Streams :
-#        for stream_2 in instance.Streams :
-#            for link in instance.Links :
-                #print("Aux variable for stream_1 ", stream, "Stream_2", stream_2, "link", link, ":", instance.Aux_Same_Queue[stream_2, link ,stream].value)
-    return Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies
-
-##### For printing the model results and variables #####
-#UNCOMMENT if necessary 
-
-# instance.display()
-# results.write()
-# results.solver.status 
-######################## For now on, this code is for generate the Gant chart ########################
-
 
 def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
     #print("Result_offsets       "+str(Result_offsets))
@@ -101,7 +53,7 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
     plt.xlabel("Time in miliseconds")
     plt.title("Gantt Chart")
     plt.savefig('testing.png')
-    plt.show() 
+    #plt.show() 
     return df
 
 
@@ -163,35 +115,77 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     try :
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-        #Result_offsets 
-        #[{'Task': "('S', 0, 'L', 2, 'F', 0)", 'Start': 200.0, 'Finish': 212.0, 'Color': 2}, 
-        #{'Task': "('S', 0, 'L', 3, 'F', 0)", 'Start': 100.0, 'Finish': 112.0, 'Color': 3}, 
-        #{'Task': "('S', 1, 'L', 1, 'F', 0)", 'Start': 200.0, 'Finish': 212.0, 'Color': 1}, 
-        #{'Task': "('S', 1, 'L', 2, 'F', 0)", 'Start': 300.0, 'Finish': 312.0, 'Color': 2}, 
-        #{'Task': "('S', 2, 'L', 2, 'F', 0)", 'Start': 100.0, 'Finish': 112.0, 'Color': 2}, 
-        #{'Task': "('S', 2, 'L', 4, 'F', 0)", 'Start': -0.0, 'Finish': 12.0, 'Color': 4}]
+        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
+        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
+        network = Network_Topology(Adjacency_Matrix) 
+        all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
+        Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
 
-#        Result_offsets vis    
-#        [{'Task': "('S', 1, 'L', 1, 'F', 1)", 'Start': 0.0, 'Finish': 100.0, 'Color': 1}, 
-#        {'Task': "('S', 1, 'L', 2, 'F', 1)", 'Start': 100.8, 'Finish': 200.8, 'Color': 2}, 
-#        {'Task': "('S', 0, 'L', 3, 'F', 1)", 'Start': 0.0, 'Finish': 100.0, 'Color': 3}, 
-#        {'Task': "('S', 0, 'L', 2, 'F', 1)", 'Start': 100.8, 'Finish': 200.8, 'Color': 2}, 
-#        {'Task': "('S', 2, 'L', 4, 'F', 1)", 'Start': 0.0, 'Finish': 100.0, 'Color': 4}, 
-#        {'Task': "('S', 2, 'L', 2, 'F', 1)", 'Start': 100.8, 'Finish': 200.8, 'Color': 2}]
+        scheduler = Clase_test(Network_links)
+        instance, results = scheduler.instance, scheduler.results
+
+        Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
+        Num_of_Frames = [1,1,1]
+        #print("---frames---",Num_of_Frames,"---",Max_frames)
+        Streams_size=[10,20,30]
+
+        Hyperperiod = Hyperperiod_generator(Streams_Period_list)
 
 
-        Result_offsets, Repetitions, Streams_Period = Evaluation_function_generator(2,1,1)
+        Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
+        Streams_links_paths = Streams_links_paths_generator(Streams_paths)
+        Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
+
+        Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
+        Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
+        Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
+
+        Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
+        #print("Frame_duration ", Frame_Duration)
+
+        Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, instance.Num_Queues, Streams_paths, Num_of_Frames)
+        #Result_offsets, Repetitions, Streams_Period = Evaluation_function_generator(2,1,1)
 
         print("Result_offsets vis   ", Result_offsets)
         ################################################################
         df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
-        #information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
-        #dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
-        #             Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
+
+        information_generator(Repetitions, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
+
+        Results_latencies = []
+        for stream in instance.Streams:
+            #print("The latency of Stream", stream, "is",instance.Latency[stream].value)
+            Results_latencies.append(instance.Latency[stream].value)
+
+        dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
+                     Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         ### This will store the results into a txt for further usage
         
     except ValueError:
         print("One error has occurred")
+
+class Clase_test :
+    
+    def __init__(self, Network_links):
+
+        self.Network_links = Network_links
+        self.model = AbstractModel()
+
+        self.model.Links = Set(initialize = frozenset(range(len(Network_links)))) # Links Ids
+        self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=1)
+
+        self.model.Frames = Set(initialize= frozenset(range(Max_frames))) # Maximum number of streams = [1,1,1]
+        
+        self.model.Streams = Set(initialize= range(3)) # Num of streams
+
+        self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
+
+        ### This part is the creation of the instance in the ilp system
+        opt = SolverFactory('gurobi')
+        #opt = SolverFactory('gurobi', solver_io="python")
+        self.instance = self.model.create_instance()
+        self.results = opt.solve(self.instance)
+        self.instance.solutions.load_from(self.results)
 
 for n in [4]:
     for i in range(1):
