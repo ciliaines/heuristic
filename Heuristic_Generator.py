@@ -14,38 +14,8 @@ from pyomo.core import Var
 Result_offsets = []
 Clean_offsets_collector = []
 Feasibility_indicator = 0
+flexibility_solution = {}
 
-                     
-#self.Network_links = Network_links
-Network_links = [(0, 1), (1, 3), (2, 3), (3, 0), (4, 3)]
-#self.Max_frames = Max_frames
-Max_frames = 1
-matriz_offset = {}
-
-def Evaluation_function_generator(Number_of_edges, Connection_probability,Number_of_Streams):
-
-    Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
-    Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
-    network = Network_Topology(Adjacency_Matrix) 
-    all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
-    Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
-
-    scheduler = Clase_test(Network_links)
-    instance, results = scheduler.instance, scheduler.results
-
-    Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
-    Num_of_Frames = [1,1,1]
-    #print("---frames---",Num_of_Frames,"---",Max_frames)
-    Streams_size=[10,20,30]
-
-    Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
-    #print("Frame_duration ", Frame_Duration)
-
-
-    Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, instance.Num_Queues, 
-        Streams_paths, Num_of_Frames) # aqui se convierte en flows
-
-    return Result_offsets, Num_of_Frames, Streams_Period
 
 def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, 
     Links, Num_Queues, Streams_paths, Num_of_Frames):
@@ -70,9 +40,9 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
     for key, value in Sort_Stream_Source_Destination.items():
         success = False
         queue_assignment = 1
-
+        print("-----------   value  -----------   ",value)
         while not success:
-            booleano= Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],Streams_paths_Dic[key],Streams_Period[key], Network_links_Dic)
+            booleano = Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],Streams_paths_Dic[key],Streams_Period[key], Network_links_Dic)
             #Result_offsets.append(Result_offsets_gen)
 
             if booleano == True:
@@ -80,10 +50,11 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
                 print("SOLO ENTRA SI ES TRUE")
                 success = True
             else:
+                Constraining_engress_port()
                 #linea 12 
                 queue_assignment += 1
                 #Ver si aun queda cola disponible
-                if (queue_assignment > Queue_total[key] ):
+                if (queue_assignment > Queue_total[key]):
                     #print("total cola  ", Queue_total[key])
                     #print("cuenta  ", queue_assignment)
                     success = True
@@ -132,11 +103,11 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
             print("tiempo schedule flow  ",tiempo)
             #MATRIX OFFSET, añadir valores
             #no se rellena correctamente 
-            if matriz_offset.get(link) is None:
-                matriz_offset[link] = [tiempo]
+            if flexibility_solution.get(link) is None:
+                flexibility_solution[link] = [tiempo]
             else:
-                matriz_offset[link].append(tiempo)
-            print("matriz_offset ",matriz_offset)
+                flexibility_solution[link].append(tiempo)
+            print("flexibility_solution ",flexibility_solution)
 
             #FRAME_INDICATOR 
             #print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
@@ -190,14 +161,14 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
 def Earliest_offset(link, Bound_dic):
     #EARLIEST OFFSET
     tiempo= 0.0
-    if matriz_offset.get(link)is not None:
-        #print("len ",len(matriz_offset[link]))
-        if len(matriz_offset[link]) == 1:
-            print("value  ",matriz_offset[link][-1])
-            tiempo = (matriz_offset[link][-1][-1], matriz_offset[link][-1][-1]+100)
+    if flexibility_solution.get(link)is not None:
+        #print("len ",len(flexibility_solution[link]))
+        if len(flexibility_solution[link]) == 1:
+            print("value  ",flexibility_solution[link][-1])
+            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+100)
         else:
-            print("value  ",matriz_offset[link][-1])
-            tiempo = (matriz_offset[link][-1][-1], matriz_offset[link][-1][-1]+100)
+            print("value  ",flexibility_solution[link][-1])
+            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+100)
         print("existe",tiempo)
     else:
         tiempo = (Bound_dic[0],Bound_dic[0]+100)
@@ -205,8 +176,8 @@ def Earliest_offset(link, Bound_dic):
     return tiempo
 
 def Latest_queue_available_time(link, Streams_Period):
-    if matriz_offset.get(link)is not None:
-        tiempo = matriz_offset[link][-1][-1]
+    if flexibility_solution.get(link)is not None:
+        tiempo = flexibility_solution[link][-1][-1]
         print("existe ",tiempo)
     else:
         tiempo = Streams_Period
@@ -220,15 +191,15 @@ def Lower_bound(frame, send_link, link, link_anterior):
         return 0.0
     elif frame >= 2  and link == send_link:
         #offset periodico --> producido anterior  +    #duracion de transmision ( 100 )
-        print("2-lower_bound ",matriz_offset[link][-1][0]+100)
-        return matriz_offset[link][-1][0] + 100 
+        print("2-lower_bound ",flexibility_solution[link][-1][0]+100)
+        return flexibility_solution[link][-1][0] + 100 
     elif frame == 1 and link != send_link:
-        #print(matriz_offset[link_anterior][frame-1])
-        print("3-lower_bound ",matriz_offset[link_anterior][frame-1][0] + 100 +  0.8)
-        return matriz_offset[link_anterior][frame-1][0] + 100 +  0.8
+        #print(flexibility_solution[link_anterior][frame-1])
+        print("3-lower_bound ",flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8)
+        return flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8
     else:
-        a = matriz_offset[link][-1][0] + 100
-        b = matriz_offset[link_anterior][frame-1][0] + 100 +  0.8
+        a = flexibility_solution[link][-1][0] + 100
+        b = flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8
         print("4-lower_bound ",a,b, max(a,b))
         return max(a,b)
 
@@ -283,7 +254,11 @@ def Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Strea
     return Sort_Stream_Source_Destination
 
 def Constraining_engress_port():
-    return False
+    #"bloquear value   " entre ello lo que hay que hacer
+    #el eliminar lo generado en   --flexibility_solution--
+    print("NO se encontro solucion  ", flexibility_solution)
+    del flexibility_solution[value]
+
 
 class Clase_test :
     

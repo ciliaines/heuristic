@@ -121,15 +121,20 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
         Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
 
-        scheduler = Clase_test(Network_links)
+        Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
+
+
+        scheduler = Clase_test(Network_links, Max_frames)
         instance, results = scheduler.instance, scheduler.results
 
-        Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
-        Num_of_Frames = [1,1,1]
+        #Num_of_Frames = [1,1,1]
         #print("---frames---",Num_of_Frames,"---",Max_frames)
-        Streams_size=[10,20,30]
+        #Streams_size=[10,20,30]
 
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)
+
+        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
+
 
 
         Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
@@ -143,7 +148,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
         #print("Frame_duration ", Frame_Duration)
 
-        Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, instance.Num_Queues, Streams_paths, Num_of_Frames)
+        Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, 
+            instance.Num_Queues, Streams_paths, Num_of_Frames)
         #Result_offsets, Repetitions, Streams_Period = Evaluation_function_generator(2,1,1)
 
         print("Result_offsets vis   ", Result_offsets)
@@ -166,7 +172,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
 
 class Clase_test :
     
-    def __init__(self, Network_links):
+    def __init__(self, Network_links,Max_frames):
 
         self.Network_links = Network_links
         self.model = AbstractModel()
