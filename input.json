@@ -148,37 +148,37 @@
                 {
                         "name": "dev0",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 2500,
+                        "defaultPacketPeriodicity": 5000,
                         "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
+                        "defaultPacketSize": 45
                 },
                 {
                         "name": "dev1",
                         "defaultFirstSendingTime": 0,
                         "defaultPacketPeriodicity": 2500,
                         "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
+                        "defaultPacketSize": 45
                 },
                 {
                         "name": "dev2",
                         "defaultFirstSendingTime": 0,
                         "defaultPacketPeriodicity": 1000,
                         "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
+                        "defaultPacketSize": 45
                 },
                 {
                         "name": "dev3",
                         "defaultFirstSendingTime": 0,
                         "defaultPacketPeriodicity": 1000,
                         "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
+                        "defaultPacketSize": 45
                 },
                 {
                         "name": "dev4",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 5000,
+                        "defaultPacketPeriodicity": 2500,
                         "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
+                        "defaultPacketSize": 45
                 }
         ],
         "flows": [

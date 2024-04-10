@@ -20,7 +20,7 @@ def Read():
             Number_of_edges = Number_of_edges+1
             Name_switch = switch["name"]
             Network_nodes = Network_nodes + [int(x) for x in Name_switch]
-            ScheduleType_switch = switch["scheduleType"]
+            #ScheduleType_switch = switch["scheduleType"]
             DefaultTimeToTravel_switch = switch["defaultTimeToTravel"]
             DefaultPortSpeed_switch = switch["defaultPortSpeed"]
             change = True
@@ -101,6 +101,7 @@ def Read2(Number_of_Streams):
                 if(Name_device == name):
                     Streams_size.append(DefaultPacketSize_device)
                     Streams_Period_list.append(DefaultPacketPeriodicity_device)
+    #print("stream period list ",Streams_Period_list)
     for i in range(Number_of_Streams):
         Streams_Period[(i)] = Streams_Period_list[(i)]
         Deathline_Stream[(i)] = Deathline_Stream_list[(i)]

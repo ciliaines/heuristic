@@ -14,7 +14,7 @@ from read import *
 
 
 def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
-    #print("Result_offsets       "+str(Result_offsets))
+    print("Result_offsets       ",Result_offsets)
     #print("Repetitions         "+str(Repetitions))
     #print("Streams_Period      "+str(Streams_Period))
 
@@ -58,7 +58,7 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
 
 
 def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths):
-    print("Num_of_Frames      " +str(Num_of_Frames))
+    #print("Num_of_Frames      " +str(Num_of_Frames))
     #print("Streams_Period     "+str(Streams_Period))
     #print("Link_order_Descriptor       "+str (Link_order_Descriptor))
     #print("Network_links          "+str(Network_links))
@@ -113,7 +113,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
 ################################################################
     # Generation of random Network
     try :
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
         Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
@@ -152,7 +152,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
             instance.Num_Queues, Streams_paths, Num_of_Frames)
         #Result_offsets, Repetitions, Streams_Period = Evaluation_function_generator(2,1,1)
 
-        print("Result_offsets vis   ", Result_offsets)
+        #print("Result_offsets vis   ", Result_offsets)
         ################################################################
         df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
 

@@ -15,7 +15,7 @@ Result_offsets = []
 Clean_offsets_collector = []
 Feasibility_indicator = 0
 flexibility_solution = {}
-
+queue_solution ={}
 
 def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, 
     Links, Num_Queues, Streams_paths, Num_of_Frames):
@@ -37,20 +37,22 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
 
     #Cola total de cada uno de los flows
     Queue_total = List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic, Num_Queues, Streams_paths)
+    print("Queue_total  ",Queue_total)
     for key, value in Sort_Stream_Source_Destination.items():
         success = False
         queue_assignment = 1
-        print("-----------   value  -----------   ",value)
+        #print("-----------   value  -----------   ",value)
         while not success:
-            booleano = Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],Streams_paths_Dic[key],Streams_Period[key], Network_links_Dic)
+            booleano = Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],
+                Streams_paths_Dic[key],Streams_Period[key], Network_links_Dic,queue_assignment)
             #Result_offsets.append(Result_offsets_gen)
 
             if booleano == True:
                 #resultado del "algoritmo principal"
-                print("SOLO ENTRA SI ES TRUE")
+                #print("SOLO ENTRA SI ES TRUE")
                 success = True
             else:
-                Constraining_engress_port()
+                Constraining_engress_port(value)
                 #linea 12 
                 queue_assignment += 1
                 #Ver si aun queda cola disponible
@@ -59,27 +61,28 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
                     #print("cuenta  ", queue_assignment)
                     success = True
     #return Result_offsets
+    #print("flexibility_solution ",flexibility_solution)
 
 
-
-def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_Period, Network_links_Dic):
+def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_Period, Network_links_Dic,
+    queue_assignment):
     #Definir uns estrucutre que enlace 
     #ENLACE(STEAMPATHS[A],STREAMPATHS[B])- (LOWERBOUND,UPPERBOUND)
-    print("---------------------------------------------------------------------------------------------------")
-    print("Streams_Period  ", Streams_Period)
-    print("Num_of_Frames  ",Num_of_Frames)
-    print("Streams_paths   ",Streams_paths)
+    #print("---------------------------------------------------------------------------------------------------")
+    #print("Streams_Period  ", Streams_Period)
+    #print("Num_of_Frames  ",Num_of_Frames)
+    #print("Streams_paths   ",Streams_paths)
     
 
     for frame in range(Num_of_Frames): #tramas de cada link
         frame = frame + 1
-        print("")
-        print("Frames  ",frame)
+        #print("")
+        #print("Frames  ",frame)
 
         #BOUND_DIC  generamos una lsita con el lower y el upper bound
         lower_bound = 0.0
         Bound_dic = (lower_bound, Streams_Period)
-        print("Bound_dic   ",Bound_dic)
+        #print("Bound_dic   ",Bound_dic)
         
 
         #LINK, bus queda del link, del link de revivo y del envio
@@ -92,29 +95,31 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
         
         contador=1
         while contador < len(Streams_paths):
-            print("")
+            #print("")
            
             link_anterior = (Streams_paths[a-1],Streams_paths[b-1])
             lower_bound = Lower_bound(frame, send_link, link, link_anterior)
             Bound_dic = (lower_bound, Bound_dic[1])
-            print("Bound_dic   ",Bound_dic)
+            #print("Bound_dic   ",Bound_dic)
 
             tiempo = Earliest_offset  (link,Bound_dic)
-            print("tiempo schedule flow  ",tiempo)
+            #print("tiempo schedule flow  ",tiempo)
             #MATRIX OFFSET, añadir valores
             #no se rellena correctamente 
             if flexibility_solution.get(link) is None:
                 flexibility_solution[link] = [tiempo]
+                
             else:
                 flexibility_solution[link].append(tiempo)
-            print("flexibility_solution ",flexibility_solution)
+            
+            #print("flexibility_solution ",flexibility_solution)
 
             #FRAME_INDICATOR 
             #print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
             #print("link   ",link, "   rever   ",tuple(reversed(link)))
             #@¶print("Network_links_Dic   ",Network_links_Dic)
             key_link = next((key for key, value in Network_links_Dic.items() if value == link or value == tuple(reversed(link))),None)
-            frame_indicator = ("S", key, "L", key_link, "F", frame)
+            frame_indicator = ("S", key, "L", key_link, "F", frame, "Q", queue_assignment)
             #print("frane_indicator ", frame_indicator)
 
             helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
@@ -125,38 +130,38 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
             Clean_offsets_collector.append(clean_offset)
 
 
-            print("Result offset  ",Result_offsets)
+            #print("Result offset  ",Result_offsets)
 
             #print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
 
             if tiempo[-1] == float('inf'):
                 return False
             elif tiempo[-1] <= Streams_Period:
-                print("Tiempo elif  ",tiempo)
+                #print("Tiempo elif  ",tiempo)
                 #linea 11
                 Bound_dic = tiempo
-                print("Bound_dic",Bound_dic)
+                #print("Bound_dic",Bound_dic)
 
                 a += 1
                 b += 1
                 if b >= len(Streams_paths):
-                    break
+                    return True
                 next_link = (Streams_paths[a], Streams_paths[b])
-                print("next link ",next_link)
+                #print("next link ",next_link)
                 link = next_link
                 #linea 12 
                 upper_boud_posterior = Latest_queue_available_time(link, Streams_Period)
-                print("Latest queue available time", upper_boud_posterior)
+                #print("Latest queue available time", upper_boud_posterior)
 
             else:
-                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 #linea 15
                 #lower_bound_anterior = #EARLIEST QUEUE AVAILABLE TIME
                 a -= 1
                 b -= 1
                 link = [Streams_paths[a], Streams_paths[b]] 
             contador +=1
-    return False#, Result_offsets 
+    return False #, Result_offsets 
 
 def Earliest_offset(link, Bound_dic):
     #EARLIEST OFFSET
@@ -164,49 +169,50 @@ def Earliest_offset(link, Bound_dic):
     if flexibility_solution.get(link)is not None:
         #print("len ",len(flexibility_solution[link]))
         if len(flexibility_solution[link]) == 1:
-            print("value  ",flexibility_solution[link][-1])
+            #print("value  ",flexibility_solution[link][-1])
             tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+100)
         else:
-            print("value  ",flexibility_solution[link][-1])
+            #print("value  ",flexibility_solution[link][-1])
             tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+100)
-        print("existe",tiempo)
+        #print("existe",tiempo)
     else:
         tiempo = (Bound_dic[0],Bound_dic[0]+100)
-        print("no existe ",tiempo)
+        #print("no existe ",tiempo)
     return tiempo
 
 def Latest_queue_available_time(link, Streams_Period):
     if flexibility_solution.get(link)is not None:
         tiempo = flexibility_solution[link][-1][-1]
-        print("existe ",tiempo)
+        #print("existe ",tiempo)
     else:
         tiempo = Streams_Period
-        print("no existe ",tiempo)
+        #print("no existe ",tiempo)
     return tiempo
 
 def Lower_bound(frame, send_link, link, link_anterior):
    #print("link anterior  ",link_anterior, "frame   ",frame)
     if frame == 1 and link == send_link:
-        print("1-lower_bound ",0.0)
+        #print("1-lower_bound ",0.0)
         return 0.0
     elif frame >= 2  and link == send_link:
         #offset periodico --> producido anterior  +    #duracion de transmision ( 100 )
-        print("2-lower_bound ",flexibility_solution[link][-1][0]+100)
+        #print("2-lower_bound ",flexibility_solution[link][-1][0]+100)
         return flexibility_solution[link][-1][0] + 100 
     elif frame == 1 and link != send_link:
         #print(flexibility_solution[link_anterior][frame-1])
-        print("3-lower_bound ",flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8)
+        #print("3-lower_bound ",flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8)
         return flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8
     else:
         a = flexibility_solution[link][-1][0] + 100
         b = flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8
-        print("4-lower_bound ",a,b, max(a,b))
+        #print("4-lower_bound ",a,b, max(a,b))
         return max(a,b)
 
 #Listar colas asociadas a la clave del link
 def List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic, Num_Queues, Streams_paths):
     #print("Stream_Source_Destination_Dic ",Sort_Stream_Source_Destination)
-    #print("other",Network_links, Num_Queues, Streams_paths)
+    #print("Network_links   ", Network_links_Dic, "Num_Queues",  Num_Queues, "Streams_paths", Streams_paths)
+    #print("Queue_Link_Dic  ",Queue_Link_Dic)
     Queue_total = {}
 
     for vector in Streams_paths:
@@ -220,11 +226,12 @@ def List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic
                         Queue_total[key] = (valor[1])
     
     #print(Queue_total)
+    Queue_total = {0: 2, 1: 2, 2: 2, 3: 2}
     return Queue_total
 
 #ordenar los flows dependiendo de las reglas 
 def Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size):
-    print(Streams_size)
+    #print(Streams_size)
     #Generate a diccionary  generar un diccionario del stream source destination para asi mantener al informcaion 
     Stream_Source_Destination_Dic = {key: value for key, value in enumerate(Stream_Source_Destination)}
     #Generate a diccionaty with the list Stream_size
@@ -253,10 +260,10 @@ def Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Strea
 
     return Sort_Stream_Source_Destination
 
-def Constraining_engress_port():
+def Constraining_engress_port(value):
     #"bloquear value   " entre ello lo que hay que hacer
     #el eliminar lo generado en   --flexibility_solution--
-    print("NO se encontro solucion  ", flexibility_solution)
+    #print("NO se encontro solucion  ", flexibility_solution, "   value   ", value)
     del flexibility_solution[value]
 
 
@@ -269,7 +276,7 @@ class Clase_test :
 
         self.model.Links = Set(initialize = frozenset(range(len(Network_links)))) # Links Ids
         self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=1)
-
+        #print("num queues  ",self.model.Num_Queues)
         self.model.Frames = Set(initialize= frozenset(range(Max_frames))) # Maximum number of streams
 
         ### This part is the creation of the instance in the ilp system

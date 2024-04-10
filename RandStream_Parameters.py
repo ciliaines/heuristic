@@ -32,15 +32,15 @@ def Random_Stream_size_and_period_generator(Number_of_Streams):
     Deathline_Stream = {}
     for i in range(len(type_selector)) :
         if type_selector[i] == 1: # Audio
-            Streams_size.append(100)
+            Streams_size.append(90)
             Streams_Period[(i)] = 600
             Deathline_Stream[(i)] = 600
         if type_selector[i] == 2: # Video
-            Streams_size.append(100)
+            Streams_size.append(90)
             Streams_Period[(i)] = 300
             Deathline_Stream[(i)] = 1200
         if type_selector[i] == 3: # Control
-            Streams_size.append(3*100)
+            Streams_size.append(90)
             Streams_Period[(i)] = 600
             Deathline_Stream[(i)] = 1200
         print(type_selector[i],Streams_Period[(i)])

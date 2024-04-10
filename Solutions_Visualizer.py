@@ -31,18 +31,18 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
     #print("############### This is the set of latencies ######################")
     Results_latencies = []
     for stream in instance.Streams:
-        #print("The latency of Stream", stream, "is",instance.Latency[stream].value)
+        print("The latency of Stream", stream, "is",instance.Latency[stream].value)
+        print("The lower latency of Stream", stream, "is",instance.Lower_Latency[stream].value)
         Results_latencies.append(instance.Latency[stream].value)
 
-    #print("############### This is the set of queues ######################")
+    print("############### This is the set of queues ######################")
     for link in instance.Links:
         print("The number of queues of link ", link, "is",instance.Num_Queues[link].value)
-        print("heloo ",link)
 
-    #print("############### This is the set of queues per stream and link######################")
-#    for stream in instance.Streams:
-#        for link in instance.Links:
-            #print("The number of queues of Link",link , "Stream" , stream, "is", instance.Queue_Assignment[stream, link].value)
+    print("############### This is the set of queues per stream and link######################")
+    for stream in instance.Streams:
+        for link in instance.Links:
+            print("The number of queues of Link",link , "Stream" , stream, "is", instance.Queue_Assignment[stream, link].value)
 
     #print("############### This is the set of auxiliar queues variables######################")
 #    for stream in instance.Streams :
@@ -180,6 +180,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         # Random Streams parameters
         #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Random_Stream_size_and_period_generator(Number_of_Streams)
         Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
+        print("Streams_size  ", Streams_size)
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
@@ -187,6 +188,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
         Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
         Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
+        print("Frame_Duration  ",Frame_Duration)
         Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
         unused_links = unused_links_generator(Network_links, Link_order_Descriptor)
 
