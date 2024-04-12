@@ -16,6 +16,8 @@ Clean_offsets_collector = []
 Feasibility_indicator = 0
 flexibility_solution = {}
 queue_solution ={}
+tiempo_duracion = 100
+error = 0
 
 def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, 
     Links, Num_Queues, Streams_paths, Num_of_Frames):
@@ -37,10 +39,10 @@ def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period
 
     #Cola total de cada uno de los flows
     Queue_total = List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic, Num_Queues, Streams_paths)
-    print("Queue_total  ",Queue_total)
+    #print("Queue_total  ",Queue_total)
     for key, value in Sort_Stream_Source_Destination.items():
         success = False
-        queue_assignment = 1
+        queue_assignment = 0
         #print("-----------   value  -----------   ",value)
         while not success:
             booleano = Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],
@@ -119,8 +121,14 @@ def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_P
             #print("link   ",link, "   rever   ",tuple(reversed(link)))
             #@¶print("Network_links_Dic   ",Network_links_Dic)
             key_link = next((key for key, value in Network_links_Dic.items() if value == link or value == tuple(reversed(link))),None)
-            frame_indicator = ("S", key, "L", key_link, "F", frame, "Q", queue_assignment)
+            frame_indicator = ("S", key, "L", key_link, "F", frame-1, "Q", queue_assignment)
             #print("frane_indicator ", frame_indicator)
+            print("############### This is the set of offsets ######################")
+            print("The offset of stream", key, "link", key_link, "frame", frame, "is",tiempo[0])
+
+            print("############### This is the set of queues ######################")
+            print("The number of queues of link ", key_link, "is",queue_assignment)
+
 
             helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
             clean_offset = { "Task" :str(frame_indicator), "Start": tiempo[0] }
@@ -170,13 +178,13 @@ def Earliest_offset(link, Bound_dic):
         #print("len ",len(flexibility_solution[link]))
         if len(flexibility_solution[link]) == 1:
             #print("value  ",flexibility_solution[link][-1])
-            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+100)
+            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+tiempo_duracion)
         else:
             #print("value  ",flexibility_solution[link][-1])
-            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+100)
+            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+tiempo_duracion)
         #print("existe",tiempo)
     else:
-        tiempo = (Bound_dic[0],Bound_dic[0]+100)
+        tiempo = (Bound_dic[0],Bound_dic[0]+tiempo_duracion)
         #print("no existe ",tiempo)
     return tiempo
 
@@ -197,14 +205,14 @@ def Lower_bound(frame, send_link, link, link_anterior):
     elif frame >= 2  and link == send_link:
         #offset periodico --> producido anterior  +    #duracion de transmision ( 100 )
         #print("2-lower_bound ",flexibility_solution[link][-1][0]+100)
-        return flexibility_solution[link][-1][0] + 100 
+        return flexibility_solution[link][-1][0] + tiempo_duracion 
     elif frame == 1 and link != send_link:
         #print(flexibility_solution[link_anterior][frame-1])
         #print("3-lower_bound ",flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8)
-        return flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8
+        return flexibility_solution[link_anterior][frame-1][0] + tiempo_duracion +  error
     else:
-        a = flexibility_solution[link][-1][0] + 100
-        b = flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8
+        a = flexibility_solution[link][-1][0] + tiempo_duracion
+        b = flexibility_solution[link_anterior][frame-1][0] + tiempo_duracion +  error
         #print("4-lower_bound ",a,b, max(a,b))
         return max(a,b)
 

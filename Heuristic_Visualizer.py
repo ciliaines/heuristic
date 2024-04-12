@@ -13,16 +13,14 @@ import time
 from read import *
 
 
-def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
-    print("Result_offsets       ",Result_offsets)
+def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period):
+    #print("Result_offsets       ",Result_offsets)
     #print("Repetitions         "+str(Repetitions))
     #print("Streams_Period      "+str(Streams_Period))
 
     data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
     Repetitions = [repetition + 1 for repetition in Repetitions]
-
     color=['black', 'red', 'green', 'blue', 'cyan', 'magenta', 'fuchsia', 'yellow', 'grey', 'orange', 'pink']
-
     # This set of code is for generating the repetitions values in the dataset
     #For printing the full gant Chart
     New_offsets = []
@@ -116,47 +114,42 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
-        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
+        ################################################################
+
+        #Djikstra scheduler
         network = Network_Topology(Adjacency_Matrix) 
         all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
         Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
-
+        Streams_links_paths = Streams_links_paths_generator(Streams_paths)
+        Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
+        ################################################################
+        
+        # Random Streams parameters
+        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
+        Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
+        ################################################################
+        
+        # Preprocessing
+        Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
+        Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
+        Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
+        Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
 
-
+        ################################################################
         scheduler = Clase_test(Network_links, Max_frames)
         instance, results = scheduler.instance, scheduler.results
 
-        #Num_of_Frames = [1,1,1]
-        #print("---frames---",Num_of_Frames,"---",Max_frames)
-        #Streams_size=[10,20,30]
-
-        Hyperperiod = Hyperperiod_generator(Streams_Period_list)
-
-        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
-
-
-
-        Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
-        Streams_links_paths = Streams_links_paths_generator(Streams_paths)
-        Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
-
-        Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
-        Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
-        Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
-
-        Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
-        #print("Frame_duration ", Frame_Duration)
-
         Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, instance.Links, 
             instance.Num_Queues, Streams_paths, Num_of_Frames)
-        #Result_offsets, Repetitions, Streams_Period = Evaluation_function_generator(2,1,1)
-
-        #print("Result_offsets vis   ", Result_offsets)
+        
         ################################################################
-        df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
 
+        ################################################################
+        #ILP_results_visualizer
+        df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
         information_generator(Repetitions, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
+
 
         Results_latencies = []
         for stream in instance.Streams:

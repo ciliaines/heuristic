@@ -12,7 +12,7 @@ import time
 from read import *
 
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
-    #print("############### This is the set of offsets ######################")
+    print("############### This is the set of offsets ######################")
     Result_offsets = []
     Clean_offsets_collector = []
     Feasibility_indicator = 0
@@ -21,17 +21,16 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
             for k in instance.Frames:
                 if Model_Descriptor_vector [i][k][j] :
                     print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
-                    frame_indicator = ("S", i, "L", j, "F", k)
+                    frame_indicator = ("S", i, "L", j, "F", k, "Q",instance.Queue_Assignment[i, j].value)
                     helper = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value, "Finish" : (instance.Frame_Offset[i,j,k].value +12), "Color" : j }
                     clean_offset = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value }
                     Result_offsets.append(helper)
                     Clean_offsets_collector.append(clean_offset)
                     if instance.Frame_Offset[i,j,k].value != 1 :
                         Feasibility_indicator = Feasibility_indicator + 1         
-    #print("############### This is the set of latencies ######################")
+    print("############### This is the set of latencies ######################")
     Results_latencies = []
     for stream in instance.Streams:
-        print("The latency of Stream", stream, "is",instance.Latency[stream].value)
         print("The lower latency of Stream", stream, "is",instance.Lower_Latency[stream].value)
         Results_latencies.append(instance.Latency[stream].value)
 
@@ -61,10 +60,6 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
 
 
 def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
-    #print("Result_offsets       "+str(Result_offsets))
-    #print("Repetitions         "+str(Repetitions))
-    #print("Streams_Period      "+str(Streams_Period))
-
     data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
     Repetitions = [repetition + 1 for repetition in Repetitions]
 
@@ -75,12 +70,9 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
     New_offsets = []
     stream_index = 0
     for repetition in Repetitions :
-        #print("repetition   "+str(repetition))
         for frame in Result_offsets:
-            #print("frame   "+str(frame))
             substring = "'S', " +  str(stream_index)
             if substring in frame["Task"] :
-                #print("substring   "+substring)
                 for i in range(int(repetition)) :
                     Repeated_Stream = {'Task' : frame["Task"] , 'Start' : frame["Start"] + Streams_Period[stream_index]*(i), 'Color' : color[frame["Color"]]}
                     New_offsets.append(Repeated_Stream)
@@ -89,7 +81,7 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
     Result_offsets = New_offsets
     data = [[frame['Task'], frame['Start'], frame['Color']] for frame in New_offsets]
     df = pd.DataFrame(data, columns = ['Process_Name', 'Start', 'Color'])
-    #rint("df.Process_Name     "+df.Process_Name)
+    #print("df.Process_Name     "+df.Process_Name)
 
     # This is for printing the gant Chart 
     plt.subplot(212)
@@ -105,11 +97,6 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
 
 
 def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths):
-    print("Num_of_Frames      " +str(Num_of_Frames))
-    #print("Streams_Period     "+str(Streams_Period))
-    #print("Link_order_Descriptor       "+str (Link_order_Descriptor))
-    #print("Network_links          "+str(Network_links))
-    #print("Streams_links_paths       "+str(Streams_links_paths))
     plt.subplot(222)
     plt.text(0.1, 0.9, "Network-links: \n" + str(Network_links), bbox=dict(facecolor='red', alpha=0.5))
     plt.text(0.1, 0.7, "Frames per stream: \n" + str(Num_of_Frames), bbox=dict(facecolor='red', alpha=0.5))
@@ -144,8 +131,6 @@ def dataframe_printer(instance, Clean_offsets, Results_latencies, Feasibility_in
         "Latencies" : Results_latencies,
         "Feasibility" : Feasibility
     }
-
-
     #print(Full_scheduled_data)
     ### This will store the results into a txt for further usage
     with open('results.txt', 'a') as f :
@@ -165,38 +150,31 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         #Stream_Source_Destination = Flows_generator(Number_of_Streams, Number_of_edges) 
         ####LEER DEL FICHERO
         Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
-        #print("Stream_Source_Destination   "+str(Stream_Source_Destination))
         ################################################################
+        
         #Djikstra scheduler
         network = Network_Topology(Adjacency_Matrix) # Using the Network Topology class
-        #print("Network_Topology  network   "+str(network))
         all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
-        #print("Djikstra  all paths matrix    "+str(all_paths_matrix))
-
         Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
         Streams_links_paths = Streams_links_paths_generator(Streams_paths)
         Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
         ################################################################
+        
         # Random Streams parameters
         #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Random_Stream_size_and_period_generator(Number_of_Streams)
         Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
-        print("Streams_size  ", Streams_size)
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
+        
         # Preprocessing
         Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
         Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
         Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
-        print("Frame_Duration  ",Frame_Duration)
         Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
         unused_links = unused_links_generator(Network_links, Link_order_Descriptor)
 
         ################################################################
-        #SUSTITUIR ESTE APARTADO 
-        ################################################################
-
-
 
         scheduler = ILP_Raagard_solver(Number_of_Streams, Network_links, \
                         Link_order_Descriptor, \
@@ -205,9 +183,9 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                         Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration)
         instance, results = scheduler.instance, scheduler.results
         final_time = time.time()
+        
         ################################################################
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies  = ILP_results_visualizer(instance, Model_Descriptor_vector)
-        print("Result_offsets", Result_offsets)
         df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
         information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
         dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,

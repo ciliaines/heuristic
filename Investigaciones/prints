@@ -1,194 +1,43 @@
-model  unknown  stream  0  frame  0  link  2  stream_2  1  frame_2  0  repetition  0  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  Frame_Offset[0,2,0]  <=  Frame_Offset[1,1,0] + 9999999999*(w[0,0,1,0,2] + Aux_Same_Queue[0,2,1] + Aux_Same_Queue[1,2,0])
+solution 41  Frame_Offset[2,2,0]  <=  Frame_Offset[1,1,0] + 9999999999*(w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
+solution 41  Frame_Offset[2,2,0]  <=  2500 + Frame_Offset[1,1,0] + 9999999999*(w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
+solution 41  2500 + Frame_Offset[2,2,0]  <=  Frame_Offset[1,1,0] + 9999999999*(w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
+solution 41  2500 + Frame_Offset[2,2,0]  <=  2500 + Frame_Offset[1,1,0] + 9999999999*(w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
+solution 42  Frame_Offset[1,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(1 - w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
+solution 42  2500 + Frame_Offset[1,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(1 - w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
+solution 42  Frame_Offset[1,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(1 - w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
+solution 42  2500 + Frame_Offset[1,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(1 - w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
 
 
-model  unknown  stream  0  frame  0  link  2  stream_2  1  frame_2  0  repetition  0  repetition_2  1
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   1
-result if  True
-resturn  Frame_Offset[0,2,0]  <=  2500 + Frame_Offset[1,1,0] + 9999999999*(w[0,0,1,0,2] + Aux_Same_Queue[0,2,1] + Aux_Same_Queue[1,2,0])
-model  unknown  stream  0  frame  0  link  2  stream_2  2  frame_2  0  repetition  0  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  Frame_Offset[0,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(w[0,0,2,0,2] + Aux_Same_Queue[0,2,2] + Aux_Same_Queue[2,2,0])
-model  unknown  stream  0  frame  0  link  2  stream_2  2  frame_2  0  repetition  0  repetition_2  1
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   1
-result if  True
-resturn  Frame_Offset[0,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(w[0,0,2,0,2] + Aux_Same_Queue[0,2,2] + Aux_Same_Queue[2,2,0])
-model  unknown  stream  1  frame  0  link  2  stream_2  0  frame_2  0  repetition  0  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  Frame_Offset[1,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(w[1,0,0,0,2] + Aux_Same_Queue[1,2,0] + Aux_Same_Queue[0,2,1])
-model  unknown  stream  1  frame  0  link  2  stream_2  0  frame_2  0  repetition  1  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    1
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  2500 + Frame_Offset[1,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(w[1,0,0,0,2] + Aux_Same_Queue[1,2,0] + Aux_Same_Queue[0,2,1])
-model  unknown  stream  1  frame  0  link  2  stream_2  2  frame_2  0  repetition  0  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  Frame_Offset[1,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
-model  unknown  stream  1  frame  0  link  2  stream_2  2  frame_2  0  repetition  0  repetition_2  1
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   1
-result if  True
-resturn  Frame_Offset[1,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
-model  unknown  stream  1  frame  0  link  2  stream_2  2  frame_2  0  repetition  1  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    1
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  2500 + Frame_Offset[1,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
-model  unknown  stream  1  frame  0  link  2  stream_2  2  frame_2  0  repetition  1  repetition_2  1
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    1
-self.Repetitions_Descriptor[stream_2][repetition_2]   1
-result if  True
-resturn  2500 + Frame_Offset[1,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
-model  unknown  stream  2  frame  0  link  2  stream_2  0  frame_2  0  repetition  0  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  Frame_Offset[2,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(w[2,0,0,0,2] + Aux_Same_Queue[2,2,0] + Aux_Same_Queue[0,2,2])
-model  unknown  stream  2  frame  0  link  2  stream_2  0  frame_2  0  repetition  1  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    1
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  2500 + Frame_Offset[2,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(w[2,0,0,0,2] + Aux_Same_Queue[2,2,0] + Aux_Same_Queue[0,2,2])
-model  unknown  stream  2  frame  0  link  2  stream_2  1  frame_2  0  repetition  0  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  Frame_Offset[2,2,0]  <=  Frame_Offset[1,1,0] + 9999999999*(w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
-model  unknown  stream  2  frame  0  link  2  stream_2  1  frame_2  0  repetition  0  repetition_2  1
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    0
-self.Repetitions_Descriptor[stream_2][repetition_2]   1
-result if  True
-resturn  Frame_Offset[2,2,0]  <=  2500 + Frame_Offset[1,1,0] + 9999999999*(w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
-model  unknown  stream  2  frame  0  link  2  stream_2  1  frame_2  0  repetition  1  repetition_2  0
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    1
-self.Repetitions_Descriptor[stream_2][repetition_2]   0
-result if  True
-resturn  2500 + Frame_Offset[2,2,0]  <=  Frame_Offset[1,1,0] + 9999999999*(w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
-model  unknown  stream  2  frame  0  link  2  stream_2  1  frame_2  0  repetition  1  repetition_2  1
-self.Model_Descriptor_vector  [[[0, 0, 1, 1, 0]], [[0, 1, 1, 0, 0]], [[0, 0, 1, 0, 1]]]
-frame_exists 1   2
-frame_exists 2  2
-self.Model_Descriptor[(stream, frame, link)]  1
-self.Model_Descriptor[(stream_2, frame_2, link)]  1
-self.Link_order_Descriptor[stream].index(link)   1
-self.Link_order_Descriptor[stream_2].index(link)   1
-self.Repetitions_Descriptor[stream][repetition]    1
-self.Repetitions_Descriptor[stream_2][repetition_2]   1
-result if  True
-resturn  2500 + Frame_Offset[2,2,0]  <=  2500 + Frame_Offset[1,1,0] + 9999999999*(w[2,0,1,0,2] + Aux_Same_Queue[2,2,1] + Aux_Same_Queue[1,2,2])
+
+
+solution 42  Frame_Offset[1,1,0]  <=  Frame_Offset[2,2,0] + 9999999999*(1 - w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
+solution 42  2500 + Frame_Offset[1,1,0]  <=  Frame_Offset[2,2,0] + 9999999999*(1 - w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
+solution 42  Frame_Offset[1,1,0]  <=  2500 + Frame_Offset[2,2,0] + 9999999999*(1 - w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
+solution 42  2500 + Frame_Offset[1,1,0]  <=  2500 + Frame_Offset[2,2,0] + 9999999999*(1 - w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
+
+solution 41  Frame_Offset[0,2,0]  <=  Frame_Offset[1,1,0] + 9999999999*(w[0,0,1,0,2] + Aux_Same_Queue[0,2,1] + Aux_Same_Queue[1,2,0])
+solution 41  Frame_Offset[0,2,0]  <=  2500 + Frame_Offset[1,1,0] + 9999999999*(w[0,0,1,0,2] + Aux_Same_Queue[0,2,1] + Aux_Same_Queue[1,2,0])
+solution 42  Frame_Offset[1,1,0]  <=  Frame_Offset[0,2,0] + 9999999999*(1 - w[1,0,0,0,2] + Aux_Same_Queue[1,2,0] + Aux_Same_Queue[0,2,1])
+solution 42  2500 + Frame_Offset[1,1,0]  <=  Frame_Offset[0,2,0] + 9999999999*(1 - w[1,0,0,0,2] + Aux_Same_Queue[1,2,0] + Aux_Same_Queue[0,2,1])
+i 0,2 j 1,1   --> w = 0
+
+solution 41  Frame_Offset[0,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(w[0,0,2,0,2] + Aux_Same_Queue[0,2,2] + Aux_Same_Queue[2,2,0])
+solution 41  Frame_Offset[0,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(w[0,0,2,0,2] + Aux_Same_Queue[0,2,2] + Aux_Same_Queue[2,2,0])
+solution 42  Frame_Offset[0,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(1 - w[2,0,0,0,2] + Aux_Same_Queue[2,2,0] + Aux_Same_Queue[0,2,2])
+solution 42  Frame_Offset[0,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(1 - w[2,0,0,0,2] + Aux_Same_Queue[2,2,0] + Aux_Same_Queue[0,2,2])
+
+solution 41  Frame_Offset[1,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(w[1,0,0,0,2] + Aux_Same_Queue[1,2,0] + Aux_Same_Queue[0,2,1])
+solution 41  2500 + Frame_Offset[1,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(w[1,0,0,0,2] + Aux_Same_Queue[1,2,0] + Aux_Same_Queue[0,2,1])
+solution 42  Frame_Offset[1,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(1 - w[0,0,1,0,2] + Aux_Same_Queue[0,2,1] + Aux_Same_Queue[1,2,0])
+solution 42  2500 + Frame_Offset[1,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(1 - w[0,0,1,0,2] + Aux_Same_Queue[0,2,1] + Aux_Same_Queue[1,2,0])
+
+solution 41  Frame_Offset[1,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
+solution 41  Frame_Offset[1,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
+solution 41  2500 + Frame_Offset[1,2,0]  <=  Frame_Offset[2,4,0] + 9999999999*(w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
+solution 41  2500 + Frame_Offset[1,2,0]  <=  2500 + Frame_Offset[2,4,0] + 9999999999*(w[1,0,2,0,2] + Aux_Same_Queue[1,2,2] + Aux_Same_Queue[2,2,1])
+
+
+solution 41  Frame_Offset[2,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(w[2,0,0,0,2] + Aux_Same_Queue[2,2,0] + Aux_Same_Queue[0,2,2])
+solution 41  2500 + Frame_Offset[2,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(w[2,0,0,0,2] + Aux_Same_Queue[2,2,0] + Aux_Same_Queue[0,2,2])
+solution 42  Frame_Offset[2,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(1 - w[0,0,2,0,2] + Aux_Same_Queue[0,2,2] + Aux_Same_Queue[2,2,0])
+solution 42  2500 + Frame_Offset[2,2,0]  <=  Frame_Offset[0,3,0] + 9999999999*(1 - w[0,0,2,0,2] + Aux_Same_Queue[0,2,2] + Aux_Same_Queue[2,2,0])
