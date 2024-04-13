@@ -154,3 +154,33 @@ def Link_order_Descriptor_generator(Streams_links_paths, Network_links) :
                 link_order_helper.append(Network_links.index(tuple([link[1],link[0]])))
         Link_order_Descriptor.append(link_order_helper)
     return Link_order_Descriptor
+
+def Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size):
+    #print(Streams_size)
+    #Generate a diccionary generar un diccionario del stream source destination para asi mantener al informcaion
+    Stream_Source_Destination_Dic = {key: value for key, value in enumerate(Stream_Source_Destination)}
+    #Generate a diccionaty with the list Stream_size
+    Streams_Size_Dic = {key: value for key, value in enumerate(Streams_size)}
+
+    #Combine the keys of all three dictionaries into a list
+    keys = sorted(set(Deathline_Stream.keys()) | set(Streams_Period.keys()) | set(Streams_Size_Dic.keys()))
+    #Defines a function to sort the keys based on Deathline_Stream, Streams_Period and Streams_Size_Dic
+    def sort_keys(key):
+        value1 = Deathline_Stream.get(key, float('inf'))
+        value2 = Streams_Period.get(key, float('inf'))
+        value3 = Streams_Size_Dic.get(key, float('-inf'))
+        #Sort first by Deathline_Stream, then by Streams_Period and finally by Streams_Size_Dic
+        return (value1, value2, -value3)
+
+    # Shot keys less to high
+    sort_keys = sorted(keys, key=sort_keys)
+    #print("SORT KEYS",sort_keys)
+    # sort deadthline line dictory short
+    Sort_Deathline_Stream = {key: Deathline_Stream[key] for key in sort_keys}
+    # keys list
+    lista_de_claves = list(Sort_Deathline_Stream.keys())
+    #Ordenar el diccionario segun la lista de las claves
+    Sort_Stream_Source_Destination = {key: Stream_Source_Destination_Dic[key] for key in lista_de_claves}
+    Link_order_Descriptor = list(Sort_Stream_Source_Destination.values())
+
+    return Link_order_Descriptor, Sort_Stream_Source_Destination

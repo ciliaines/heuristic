@@ -1,11 +1,4 @@
 ##################################### Heuristic Strategy starts here #####################################
-#
-
-from read import *
-from Djikstra_Path_Calculator import *
-from ILP_Generator import *
-from RandStream_Parameters import *
-from Preprocessing import *
 
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
@@ -15,161 +8,152 @@ Result_offsets = []
 Clean_offsets_collector = []
 Feasibility_indicator = 0
 flexibility_solution = {}
-queue_solution ={}
 tiempo_duracion = 100
-error = 0
 
-def Greedy_Heuristic(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size, Network_links, 
-    Links, Num_Queues, Streams_paths, Num_of_Frames):
 
+
+class Heuristic_class :
+    def __init__(self, Number_of_Streams, Network_links, \
+                Link_order_Descriptor, \
+                Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
+                Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
+                Repetitions, Repetitions_Descriptor, Frame_Duration, \
+                Stream_Source_Destination, Streams_size, Streams_paths, Sort_Stream_Source_Destination):
+
+        self.Number_of_Streams = Number_of_Streams
+        self.Network_links = Network_links
+        self.Link_order_Descriptor = Link_order_Descriptor
+        self.Streams_Period = Streams_Period
+        self.Hyperperiod = Hyperperiod
+        self.Frames_per_Stream = Frames_per_Stream 
+        self.Max_frames = Max_frames 
+        self.Num_of_Frames = Num_of_Frames
+        self.Model_Descriptor = Model_Descriptor
+        self.Model_Descriptor_vector = Model_Descriptor_vector
+        self.Deathline_Stream = Deathline_Stream
+        self.Repetitions = Repetitions
+        self.Repetitions_Descriptor = Repetitions_Descriptor
+        self.Frame_Duration = Frame_Duration
+        self.Stream_Source_Destination = Stream_Source_Destination
+        self.Streams_size = Streams_size
+        self.Streams_paths = Streams_paths
+        self.Sort_Stream_Source_Destination = Sort_Stream_Source_Destination
+        #print("self  ",self.Number_of_Streams, self.Network_links, self.Link_order_Descriptor, self.Streams_Period, self.Hyperperiod)
+        #print("2",self.Frames_per_Stream,self.Max_frames, self.Num_of_Frames,self.Model_Descriptor,self.Model_Descriptor_vector)
+        #print("3",self.Deathline_Stream,self.Repetitions, self.Repetitions_Descriptor,self.Frame_Duration)
+        #print("4",self.Stream_Source_Destination,self.Streams_size,self.Streams_paths, self.Sort_Stream_Source_Destination)
+
+        self.model = AbstractModel()
+        self.model.Streams = Set(initialize= range(self.Number_of_Streams)) 
+        self.model.Repetitions = Set(initialize= range(int(max(Repetitions) + 1))) # This is the maximum number of Repetitions
+        self.model.Frames = Set(initialize= frozenset(range(Max_frames))) # Maximum number of streams = [1,1,1]
+        self.model.Links = Set(initialize = frozenset(range(len(Network_links)))) # Links Ids
+
+        # Parameters
+        self.model.Hyperperiod = Param(initialize=Hyperperiod)
+        self.model.Max_Syn_Error = Param(initialize=0)
+        self.model.Stream_Source_Destination = self.Stream_Source_Destination
+        self.model.Deathline_Stream = self.Deathline_Stream
+        self.model.Streams_Period = self.Streams_Period
+        self.model.Streams_size = self.Streams_size
+        #self.model.Network_links = self.Network_links
+        self.model.Streams_paths = self.Streams_paths
+        #self.model.Num_of_Frames = self.Num_of_Frames
+        self.model.Sort_Stream_Source_Destination = self.Sort_Stream_Source_Destination
+
+        self.model.Num_of_Frames_Dic = {key: value for key, value in enumerate(self.Num_of_Frames)}
+        self.model.Streams_paths_Dic = {key: value for key, value in enumerate(self.Streams_paths)}
+        self.model.Network_links_Dic = {key: value for key, value in enumerate(self.Network_links)}
+        self.model.Stream_Source_Destination_Dic = {key: value for key, value in enumerate(self.Stream_Source_Destination)}
+        self.model.Streams_Size_Dic = {key: value for key, value in enumerate(self.Streams_size)}
+        # Variables
+        self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=1)
+        self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
+        self.model.Queue_Link_Dic = {}
+        #self.model.Queue_Link_Dic = {key: (self.model.Network_links_Dic[key], self.model.Num_Queues[key].value) for key in self.model.Network_links_Dic}
+        self.model.Queue_total = {0: 2, 1: 2, 2: 2, 3: 2}
+        self.model.Sort_Deathline_Stream = {}
+        self.model.Queue_Assignment = Var(self.model.Streams, self.model.Links, within=NonNegativeIntegers, initialize=0)
+        
+        ### This part is the creation of the instance in the ilp system
+        opt = SolverFactory('gurobi')
+        #opt = SolverFactory('gurobi', solver_io="python")
+        self.instance = self.model.create_instance()
+        self.results = opt.solve(self.instance)
+        self.instance.solutions.load_from(self.results)
+
+def Greedy_Heuristic(model):
     #Ordenar los flows para su tratamiento
-    Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
-    #print("SHORT STREAMS   ",Sort_Stream_Source_Destination)
-    #print("Streams_Period   ",Streams_Period)
-    Num_of_Frames_Dic = {key: value for key, value in enumerate(Num_of_Frames)}
-    #print("num of frames dic " ,Num_of_Frames_Dic)
-    Streams_paths_Dic = {key: value for key, value in enumerate(Streams_paths)}
-    #print("stream path  dic  ", Streams_paths_Dic)
-    
-    Network_links_Dic = {key: value for key, value in enumerate(Network_links)}
-    Queue_Link_Dic = {}
-    for key, value in Network_links_Dic.items():
-        Queue_Link_Dic[key] = (Network_links_Dic[key], Num_Queues[key].value)
-    #print("Queue_Link_Dic ",Queue_Link_Dic)
-
+    #Sort_flow(model)
+    for link, value in model.Network_links_Dic.items():
+        model.Queue_Link_Dic[link] = (model.Network_links_Dic[link], model.Num_Queues[link].value)
     #Cola total de cada uno de los flows
-    Queue_total = List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic, Num_Queues, Streams_paths)
-    #print("Queue_total  ",Queue_total)
-    for key, value in Sort_Stream_Source_Destination.items():
+    #model.Queue_total = List_queue(model)
+    for key_stream, value_stream in model.Sort_Stream_Source_Destination.items():
         success = False
-        queue_assignment = 0
-        #print("-----------   value  -----------   ",value)
         while not success:
-            booleano = Schedule_flow(Num_of_Frames_Dic[key], key, value, Deathline_Stream[key],
-                Streams_paths_Dic[key],Streams_Period[key], Network_links_Dic,queue_assignment)
-            #Result_offsets.append(Result_offsets_gen)
-
+            booleano ,link = Schedule_flow(key_stream, value_stream, model)
             if booleano == True:
-                #resultado del "algoritmo principal"
-                #print("SOLO ENTRA SI ES TRUE")
                 success = True
             else:
-                Constraining_engress_port(value)
-                #linea 12 
-                queue_assignment += 1
-                #Ver si aun queda cola disponible
-                if (queue_assignment > Queue_total[key]):
-                    #print("total cola  ", Queue_total[key])
-                    #print("cuenta  ", queue_assignment)
+                Constraining_engress_port(value_stream)
+                print("cuenta  ", str(model.Queue_Assignment[key_stream, link]))
+                model.Queue_Assignment[key_stream, link] = model.Queue_Assignment[key_stream, link] + 1
+                if (model.Queue_Assignment[key_stream, link] > model.Queue_total[key_stream]):
                     success = True
-    #return Result_offsets
-    #print("flexibility_solution ",flexibility_solution)
+            #print("cuenta  ", model.Queue_Assignment[key_stream, link])
+        #print("total cola  ", model.Queue_total[key_stream])
 
-
-def Schedule_flow(Num_of_Frames, key, value, Deathline, Streams_paths, Streams_Period, Network_links_Dic,
-    queue_assignment):
-    #Definir uns estrucutre que enlace 
-    #ENLACE(STEAMPATHS[A],STREAMPATHS[B])- (LOWERBOUND,UPPERBOUND)
-    #print("---------------------------------------------------------------------------------------------------")
-    #print("Streams_Period  ", Streams_Period)
-    #print("Num_of_Frames  ",Num_of_Frames)
-    #print("Streams_paths   ",Streams_paths)
-    
-
-    for frame in range(Num_of_Frames): #tramas de cada link
-        frame = frame + 1
-        #print("")
-        #print("Frames  ",frame)
-
+def Schedule_flow(key_stream, value_stream, model):
+    for frame in range(model.Num_of_Frames_Dic[key_stream]): #tramas de cada link
         #BOUND_DIC  generamos una lsita con el lower y el upper bound
         lower_bound = 0.0
-        Bound_dic = (lower_bound, Streams_Period)
-        #print("Bound_dic   ",Bound_dic)
-        
-
+        Bound_dic = (lower_bound, model.Streams_Period[key_stream])
         #LINK, bus queda del link, del link de revivo y del envio
         a = 0
         b = 1
         # Generar un vector con el primer y segundo valor
-        send_link = (Streams_paths[a], Streams_paths[b])
+        send_link = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
         link = send_link
-        reciving_link= (Streams_paths[-2], Streams_paths[-1])
+        reciving_link= (model.Streams_paths_Dic[key_stream][-2], model.Streams_paths_Dic[key_stream][-1])
         
         contador=1
-        while contador < len(Streams_paths):
-            #print("")
-           
-            link_anterior = (Streams_paths[a-1],Streams_paths[b-1])
-            lower_bound = Lower_bound(frame, send_link, link, link_anterior)
+        while contador < len(model.Streams_paths_Dic[key_stream]):
+            link_anterior = (model.Streams_paths_Dic[key_stream][a-1],model.Streams_paths_Dic[key_stream][b-1])
+            lower_bound = Lower_bound(frame, send_link, link, link_anterior, model)
             Bound_dic = (lower_bound, Bound_dic[1])
-            #print("Bound_dic   ",Bound_dic)
-
             tiempo = Earliest_offset  (link,Bound_dic)
-            #print("tiempo schedule flow  ",tiempo)
-            #MATRIX OFFSET, añadir valores
-            #no se rellena correctamente 
             if flexibility_solution.get(link) is None:
                 flexibility_solution[link] = [tiempo]
                 
             else:
                 flexibility_solution[link].append(tiempo)
-            
-            #print("flexibility_solution ",flexibility_solution)
-
-            #FRAME_INDICATOR 
-            #print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
-            #print("link   ",link, "   rever   ",tuple(reversed(link)))
-            #@¶print("Network_links_Dic   ",Network_links_Dic)
-            key_link = next((key for key, value in Network_links_Dic.items() if value == link or value == tuple(reversed(link))),None)
-            frame_indicator = ("S", key, "L", key_link, "F", frame-1, "Q", queue_assignment)
-            #print("frane_indicator ", frame_indicator)
-            print("############### This is the set of offsets ######################")
-            print("The offset of stream", key, "link", key_link, "frame", frame, "is",tiempo[0])
-
-            print("############### This is the set of queues ######################")
-            print("The number of queues of link ", key_link, "is",queue_assignment)
-
-
+            key_link = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
+            frame_indicator = ("S", key_stream, "L", key_link, "F", frame, "Q", "queue_assignment")
             helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
             clean_offset = { "Task" :str(frame_indicator), "Start": tiempo[0] }
-
-            #print("helper    ",helper)
             Result_offsets.append(helper)
             Clean_offsets_collector.append(clean_offset)
-
-
-            #print("Result offset  ",Result_offsets)
-
-            #print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")
-
             if tiempo[-1] == float('inf'):
-                return False
-            elif tiempo[-1] <= Streams_Period:
-                #print("Tiempo elif  ",tiempo)
-                #linea 11
+                return False, key_link
+            elif tiempo[-1] <= model.Streams_Period[key_stream]:
                 Bound_dic = tiempo
-                #print("Bound_dic",Bound_dic)
-
                 a += 1
                 b += 1
-                if b >= len(Streams_paths):
-                    return True
-                next_link = (Streams_paths[a], Streams_paths[b])
-                #print("next link ",next_link)
+                if b >= len(model.Streams_paths_Dic[key_stream]):
+                    return True, key_link
+                next_link = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
                 link = next_link
-                #linea 12 
-                upper_boud_posterior = Latest_queue_available_time(link, Streams_Period)
-                #print("Latest queue available time", upper_boud_posterior)
+                upper_boud_posterior = Latest_queue_available_time(link, model.Streams_Period[key_stream])
 
             else:
-                #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 #linea 15
                 #lower_bound_anterior = #EARLIEST QUEUE AVAILABLE TIME
                 a -= 1
                 b -= 1
-                link = [Streams_paths[a], Streams_paths[b]] 
+                link = [model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b]] 
             contador +=1
-    return False #, Result_offsets 
+    return False, key_link #, Result_offsets 
 
 def Earliest_offset(link, Bound_dic):
     #EARLIEST OFFSET
@@ -197,76 +181,68 @@ def Latest_queue_available_time(link, Streams_Period):
         #print("no existe ",tiempo)
     return tiempo
 
-def Lower_bound(frame, send_link, link, link_anterior):
+def Lower_bound(frame, send_link, link, link_anterior, model):
    #print("link anterior  ",link_anterior, "frame   ",frame)
-    if frame == 1 and link == send_link:
+    if frame == 0 and link == send_link:
         #print("1-lower_bound ",0.0)
         return 0.0
-    elif frame >= 2  and link == send_link:
+    elif frame >= 1  and link == send_link:
         #offset periodico --> producido anterior  +    #duracion de transmision ( 100 )
         #print("2-lower_bound ",flexibility_solution[link][-1][0]+100)
         return flexibility_solution[link][-1][0] + tiempo_duracion 
-    elif frame == 1 and link != send_link:
+    elif frame == 0 and link != send_link:
         #print(flexibility_solution[link_anterior][frame-1])
         #print("3-lower_bound ",flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8)
-        return flexibility_solution[link_anterior][frame-1][0] + tiempo_duracion +  error
+        return flexibility_solution[link_anterior][frame-1][0] + tiempo_duracion +  model.Max_Syn_Error
     else:
         a = flexibility_solution[link][-1][0] + tiempo_duracion
-        b = flexibility_solution[link_anterior][frame-1][0] + tiempo_duracion +  error
+        b = flexibility_solution[link_anterior][frame-1][0] + tiempo_duracion +  model.Max_Syn_Error
         #print("4-lower_bound ",a,b, max(a,b))
         return max(a,b)
 
 #Listar colas asociadas a la clave del link
-def List_queue(Sort_Stream_Source_Destination, Network_links_Dic, Queue_Link_Dic, Num_Queues, Streams_paths):
+def List_queue(model):
     #print("Stream_Source_Destination_Dic ",Sort_Stream_Source_Destination)
     #print("Network_links   ", Network_links_Dic, "Num_Queues",  Num_Queues, "Streams_paths", Streams_paths)
     #print("Queue_Link_Dic  ",Queue_Link_Dic)
     Queue_total = {}
 
-    for vector in Streams_paths:
+    for vector in model.Streams_paths:
         firts_value = vector[0]
         last_value = vector[-1]
-        for key, value in Sort_Stream_Source_Destination.items():
+        for key, value in model.Sort_Stream_Source_Destination.items():
             if value == [firts_value, last_value]:
                 vector_shearch = (vector[-2], vector[-1])  # Este es el vector que deseas buscar
-                for clave, valor in Queue_Link_Dic.items():
+                for clave, valor in model.Queue_Link_Dic.items():
                     if valor[0] == vector_shearch or tuple(reversed(valor[0])) == vector_shearch:
-                        Queue_total[key] = (valor[1])
+                        model.Queue_total[key] = (valor[1])
     
     #print(Queue_total)
-    Queue_total = {0: 2, 1: 2, 2: 2, 3: 2}
+    model.Queue_total = {0: 2, 1: 2, 2: 2, 3: 2}
     return Queue_total
 
 #ordenar los flows dependiendo de las reglas 
-def Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size):
-    #print(Streams_size)
-    #Generate a diccionary  generar un diccionario del stream source destination para asi mantener al informcaion 
-    Stream_Source_Destination_Dic = {key: value for key, value in enumerate(Stream_Source_Destination)}
-    #Generate a diccionaty with the list Stream_size
-    Streams_Size_Dic = {key: value for key, value in enumerate(Streams_size)}
-
-    #Combine the keys of all three dictionaries into a list
-    keys = sorted(set(Deathline_Stream.keys()) | set(Streams_Period.keys()) | set(Streams_Size_Dic.keys()))
-    #Defines a function to sort the keys based on Deathline_Stream, Streams_Period and Streams_Size_Dic
-    def sort_keys(key):
-        value1 = Deathline_Stream.get(key, float('inf'))
-        value2 = Streams_Period.get(key, float('inf'))
-        value3 = Streams_Size_Dic.get(key, float('-inf'))
-        #Sort first by Deathline_Stream, then by Streams_Period and finally by Streams_Size_Dic
-        return (value1, value2, -value3)
-    
-    # Shot keys less to high
-    sort_keys = sorted(keys, key=sort_keys)
-    #print("SORT  KEYS",sort_keys)
-    # sort deadthline line dictory short
-    Sort_Deathline_Stream = {key: Deathline_Stream[key] for key in sort_keys}
-    # keys list
-    lista_de_claves = list(Sort_Deathline_Stream.keys())
-    #Ordenar el diccionario segun la lista de las claves
-    Sort_Stream_Source_Destination = {key: Stream_Source_Destination_Dic[key] for key in lista_de_claves}
-
-
-    return Sort_Stream_Source_Destination
+#def Sort_flow(model):
+#    #Sort_Stream_Source_Destination = {}
+#    #Combine the keys of all three dictionaries into a list
+#    keys = sorted(set(model.Deathline_Stream.keys()) | set(model.Streams_Period.keys()) | set(model.Streams_Size_Dic.keys()))
+#    #Defines a function to sort the keys based on Deathline_Stream, Streams_Period and Streams_Size_Dic
+#    def sort_keys(key):
+#        value1 = model.Deathline_Stream.get(key, float('inf'))
+#        value2 = model.Streams_Period.get(key, float('inf'))
+#        value3 = model.Streams_Size_Dic.get(key, float('-inf'))
+#        #Sort first by Deathline_Stream, then by Streams_Period and finally by Streams_Size_Dic
+#        return (value1, value2, -value3)
+#    # Shot keys less to high
+#    sort_keys = sorted(keys, key=sort_keys)
+#    #print("SORT  KEYS",sort_keys)
+#    # sort deadthline line dictory short
+#    model.Sort_Deathline_Stream = {key: model.Deathline_Stream[key] for key in sort_keys}
+#    # keys list
+#    lista_de_claves = list(model.Sort_Deathline_Stream.keys())
+#    #Ordenar el diccionario segun la lista de las claves
+#    model.Sort_Stream_Source_Destination = {key: model.Stream_Source_Destination_Dic[key] for key in lista_de_claves}
+#    model.Link_order_Descriptor = list(model.Sort_Stream_Source_Destination.values())
 
 def Constraining_engress_port(value):
     #"bloquear value   " entre ello lo que hay que hacer
@@ -275,24 +251,6 @@ def Constraining_engress_port(value):
     del flexibility_solution[value]
 
 
-class Clase_test :
-    
-    def __init__(self, Network_links):
-
-        self.Network_links = Network_links
-        self.model = AbstractModel()
-
-        self.model.Links = Set(initialize = frozenset(range(len(Network_links)))) # Links Ids
-        self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=1)
-        #print("num queues  ",self.model.Num_Queues)
-        self.model.Frames = Set(initialize= frozenset(range(Max_frames))) # Maximum number of streams
-
-        ### This part is the creation of the instance in the ilp system
-        opt = SolverFactory('gurobi')
-        #opt = SolverFactory('gurobi', solver_io="python")
-        self.instance = self.model.create_instance()
-        self.results = opt.solve(self.instance)
-        self.instance.solutions.load_from(self.results)
 
 
 

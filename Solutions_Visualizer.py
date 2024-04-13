@@ -21,7 +21,7 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
             for k in instance.Frames:
                 if Model_Descriptor_vector [i][k][j] :
                     print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
-                    frame_indicator = ("S", i, "L", j, "F", k, "Q",instance.Queue_Assignment[i, j].value)
+                    frame_indicator = ("S", i, "L", j, "F", k, "Q",instance.Queue_Assignment[i, j].value, "La",instance.Latency[i])
                     helper = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value, "Finish" : (instance.Frame_Offset[i,j,k].value +12), "Color" : j }
                     clean_offset = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value }
                     Result_offsets.append(helper)
@@ -32,6 +32,7 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
     Results_latencies = []
     for stream in instance.Streams:
         print("The lower latency of Stream", stream, "is",instance.Lower_Latency[stream].value)
+        print("self.model.Latency   ", instance.Latency[stream].value)
         Results_latencies.append(instance.Latency[stream].value)
 
     print("############### This is the set of queues ######################")
