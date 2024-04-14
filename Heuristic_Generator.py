@@ -4,13 +4,7 @@ from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from pyomo.core import Var
 
-Result_offsets = []
-Clean_offsets_collector = []
-Feasibility_indicator = 0
 flexibility_solution = {}
-tiempo_duracion = 100
-
-
 
 class Heuristic_class :
     def __init__(self, Number_of_Streams, Network_links, \
@@ -52,13 +46,12 @@ class Heuristic_class :
         # Parameters
         self.model.Hyperperiod = Param(initialize=Hyperperiod)
         self.model.Max_Syn_Error = Param(initialize=0)
+        self.model.Frame_Duration = Param(self.model.Streams, self.model.Frames, self.model.Links, initialize = self.Frame_Duration)
         self.model.Stream_Source_Destination = self.Stream_Source_Destination
         self.model.Deathline_Stream = self.Deathline_Stream
         self.model.Streams_Period = self.Streams_Period
         self.model.Streams_size = self.Streams_size
-        #self.model.Network_links = self.Network_links
         self.model.Streams_paths = self.Streams_paths
-        #self.model.Num_of_Frames = self.Num_of_Frames
         self.model.Sort_Stream_Source_Destination = self.Sort_Stream_Source_Destination
 
         self.model.Num_of_Frames_Dic = {key: value for key, value in enumerate(self.Num_of_Frames)}
@@ -70,6 +63,8 @@ class Heuristic_class :
         self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=1)
         self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
         self.model.Queue_Link_Dic = {}
+        self.model.Frame_Offset = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
+        self.model.Frame_Offset_up = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
         #self.model.Queue_Link_Dic = {key: (self.model.Network_links_Dic[key], self.model.Num_Queues[key].value) for key in self.model.Network_links_Dic}
         self.model.Queue_total = {0: 2, 1: 2, 2: 2, 3: 2}
         self.model.Sort_Deathline_Stream = {}
@@ -120,20 +115,25 @@ def Schedule_flow(key_stream, value_stream, model):
         contador=1
         while contador < len(model.Streams_paths_Dic[key_stream]):
             link_anterior = (model.Streams_paths_Dic[key_stream][a-1],model.Streams_paths_Dic[key_stream][b-1])
-            lower_bound = Lower_bound(frame, send_link, link, link_anterior, model)
+            key_link = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
+
+            lower_bound = Lower_bound(frame, send_link, link, link_anterior, model, key_stream, key_link)
             Bound_dic = (lower_bound, Bound_dic[1])
-            tiempo = Earliest_offset  (link,Bound_dic)
+            tiempo = Earliest_offset  (link,Bound_dic,model, key_stream, frame, key_link)
             if flexibility_solution.get(link) is None:
                 flexibility_solution[link] = [tiempo]
                 
             else:
                 flexibility_solution[link].append(tiempo)
-            key_link = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
-            frame_indicator = ("S", key_stream, "L", key_link, "F", frame, "Q", "queue_assignment")
-            helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
-            clean_offset = { "Task" :str(frame_indicator), "Start": tiempo[0] }
-            Result_offsets.append(helper)
-            Clean_offsets_collector.append(clean_offset)
+            #frame_indicator = ("S", key_stream, "L", key_link, "F", frame, "Q", "queue_assignment")
+            model.Latency[key_stream] += tiempo[0]
+            model.Frame_Offset[key_stream, key_link, frame] = tiempo[0]
+            model.Frame_Offset_up[key_stream, key_link, frame] = tiempo[-1]
+
+            #helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
+            #clean_offset = { "Task" :str(frame_indicator), "Start": tiempo[0] }
+            #Result_offsets.append(helper)
+            #Clean_offsets_collector.append(clean_offset)
             if tiempo[-1] == float('inf'):
                 return False, key_link
             elif tiempo[-1] <= model.Streams_Period[key_stream]:
@@ -155,20 +155,20 @@ def Schedule_flow(key_stream, value_stream, model):
             contador +=1
     return False, key_link #, Result_offsets 
 
-def Earliest_offset(link, Bound_dic):
+def Earliest_offset(link, Bound_dic, model, stream, frame, key_link):
     #EARLIEST OFFSET
     tiempo= 0.0
     if flexibility_solution.get(link)is not None:
         #print("len ",len(flexibility_solution[link]))
         if len(flexibility_solution[link]) == 1:
             #print("value  ",flexibility_solution[link][-1])
-            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+tiempo_duracion)
+            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+model.Frame_Duration[stream,frame,key_link])
         else:
             #print("value  ",flexibility_solution[link][-1])
-            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+tiempo_duracion)
+            tiempo = (flexibility_solution[link][-1][-1], flexibility_solution[link][-1][-1]+model.Frame_Duration[stream,frame,key_link])
         #print("existe",tiempo)
     else:
-        tiempo = (Bound_dic[0],Bound_dic[0]+tiempo_duracion)
+        tiempo = (Bound_dic[0],Bound_dic[0]+model.Frame_Duration[stream,frame,key_link])
         #print("no existe ",tiempo)
     return tiempo
 
@@ -181,23 +181,17 @@ def Latest_queue_available_time(link, Streams_Period):
         #print("no existe ",tiempo)
     return tiempo
 
-def Lower_bound(frame, send_link, link, link_anterior, model):
+def Lower_bound(frame, send_link, link, link_anterior, model,stream, key_link):
    #print("link anterior  ",link_anterior, "frame   ",frame)
     if frame == 0 and link == send_link:
-        #print("1-lower_bound ",0.0)
         return 0.0
     elif frame >= 1  and link == send_link:
-        #offset periodico --> producido anterior  +    #duracion de transmision ( 100 )
-        #print("2-lower_bound ",flexibility_solution[link][-1][0]+100)
-        return flexibility_solution[link][-1][0] + tiempo_duracion 
+        return flexibility_solution[link][-1][0] + model.Frame_Duration[stream,frame,key_link]
     elif frame == 0 and link != send_link:
-        #print(flexibility_solution[link_anterior][frame-1])
-        #print("3-lower_bound ",flexibility_solution[link_anterior][frame-1][0] + 100 +  0.8)
-        return flexibility_solution[link_anterior][frame-1][0] + tiempo_duracion +  model.Max_Syn_Error
+        return flexibility_solution[link_anterior][frame-1][0] + model.Frame_Duration[stream,frame,key_link] +  model.Max_Syn_Error
     else:
-        a = flexibility_solution[link][-1][0] + tiempo_duracion
-        b = flexibility_solution[link_anterior][frame-1][0] + tiempo_duracion +  model.Max_Syn_Error
-        #print("4-lower_bound ",a,b, max(a,b))
+        a = flexibility_solution[link][-1][0] + model.Frame_Duration[stream,frame,key_link]
+        b = flexibility_solution[link_anterior][frame-1][0] + model.Frame_Duration[stream,frame,key_link] +  model.Max_Syn_Error
         return max(a,b)
 
 #Listar colas asociadas a la clave del link
@@ -249,27 +243,3 @@ def Constraining_engress_port(value):
     #el eliminar lo generado en   --flexibility_solution--
     #print("NO se encontro solucion  ", flexibility_solution, "   value   ", value)
     del flexibility_solution[value]
-
-
-
-
-
-#cfor n in [4]:
-#c    
-#c    #self.Network_links = Network_links
-#c    Network_links = [(0, 1), (1, 3), (2, 3), (3, 0), (4, 3)]
-#c    #self.Max_frames = Max_frames
-#c    Max_frames = 1
-
-#c    for i in range(1):
-#c        # Evaluation_Function(number_of_nodes, connection_probability, number of streams)
-#c        Evaluation_function_generator(2, 1, n)#, instance.Links, instance.Num_Queues)
-        
-
-
-
-
-
-
-
-

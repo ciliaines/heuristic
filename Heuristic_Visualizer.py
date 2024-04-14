@@ -20,40 +20,40 @@ def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     
     for i in instance.Streams:
         for j in instance.Links:
-            print("instance.Queue_Assignment  ",str(instance.Queue_Assignment[i,j]))
-            print("instance.Latency   ",str(instance.Latency[i]))
-#            for k in instance.Frames:
-#                if Model_Descriptor_vector [i][k][j] :
-#                    #print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
-#                    frame_indicator = ("S", i, "L", j, "F", k, "Q",instance.Queue_Assignment[i, j].value)
-#                    helper = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value, "Finish" : (instance.Frame_Offset[i,j,k].value +12), "Color" : j }
-#                    clean_offset = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value }
-#                    Result_offsets.append(helper)
-#                    Clean_offsets_collector.append(clean_offset)
-#                    if instance.Frame_Offset[i,j,k].value != 1 :
-#                        Feasibility_indicator = Feasibility_indicator + 1         
-#    print("############### This is the set of latencies ######################")
-#    Results_latencies = []
-#    for stream in instance.Streams:
-#        print("The lower latency of Stream", stream, "is",instance.Lower_Latency[stream].value)
-#        print("self.model.Latency   ", instance.Latency[stream].value)
-#        Results_latencies.append(instance.Latency[stream].value)#
+            #print("instance.Queue_Assignment  ",instance.Queue_Assignment[i,j].value)
+            #print("instance.Latency   ",instance.Latency[i].value)
+            for k in instance.Frames:
+                if Model_Descriptor_vector [i][k][j] :
+                    print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
+                    frame_indicator = ("S", i, "L", j, "F", k, "Q",instance.Queue_Assignment[i, j].value, "La",instance.Latency[i].value+100)
+                    helper = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value, "Finish" : instance.Frame_Offset_up[i,j,k].value, "Color" : j }
+                    clean_offset = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value }
+                    Result_offsets.append(helper)
+                    Clean_offsets_collector.append(clean_offset)
+                    if instance.Frame_Offset[i,j,k].value != 1 :
+                        Feasibility_indicator = Feasibility_indicator + 1         
+    print("############### This is the set of latencies ######################")
+    Results_latencies = []
+    for stream in instance.Streams:
+        #print("The lower latency of Stream", stream, "is",instance.Lower_Latency[stream].value)
+        print("The latency of Stream ", stream, "is", instance.Latency[stream].value)
+        Results_latencies.append(instance.Latency[stream].value)#
 
-#    print("############### This is the set of queues ######################")
-#    for link in instance.Links:
-#        print("The number of queues of link ", link, "is",instance.Num_Queues[link].value)#
+    print("############### This is the set of queues ######################")
+    for link in instance.Links:
+        print("The number of queues of link ", link, "is",instance.Num_Queues[link].value)#
 
-#    print("############### This is the set of queues per stream and link######################")
-#    for stream in instance.Streams:
-#        for link in instance.Links:
-#            print("The number of queues of Link",link , "Stream" , stream, "is", instance.Queue_Assignment[stream, link].value)
+    print("############### This is the set of queues per stream and link######################")
+    for stream in instance.Streams:
+        for link in instance.Links:
+            print("The number of queues of Link",link , "Stream" , stream, "is", instance.Queue_Assignment[stream, link].value)
 
-    #print("############### This is the set of auxiliar queues variables######################")
+#    print("############### This is the set of auxiliar queues variables######################")
 #    for stream in instance.Streams :
 #        for stream_2 in instance.Streams :
 #            for link in instance.Links :
-                #print("Aux variable for stream_1 ", stream, "Stream_2", stream_2, "link", link, ":", instance.Aux_Same_Queue[stream_2, link ,stream].value)
-    #return Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies
+#                print("Aux variable for stream_1 ", stream, "Stream_2", stream_2, "link", link, ":", instance.Aux_Same_Queue[stream_2, link ,stream].value)
+    return Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies
 
 ##### For printing the model results and variables #####
 #UNCOMMENT if necessary 
@@ -195,8 +195,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         ################################################################
 
         ################################################################
-        #ILP_results_visualizer
-        Heuristic_results_visualizer(instance, Model_Descriptor_vector)
+        #Heuristic_results_visualizer
+        Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies = Heuristic_results_visualizer(instance, Model_Descriptor_vector)
 
         df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
         information_generator(Repetitions, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
