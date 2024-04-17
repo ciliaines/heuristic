@@ -183,4 +183,4 @@ def Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Strea
     Sort_Stream_Source_Destination = {key: Stream_Source_Destination_Dic[key] for key in lista_de_claves}
     Link_order_Descriptor = list(Sort_Stream_Source_Destination.values())
 
-    return Link_order_Descriptor, Sort_Stream_Source_Destination
+    return Sort_Stream_Source_Destination

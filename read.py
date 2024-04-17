@@ -4,7 +4,7 @@ from read import *
 import matplotlib.pyplot as plt
 import networkx as nx 
 
-file_input = "Solutions/input.json"
+file_input = "Solutions/input6.json"
 
 def Read():
     Number_of_edges=0  #numero de switch=4

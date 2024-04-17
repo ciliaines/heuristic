@@ -84,6 +84,7 @@ def Greedy_Heuristic(model):
         model.Queue_Link_Dic[link] = (model.Network_links_Dic[link], model.Num_Queues[link].value)
     #Cola total de cada uno de los flows
     #model.Queue_total = List_queue(model)
+    print("----",model.Sort_Stream_Source_Destination)
     for key_stream, value_stream in model.Sort_Stream_Source_Destination.items():
         success = False
         while not success:
@@ -96,8 +97,6 @@ def Greedy_Heuristic(model):
                 model.Queue_Assignment[key_stream, link] = model.Queue_Assignment[key_stream, link] + 1
                 if (model.Queue_Assignment[key_stream, link] > model.Queue_total[key_stream]):
                     success = True
-            #print("cuenta  ", model.Queue_Assignment[key_stream, link])
-        #print("total cola  ", model.Queue_total[key_stream])
 
 def Schedule_flow(key_stream, value_stream, model):
     for frame in range(model.Num_of_Frames_Dic[key_stream]): #tramas de cada link

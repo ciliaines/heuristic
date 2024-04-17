@@ -17,11 +17,8 @@ def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     Result_offsets = []
     Clean_offsets_collector = []
     Feasibility_indicator = 0
-    
     for i in instance.Streams:
         for j in instance.Links:
-            #print("instance.Queue_Assignment  ",instance.Queue_Assignment[i,j].value)
-            #print("instance.Latency   ",instance.Latency[i].value)
             for k in instance.Frames:
                 if Model_Descriptor_vector [i][k][j] :
                     print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
@@ -169,7 +166,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         # Random Streams parameters
         Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
         #Link_order_Descriptor = cambiar la funcion a la del heuritsto ahora lo hago en el fichero 
-        Link_order_Descriptor, Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
+        Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################

@@ -21,7 +21,7 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
             for k in instance.Frames:
                 if Model_Descriptor_vector [i][k][j] :
                     print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
-                    frame_indicator = ("S", i, "L", j, "F", k, "Q",instance.Queue_Assignment[i, j].value, "La",instance.Latency[i].value)
+                    frame_indicator = ("S", i, "L", j, "F", k, "Q",int(instance.Queue_Assignment[i, j].value), "La",int(instance.Latency[i].value))
                     helper = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value, "Finish" : (instance.Frame_Offset[i,j,k].value +12), "Color" : j }
                     clean_offset = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value }
                     Result_offsets.append(helper)
@@ -32,17 +32,17 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
     Results_latencies = []
     for stream in instance.Streams:
         #print("The lower latency of Stream", stream, "is",instance.Lower_Latency[stream].value)
-        print("The latency of Stream ", stream, "is", instance.Latency[stream].value)
+        print("The latency of Stream ", stream, "is", int(instance.Latency[stream].value))
         Results_latencies.append(instance.Latency[stream].value)
 
     print("############### This is the set of queues ######################")
     for link in instance.Links:
-        print("The number of queues of link ", link, "is",instance.Num_Queues[link].value)
+        print("The number of queues of link ", link, "is",int(instance.Num_Queues[link].value))
 
     print("############### This is the set of queues per stream and link######################")
     for stream in instance.Streams:
         for link in instance.Links:
-            print("The number of queues of Link",link , "Stream" , stream, "is", instance.Queue_Assignment[stream, link].value)
+            print("The number of queues of Link",link , "Stream" , stream, "is", int(instance.Queue_Assignment[stream, link].value))
 
 #    print("############### This is the set of auxiliar queues variables######################")
 #    for stream in instance.Streams :
