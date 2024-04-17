@@ -64,7 +64,7 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
     data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
     Repetitions = [repetition + 1 for repetition in Repetitions]
 
-    color=['black', 'red', 'green', 'blue', 'cyan', 'magenta', 'fuchsia', 'yellow', 'grey', 'orange', 'pink']
+    color=['black', 'red', 'green', 'blue', 'cyan', 'magenta',  'yellow', 'grey', 'orange', 'pink','fuchsia']
 
     # This set of code is for generating the repetitions values in the dataset
     #For printing the full gant Chart

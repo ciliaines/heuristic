@@ -145,7 +145,7 @@
                 {
                         "name": "dev1",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 2500,
+                        "defaultPacketPeriodicity": 1000,
                         "defaultHardConstraintTime": 10000,
                         "defaultPacketSize": 53
                 },
@@ -166,21 +166,21 @@
                 {
                         "name": "dev4",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 5000,
+                        "defaultPacketPeriodicity": 1000,
                         "defaultHardConstraintTime": 10000,
                         "defaultPacketSize": 53
                 },                
                 {
                         "name": "dev5",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 5000,
+                        "defaultPacketPeriodicity": 1000,
                         "defaultHardConstraintTime": 10000,
                         "defaultPacketSize": 53
                 },
                 {
                         "name": "dev6",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 5000,
+                        "defaultPacketPeriodicity": 1000,
                         "defaultHardConstraintTime": 10000,
                         "defaultPacketSize": 53
                 }
@@ -191,7 +191,7 @@
                         "type": "unicast",
                         "sourceDevice": "0",
                         "endDevices": [
-                                "4"
+                                "6"
                         ],
                         "hops": [
                                 {
@@ -201,6 +201,10 @@
                                 {
                                         "currentNodeName": "1",
                                         "nextNodeName": "4"
+                                },
+                                {
+                                        "currentNodeName": "4",
+                                        "nextNodeName": "6"
                                 }
                         ]
                 },
@@ -209,7 +213,7 @@
                         "type": "unicast",
                         "sourceDevice": "2",
                         "endDevices": [
-                                "4"
+                                "6"
                         ],
                         "hops": [
                                 {
@@ -219,6 +223,10 @@
                                 {
                                         "currentNodeName": "1",
                                         "nextNodeName": "4"
+                                },
+                                {
+                                        "currentNodeName": "4",
+                                        "nextNodeName": "6"
                                 }
                         ]
                 },
@@ -227,7 +235,7 @@
                         "type": "unicast",
                         "sourceDevice": "3",
                         "endDevices": [
-                                "4"
+                                "6"
                         ],
                         "hops": [
                                 {
@@ -237,6 +245,10 @@
                                 {
                                         "currentNodeName": "1",
                                         "nextNodeName": "4"
+                                },
+                                {
+                                        "currentNodeName": "4",
+                                        "nextNodeName": "6"
                                 }
                         ]
                 },
@@ -245,7 +257,7 @@
                         "type": "unicast",
                         "sourceDevice": "5",
                         "endDevices": [
-                                "1"
+                                "0"
                         ],
                         "hops": [
                                 {
@@ -255,6 +267,10 @@
                                 {
                                         "currentNodeName": "4",
                                         "nextNodeName": "1"
+                                },
+                                {
+                                        "currentNodeName": "1",
+                                        "nextNodeName": "0"
                                 }
                         ]
                 },
@@ -263,7 +279,7 @@
                         "type": "unicast",
                         "sourceDevice": "6",
                         "endDevices": [
-                                "1"
+                                "0"
                         ],
                         "hops": [
                                 {
@@ -273,6 +289,10 @@
                                 {
                                         "currentNodeName": "4",
                                         "nextNodeName": "1"
+                                },
+                                {
+                                        "currentNodeName": "1",
+                                        "nextNodeName": "0"
                                 }
                         ]
                 }

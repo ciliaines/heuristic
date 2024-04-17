@@ -44,14 +44,14 @@
                                         "cycleStart": 0
                                 },
                                 {
-                                        "name": "eth0",
+                                        "name": "eth1",
                                         "connectsTo": "1",
                                         "timeToTravel": 1,
                                         "maximumSlotDuration": 50,
                                         "cycleStart": 0
                                 },
                                 {
-                                        "name": "eth0",
+                                        "name": "eth2",
                                         "connectsTo": "3",
                                         "timeToTravel": 1,
                                         "maximumSlotDuration": 50,
@@ -73,7 +73,7 @@
                                         "cycleStart": 0
                                 },
                                 {
-                                        "name": "eth0",
+                                        "name": "eth1",
                                         "connectsTo": "4",
                                         "timeToTravel": 1,
                                         "maximumSlotDuration": 50,
@@ -198,7 +198,7 @@
                         "type": "unicast",
                         "sourceDevice": "0",
                         "endDevices": [
-                                "4"
+                                "6"
                         ],
                         "hops": [
                                 {
@@ -212,6 +212,10 @@
                                 {
                                         "currentNodeName": "3",
                                         "nextNodeName": "4"
+                                },
+                                {
+                                        "currentNodeName": "4",
+                                        "nextNodeName": "6"
                                 }
                         ]
                 },
@@ -220,7 +224,7 @@
                         "type": "unicast",
                         "sourceDevice": "1",
                         "endDevices": [
-                                "4"
+                                "6"
                         ],
                         "hops": [
                                 {
@@ -234,14 +238,19 @@
                                 {
                                         "currentNodeName": "3",
                                         "nextNodeName": "4"
+                                },
+                                {
+                                        "currentNodeName": "4",
+                                        "nextNodeName": "6"
                                 }
                         ]
-                },{
+                },
+                {
                         "name": "flow3",
                         "type": "unicast",
                         "sourceDevice": "5",
                         "endDevices": [
-                                "2"
+                                "1"
                         ],
                         "hops": [
                                 {
@@ -255,6 +264,10 @@
                                 {
                                         "currentNodeName": "3",
                                         "nextNodeName": "2"
+                                },
+                                {
+                                        "currentNodeName": "2",
+                                        "nextNodeName": "1"
                                 }
                         ]
                 },
@@ -263,7 +276,7 @@
                         "type": "unicast",
                         "sourceDevice": "6",
                         "endDevices": [
-                                "2"
+                                "1"
                         ],
                         "hops": [
                                 {
@@ -277,6 +290,10 @@
                                 {
                                         "currentNodeName": "3",
                                         "nextNodeName": "2"
+                                },
+                                {
+                                        "currentNodeName": "2",
+                                        "nextNodeName": "1"
                                 }
                         ]
                 }

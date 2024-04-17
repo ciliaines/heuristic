@@ -64,7 +64,7 @@ def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
 def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period):
     data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
     Repetitions = [repetition + 1 for repetition in Repetitions]
-    color=['black', 'red', 'green', 'blue', 'cyan', 'magenta', 'fuchsia', 'yellow', 'grey', 'orange', 'pink']
+    color=['black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'grey', 'orange', 'pink','fuchsia']
     # This set of code is for generating the repetitions values in the dataset
     #For printing the full gant Chart
     New_offsets = []
@@ -101,11 +101,11 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period):
 
 def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths):
     plt.subplot(222)
-    plt.text(0.1, 0.9, "Network-links: \n" + str(Network_links), bbox=dict(facecolor='red', alpha=0.5))
+    plt.text(0.1, 0.9, "Network links: \n" + str(Network_links), bbox=dict(facecolor='red', alpha=0.5))
     plt.text(0.1, 0.7, "Frames per stream: \n" + str(Num_of_Frames), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.5, "Streams periods: \n" + str(Streams_Period), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.3, "Indexed Links order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.1, "Streams Paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
+    plt.text(0.1, 0.5, "Stream periods: \n" + str(Streams_Period), bbox=dict(facecolor='red', alpha=0.5))
+    plt.text(0.1, 0.3, "Indexed link order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
+    plt.text(0.1, 0.1, "Stream paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
     plt.axis('off')
     plt.show() # comment for avoiding showing de result
 

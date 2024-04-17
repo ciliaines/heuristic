@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import networkx as nx 
 
 file_input = "Solutions/input6.json"
-
+ 
 def Read():
     Number_of_edges=0  #numero de switch=4
     Number_of_Streams=0 #numero de flujos=3
@@ -26,14 +26,23 @@ def Read():
             for port in switch["ports"]:
                 Name_port_switch = port["name"]
                 ConnectsTo_port_switch = port["connectsTo"]
-                Network_link = Network_link + [(x, y) for x in Name_switch for y in ConnectsTo_port_switch]
+                if(Network_link == []):
+                    print("ini")
+                    Network_link = Network_link + [(x, y) for x in Name_switch for y in ConnectsTo_port_switch]
+                print("act  ", ConnectsTo_port_switch, "  ", Name_switch)
                 for link in Network_link:
+                    print("link",link[0],"  ",link[1])
                     if link[0] == ConnectsTo_port_switch and link[1] == Name_switch:
+                        change = False
                         break
                     else:
-                        if change == True:
-                            Network_links = Network_links + [(int(x), int(y)) for x in Name_switch for y in ConnectsTo_port_switch]
-                            change = False
+                        change == True
+                if change == True:
+                    Network_links = Network_links + [(int(x), int(y)) for x in Name_switch for y in ConnectsTo_port_switch]
+                    change = False
+                    print("Network_links  ",Network_links)
+                print("----")
+
                 TimeToTravel_port_switch = port["timeToTravel"]
         for flow in data["flows"]:
             Number_of_Streams =Number_of_Streams+1
