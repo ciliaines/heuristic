@@ -22,7 +22,7 @@ def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
             for k in instance.Frames:
                 if Model_Descriptor_vector [i][k][j] :
                     print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
-                    frame_indicator = ("S", i, "L", j, "F", k, "Q",instance.Queue_Assignment[i, j].value, "La",instance.Latency[i].value+100)
+                    frame_indicator = ("S", i, "L", j, "F", k, "Q",int(instance.Queue_Assignment[i, j].value), "La",int(instance.Latency[i].value), "O",int(instance.Frame_Offset[i,j,k].value))
                     helper = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value, "Finish" : instance.Frame_Offset_up[i,j,k].value, "Color" : j }
                     clean_offset = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value }
                     Result_offsets.append(helper)

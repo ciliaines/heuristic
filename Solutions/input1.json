@@ -7,25 +7,10 @@
                         "defaultPortSpeed": 125,
                         "ports": [
                                 {
-                                        "name": "eth0",
-                                        "connectsTo": "1",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
-                                },
-                                {
                                         "name": "eth1",
                                         "connectsTo": "3",
                                         "timeToTravel": 1,
                                         "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
-                                },
-                                {
-                                        "name": "eth2",
-                                        "connectsTo": "dev0",
-                                        "timeToTravel": 1,
                                         "maximumSlotDuration": 50,
                                         "cycleStart": 0
                                 }
@@ -38,24 +23,10 @@
                         "defaultPortSpeed": 125,
                         "ports": [
                                 {
-                                        "name": "eth0",
-                                        "connectsTo": "0",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
-                                },
-                                {
                                         "name": "eth1",
                                         "connectsTo": "3",
                                         "timeToTravel": 1,
                                         "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
-                                },
-                                {
-                                        "name": "eth2",
-                                        "connectsTo": "dev1",
-                                        "timeToTravel": 1,
                                         "maximumSlotDuration": 50,
                                         "cycleStart": 0
                                 }
@@ -70,13 +41,6 @@
                                 {
                                         "name": "eth0",
                                         "connectsTo": "3",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
-                                },
-                                {
-                                        "name": "eth1",
-                                        "connectsTo": "dev2",
                                         "timeToTravel": 1,
                                         "maximumSlotDuration": 50,
                                         "cycleStart": 0
@@ -113,7 +77,7 @@
                                 },
                                 {
                                         "name": "eth3",
-                                        "connectsTo": "dev3",
+                                        "connectsTo": "4",
                                         "timeToTravel": 1,
                                         "maximumSlotDuration": 50,
                                         "cycleStart": 0
@@ -129,13 +93,6 @@
                                 {
                                         "name": "eth0",
                                         "connectsTo": "3",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
-                                },
-                                {
-                                        "name": "eth1",
-                                        "connectsTo": "dev4",
                                         "timeToTravel": 1,
                                         "maximumSlotDuration": 50,
                                         "cycleStart": 0

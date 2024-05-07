@@ -66,12 +66,13 @@ class Heuristic_class :
         self.model.Frame_Offset = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
         self.model.Frame_Offset_up = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
         #self.model.Queue_Link_Dic = {key: (self.model.Network_links_Dic[key], self.model.Num_Queues[key].value) for key in self.model.Network_links_Dic}
-        self.model.Queue_total = {0: 2, 1: 2, 2: 2, 3: 2}
+        self.model.Queue_total = Var(self.model.Streams,within=NonNegativeIntegers, initialize=2)#{0: 2, 1: 2, 2: 2, 3: 2}
         self.model.Sort_Deathline_Stream = {}
         self.model.Queue_Assignment = Var(self.model.Streams, self.model.Links, within=NonNegativeIntegers, initialize=0)
         
         ### This part is the creation of the instance in the ilp system
-        opt = SolverFactory('gurobi')
+        #opt = SolverFactory('gurobi')
+        opt = SolverFactory('glpk')
         #opt = SolverFactory('gurobi', solver_io="python")
         self.instance = self.model.create_instance()
         self.results = opt.solve(self.instance)
@@ -84,16 +85,15 @@ def Greedy_Heuristic(model):
         model.Queue_Link_Dic[link] = (model.Network_links_Dic[link], model.Num_Queues[link].value)
     #Cola total de cada uno de los flows
     #model.Queue_total = List_queue(model)
-    print("----",model.Sort_Stream_Source_Destination)
     for key_stream, value_stream in model.Sort_Stream_Source_Destination.items():
         success = False
         while not success:
             booleano ,link = Schedule_flow(key_stream, value_stream, model)
+            Latency_Cal(key_stream, model)
             if booleano == True:
                 success = True
             else:
                 Constraining_engress_port(value_stream)
-                print("cuenta  ", str(model.Queue_Assignment[key_stream, link]))
                 model.Queue_Assignment[key_stream, link] = model.Queue_Assignment[key_stream, link] + 1
                 if (model.Queue_Assignment[key_stream, link] > model.Queue_total[key_stream]):
                     success = True
@@ -113,6 +113,7 @@ def Schedule_flow(key_stream, value_stream, model):
         
         contador=1
         while contador < len(model.Streams_paths_Dic[key_stream]):
+            #print("key stream ",model.Streams_paths_Dic[key_stream])
             link_anterior = (model.Streams_paths_Dic[key_stream][a-1],model.Streams_paths_Dic[key_stream][b-1])
             key_link = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
 
@@ -124,15 +125,12 @@ def Schedule_flow(key_stream, value_stream, model):
                 
             else:
                 flexibility_solution[link].append(tiempo)
-            #frame_indicator = ("S", key_stream, "L", key_link, "F", frame, "Q", "queue_assignment")
-            model.Latency[key_stream] += tiempo[0]
+            #calculo de lantencia 
+            #model.Latency[key_stream] += tiempo[0]
+            #print("latency   ",model.Latency[key_stream].value)
             model.Frame_Offset[key_stream, key_link, frame] = tiempo[0]
             model.Frame_Offset_up[key_stream, key_link, frame] = tiempo[-1]
 
-            #helper = { "Task" :str(frame_indicator), "Start": tiempo[0], "Finish" : tiempo[-1], "Color" : key_link }
-            #clean_offset = { "Task" :str(frame_indicator), "Start": tiempo[0] }
-            #Result_offsets.append(helper)
-            #Clean_offsets_collector.append(clean_offset)
             if tiempo[-1] == float('inf'):
                 return False, key_link
             elif tiempo[-1] <= model.Streams_Period[key_stream]:
@@ -153,6 +151,18 @@ def Schedule_flow(key_stream, value_stream, model):
                 link = [model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b]] 
             contador +=1
     return False, key_link #, Result_offsets 
+
+def Latency_Cal(key_stream, model):
+    contador=1
+    while contador < len(model.Streams_paths_Dic[key_stream]):
+        link_ini = (model.Streams_paths_Dic[key_stream][0],model.Streams_paths_Dic[key_stream][1])
+        link_end = (model.Streams_paths_Dic[key_stream][-2],model.Streams_paths_Dic[key_stream][-1])
+        key_link_ini = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link_ini or value_stream == tuple(reversed(link_ini))),None)
+        key_link_end = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link_end or value_stream == tuple(reversed(link_end))),None)
+        #print("key_link_ini  ",key_link_ini, "  key_link_end  ",key_link_end)
+        #print("frame offset ini  ",model.Frame_Offset[key_stream,key_link_ini,0].value,"    frame offset end   ",model.Frame_Offset_up[key_stream,key_link_end,0].value)
+        model.Latency[key_stream] = model.Frame_Offset_up[key_stream,key_link_end,0].value - model.Frame_Offset[key_stream,key_link_ini,0].value
+        contador +=1
 
 def Earliest_offset(link, Bound_dic, model, stream, frame, key_link):
     #EARLIEST OFFSET

@@ -21,7 +21,7 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
             for k in instance.Frames:
                 if Model_Descriptor_vector [i][k][j] :
                     print("The offset of stream", i, "link", j, "frame", k, "is",instance.Frame_Offset[i,j,k].value)
-                    frame_indicator = ("S", i, "L", j, "F", k, "Q",int(instance.Queue_Assignment[i, j].value), "La",int(instance.Latency[i].value))
+                    frame_indicator = ("S", i, "L", j, "F", k, "Q",int(instance.Queue_Assignment[i, j].value), "La",int(instance.Latency[i].value),"O",int(instance.Frame_Offset[i,j,k].value))
                     helper = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value, "Finish" : (instance.Frame_Offset[i,j,k].value +12), "Color" : j }
                     clean_offset = { "Task" :str(frame_indicator), "Start": instance.Frame_Offset[i,j,k].value }
                     Result_offsets.append(helper)
@@ -99,11 +99,11 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
 
 def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths):
     plt.subplot(222)
-    plt.text(0.1, 0.9, "Network-links: \n" + str(Network_links), bbox=dict(facecolor='red', alpha=0.5))
+    plt.text(0.1, 0.9, "Network links: \n" + str(Network_links), bbox=dict(facecolor='red', alpha=0.5))
     plt.text(0.1, 0.7, "Frames per stream: \n" + str(Num_of_Frames), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.5, "Streams periods: \n" + str(Streams_Period), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.3, "Indexed Links order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.1, "Streams Paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
+    plt.text(0.1, 0.5, "Stream periods: \n" + str(Streams_Period), bbox=dict(facecolor='red', alpha=0.5))
+    plt.text(0.1, 0.3, "Indexed link order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
+    plt.text(0.1, 0.1, "Stream paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
     plt.axis('off')
     plt.show() # comment for avoiding showing de result
 
@@ -132,6 +132,7 @@ def dataframe_printer(instance, Clean_offsets, Results_latencies, Feasibility_in
         "Latencies" : Results_latencies,
         "Feasibility" : Feasibility
     }
+  
     #print(Full_scheduled_data)
     ### This will store the results into a txt for further usage
     with open('results.txt', 'a') as f :
