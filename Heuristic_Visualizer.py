@@ -12,6 +12,9 @@ from Heuristic_Generator import *
 import time
 from read import *
 
+input = "input6"
+file_input = "Solutions/"+input+".json"
+
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
     Result_offsets = []
@@ -94,7 +97,7 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period):
     plt.ylabel("Frames")
     plt.xlabel("Time in miliseconds")
     plt.title("Gantt Chart")
-    plt.savefig('testing.png')
+    #plt.savefig('testing.png')
     #plt.show() 
     return df
 
@@ -107,6 +110,8 @@ def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, 
     plt.text(0.1, 0.3, "Indexed link order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
     plt.text(0.1, 0.1, "Stream paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
     plt.axis('off')
+    name="Solutions/"+input+"_heuristic1.png"
+    plt.savefig(name, bbox_inches='tight', pad_inches=0)
     plt.show() # comment for avoiding showing de result
 
 
@@ -150,11 +155,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
 ################################################################
     # Generation of random Network
     try :
-        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
+        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read(file_input)
         ################################################################
-
         #Djikstra scheduler
         network = Network_Topology(Adjacency_Matrix) 
         all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
@@ -164,7 +166,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         ################################################################
         
         # Random Streams parameters
-        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
+        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
         #Link_order_Descriptor = cambiar la funcion a la del heuritsto ahora lo hago en el fichero 
         Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)

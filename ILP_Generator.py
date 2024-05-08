@@ -51,7 +51,7 @@ class ILP_Raagard_solver :
                 Link_order_Descriptor, \
                 Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
                 Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
-                Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration):
+                Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue):
 
         self.Number_of_Streams = Number_of_Streams
         self.Network_links = Network_links
@@ -68,6 +68,8 @@ class ILP_Raagard_solver :
         self.Repetitions_Descriptor = Repetitions_Descriptor
         self.unused_links = unused_links
         self.Frame_Duration = Frame_Duration
+        self.latency = latency
+        self.queue = queue
 
         #print("self  ",self.Number_of_Streams, self.Network_links, self.Link_order_Descriptor, self.Streams_Period, self.Hyperperiod)
         #print("2",self.Frames_per_Stream,self.Max_frames, self.Num_of_Frames,self.Model_Descriptor,self.Model_Descriptor_vector)
@@ -80,6 +82,8 @@ class ILP_Raagard_solver :
         self.model.Frames = Set(initialize= frozenset(range(Max_frames))) # Maximum number of streams
         self.model.Links = Set(initialize = frozenset(range(len(Network_links)))) # Links Ids
 
+        self.model.latency = self.latency
+        self.model.queue = self.queue
         # Parameters
         self.model.Hyperperiod = Param(initialize=Hyperperiod)
         self.model.Large_Number = Param(initialize=9999999999)
@@ -108,13 +112,15 @@ class ILP_Raagard_solver :
         # Defining the objective function  funcion objetivo
         @self.model.Objective(sense=minimize)
         def Latency_Num_Queues_rule(model):
-        #   return sum(model.Num_Queues[link] - 1 for link in model.Links )
-        #   return sum(model.Num_Queues[link] for link in model.Links )
-        #   return sum(model.Latency[stream] - model.Lower_Latency[stream] for stream in model.Streams) 
-        #   return (0.1) * sum((model.Latency[stream] - model.Lower_Latency[stream]) for stream in model.Streams ) + (0.9) * sum(model.Num_Queues[link]  for link in model.Links )
+        #    return sum(model.Num_Queues[link] - 1 for link in model.Links )
+        #    return sum(model.Num_Queues[link] for link in model.Links )
+        #    return sum(model.Latency[stream] - model.Lower_Latency[stream] for stream in model.Streams) 
+        #    return (0.1) * sum((model.Latency[stream] - model.Lower_Latency[stream]) for stream in model.Streams ) + (0.9) * sum(model.Num_Queues[link]  for link in model.Links )
         #    return (0.5) * sum(model.Latency[stream] for stream in model.Streams ) + (0.5) * sum(model.Num_Queues[link]  for link in model.Links )
         #    return (0.0) * sum(model.Latency[stream] for stream in model.Streams ) + (1.0) * sum(model.Num_Queues[link]  for link in model.Links )
-            return (1.0) * sum(model.Latency[stream] for stream in model.Streams ) + (0.0) * sum(model.Num_Queues[link]  for link in model.Links )
+        #    return (1.0) * sum(model.Latency[stream] for stream in model.Streams ) + (0.0) * sum(model.Num_Queues[link]  for link in model.Links )
+            return (model.latency) * sum(model.Latency[stream] for stream in model.Streams ) + (model.queue) * sum(model.Num_Queues[link]  for link in model.Links )
+
 
         
         # Defining the constraints

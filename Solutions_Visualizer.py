@@ -11,6 +11,11 @@ from ILP_Generator import *
 import time
 from read import *
 
+input = "input1"
+file_input = "Solutions/"+input+".json"
+latency=8
+queue=9
+
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
     Result_offsets = []
@@ -63,9 +68,7 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
 def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
     data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
     Repetitions = [repetition + 1 for repetition in Repetitions]
-
     color=['black', 'red', 'green', 'blue', 'cyan', 'magenta',  'yellow', 'grey', 'orange', 'pink','fuchsia']
-
     # This set of code is for generating the repetitions values in the dataset
     #For printing the full gant Chart
     New_offsets = []
@@ -92,7 +95,7 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
     plt.ylabel("Frames")
     plt.xlabel("Time in miliseconds")
     plt.title("Gantt Chart")
-    plt.savefig('testing.png')
+    #plt.savefig('testing.png')
     #plt.show() 
     return df
 
@@ -105,6 +108,8 @@ def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, 
     plt.text(0.1, 0.3, "Indexed link order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
     plt.text(0.1, 0.1, "Stream paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
     plt.axis('off')
+    name="Solutions/"+input+"_ilp_"+str(latency)+"_"+str(queue)+"1.png"
+    plt.savefig(name, bbox_inches='tight', pad_inches=0)
     plt.show() # comment for avoiding showing de result
 
 
@@ -151,7 +156,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         #Network_nodes, Network_links, Adjacency_Matrix, plot_network = Network_Generator(Number_of_edges, Connection_probability)
         #Stream_Source_Destination = Flows_generator(Number_of_Streams, Number_of_edges) 
         ####LEER DEL FICHERO
-        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read()
+        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read(file_input)
         ################################################################
         
         #Djikstra scheduler
@@ -164,7 +169,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         
         # Random Streams parameters
         #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Random_Stream_size_and_period_generator(Number_of_Streams)
-        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
+        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
@@ -182,7 +187,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                         Link_order_Descriptor, \
                         Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
                         Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
-                        Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration)
+                        Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue)
         instance, results = scheduler.instance, scheduler.results
         final_time = time.time()
         
