@@ -4,9 +4,9 @@ from read import *
 import matplotlib.pyplot as plt
 import networkx as nx 
 
-file_input = "Solutions/input6.json"
+#file_input = "Solutions/input6.json"
  
-def Read():
+def Read(file_input):
     Number_of_edges=0  #numero de switch=4
     Number_of_Streams=0 #numero de flujos=3
     Network_nodes = list()
@@ -65,7 +65,7 @@ def Read():
     nx.draw(G, with_labels=True)
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination,
 
-def Read2(Number_of_Streams):
+def Read2(Number_of_Streams, file_input):
     SourceDevice_flow = list()
     Streams_size = list()   #[53, 256] hecho
     Streams_Period = {}  # {0: 5000, 1: 2500} hecho
