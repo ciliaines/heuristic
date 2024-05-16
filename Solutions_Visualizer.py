@@ -11,7 +11,7 @@ from ILP_Generator import *
 import time
 from read import *
 
-input = "input1"
+input = "input5-1"
 file_input = "Solutions/"+input+".json"
 latency=8
 queue=9
