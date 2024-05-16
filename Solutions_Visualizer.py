@@ -13,8 +13,8 @@ from read import *
 
 input = "input5-1"
 file_input = "Solutions/"+input+".json"
-latency=8
-queue=9
+latency=0
+queue=1
 
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
