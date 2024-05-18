@@ -108,7 +108,7 @@ def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, 
     plt.text(0.1, 0.3, "Indexed link order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
     plt.text(0.1, 0.1, "Stream paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
     plt.axis('off')
-    name="Solutions/"+input+"_ilp_"+str(latency)+"_"+str(queue)+"1.png"
+    name="Solutions/"+input+"_ilp_"+str(latency)+"_"+str(queue)+".png"
     plt.savefig(name, bbox_inches='tight', pad_inches=0)
     plt.show() # comment for avoiding showing de result
 
