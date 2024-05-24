@@ -12,7 +12,7 @@ from Heuristic_Generator import *
 import time
 from read import *
 
-input = "input5-1"
+input = "input5-2"
 file_input = "Solutions/"+input+".json"
 
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
@@ -110,7 +110,7 @@ def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, 
     plt.text(0.1, 0.3, "Indexed link order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
     plt.text(0.1, 0.1, "Stream paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
     plt.axis('off')
-    name="Solutions/"+input+"_heuristic1.png"
+    name="Solutions/"+input+"_heuristic.png"
     plt.savefig(name, bbox_inches='tight', pad_inches=0)
     plt.show() # comment for avoiding showing de result
 

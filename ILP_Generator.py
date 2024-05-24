@@ -82,6 +82,7 @@ class ILP_Raagard_solver :
         self.model.Frames = Set(initialize= frozenset(range(Max_frames))) # Maximum number of streams
         self.model.Links = Set(initialize = frozenset(range(len(Network_links)))) # Links Ids
 
+        #parametros para el fichero 
         self.model.latency = self.latency
         self.model.queue = self.queue
         # Parameters
@@ -101,7 +102,7 @@ class ILP_Raagard_solver :
         self.model.Queue_Assignment = Var(self.model.Streams, self.model.Links, within=NonNegativeIntegers, initialize=0)
         self.model.Aux_Var_Dis = Var(self.model.Streams, self.model.Frames, self.model.Streams, self.model.Frames, self.model.Links, self.model.Repetitions, self.model.Repetitions, within=Binary, initialize = 0)
         self.model.w = Var(self.model.Streams, self.model.Repetitions ,self.model.Frames, self.model.Streams, self.model.Repetitions, self.model.Frames, self.model.Links, within=Binary, initialize=0)
-
+        self.model.Streams_Offset = Var(self.model.Streams, within=NonNegativeIntegers, initialize=0 )
         #Variables of the Objective Function
         self.model.Lower_Latency = Var(self.model.Streams, within=NonNegativeReals, initialize=0)
         self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
@@ -254,7 +255,7 @@ class ILP_Raagard_solver :
                 return model.Num_Queues[link] == 0
             else : 
                 return Constraint.Skip
-
+                
         ### This part is the creation of the instance in the ilp system
         opt = SolverFactory('gurobi')
         #opt = SolverFactory('glpk')
