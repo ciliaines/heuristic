@@ -248,84 +248,6 @@
                 {
                         "name": "flow3",
                         "type": "unicast",
-                        "sourceDevice": "0",
-                        "endDevices": [
-                                "5"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "0",
-                                        "nextNodeName": "2"
-                                },
-                                {
-                                        "currentNodeName": "2",
-                                        "nextNodeName": "3"
-                                },
-                                {
-                                        "currentNodeName": "3",
-                                        "nextNodeName": "4"
-                                },
-                                {
-                                        "currentNodeName": "4",
-                                        "nextNodeName": "5"
-                                }
-                        ]
-                },
-                {
-                        "name": "flow4",
-                        "type": "unicast",
-                        "sourceDevice": "1",
-                        "endDevices": [
-                                "5"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "1",
-                                        "nextNodeName": "2"
-                                },
-                                {
-                                        "currentNodeName": "2",
-                                        "nextNodeName": "3"
-                                },
-                                {
-                                        "currentNodeName": "3",
-                                        "nextNodeName": "4"
-                                },
-                                {
-                                        "currentNodeName": "4",
-                                        "nextNodeName": "5"
-                                }
-                        ]
-                },
-                {
-                        "name": "flow5",
-                        "type": "unicast",
-                        "sourceDevice": "5",
-                        "endDevices": [
-                                "0"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "5",
-                                        "nextNodeName": "4"
-                                },
-                                {
-                                        "currentNodeName": "4",
-                                        "nextNodeName": "3"
-                                },
-                                {
-                                        "currentNodeName": "3",
-                                        "nextNodeName": "2"
-                                },
-                                {
-                                        "currentNodeName": "2",
-                                        "nextNodeName": "0"
-                                }
-                        ]
-                },
-                {
-                        "name": "flow6",
-                        "type": "unicast",
                         "sourceDevice": "5",
                         "endDevices": [
                                 "1"
@@ -350,11 +272,11 @@
                         ]
                 },
                 {
-                        "name": "flow7",
+                        "name": "flow4",
                         "type": "unicast",
                         "sourceDevice": "6",
                         "endDevices": [
-                                "0"
+                                "1"
                         ],
                         "hops": [
                                 {
@@ -371,7 +293,7 @@
                                 },
                                 {
                                         "currentNodeName": "2",
-                                        "nextNodeName": "0"
+                                        "nextNodeName": "1"
                                 }
                         ]
                 }
