@@ -12,7 +12,7 @@ from Heuristic_Generator import *
 import time
 from read import *
 
-input = "input5-2"
+input = "input5-1"
 file_input = "Solutions/"+input+".json"
 
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
@@ -25,7 +25,7 @@ def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
             for k in instance.Frames:
                 if Model_Descriptor_vector [i][k][j] :
                     print("The offset of stream", i, "link", j, "frame", k, "is",instance.Lower_bound[i,j,k].value)
-                    frame_indicator = ("S", i, "L", j, "F", k, "Q",instance.Queue_Assignment[i, j].value, "La",int(instance.Latency[i].value), "O",int(instance.Frame_Offset[i,j,k].value))
+                    frame_indicator = ("S", i, "L", j, "F", k, "Q",int(instance.Queue_Assignment[i, j].value), "La",int(instance.Latency[i].value), "O",int(instance.Frame_Offset[i,j,k].value))
                     helper = { "Task" :str(frame_indicator), "Start": instance.Lower_bound[i,j,k].value, "Finish" : instance.Upper_bound[i,j,k].value, "Color" : j }
                     clean_offset = { "Task" :str(frame_indicator), "Start": instance.Lower_bound[i,j,k].value }
                     Result_offsets.append(helper)
