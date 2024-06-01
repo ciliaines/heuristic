@@ -3,6 +3,7 @@
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from pyomo.core import Var
+import bisect
 
 flexibility_solution = {}
 
@@ -46,7 +47,6 @@ class Heuristic_class :
         self.model.Model_Descriptor = Param(self.model.Streams, self.model.Frames, self.model.Links, initialize= Model_Descriptor)
         self.model.Deathline_Stream = Param(self.model.Streams, initialize = Deathline_Stream)
         self.model.Period = Param(self.model.Streams, initialize=Streams_Period)
-        #self.model.Num_of_Frames = Param(self.model.Streams, initialize=Num_of_Frames)
 
         self.model.Frames_per_Stream = self.Frames_per_Stream
         self.model.Stream_Source_Destination = self.Stream_Source_Destination
@@ -68,7 +68,6 @@ class Heuristic_class :
         self.model.Frame_Offset_up = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
         self.model.Streams_Offset = Var(self.model.Streams, within=NonNegativeIntegers, initialize=0 )
 
-        #self.model.Queue_total = Var(self.model.Streams,within=NonNegativeIntegers, initialize=4)
         self.model.Sort_Deathline_Stream = {}
         self.model.Queue_Assignment = Var(self.model.Streams, self.model.Links, within=NonNegativeIntegers, initialize=0)
         self.model.Solution = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
@@ -105,107 +104,77 @@ def Greedy_Heuristic(model):
                     #success = True
 
 def Schedule_flow(key_stream, value_stream, model):
-    #for frame in range(model.Num_of_Frames_Dic[key_stream]): #tramas de cada link
     print("    ")
     for frame in range(model.Frames_per_Stream[key_stream][0]):
         a = 0
         b = 1
         # Generar un vector con el primer y segundo valor
         send_link = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
-        #key_send_link = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == send_link or value_stream == tuple(reversed(send_link))),None)
         link = send_link
         key_link = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
         reciving_link= (model.Streams_paths_Dic[key_stream][-2], model.Streams_paths_Dic[key_stream][-1])
         
         model.Lower_bound[key_stream, key_link, frame] = 0.0
         model.Upper_bound[key_stream, key_link, frame] = model.Streams_Period[key_stream]
-        #lower_bound = 0.0
-        #Bound_dic = (lower_bound, model.Streams_Period[key_stream])
         #print(f"Lower_bound[{key_send_link}] = {value(model.Lower_bound[key_send_link])}")
         #print(f"Upper_bound[{key_send_link}] = {value(model.Upper_bound[key_send_link])}")
-        ultima_vez =False
         contador=1
         while contador < len(model.Streams_paths_Dic[key_stream]):
-        #while not ultima_vez:
-            print("contador ", contador, len(model.Streams_paths_Dic[key_stream]))
+            #print("contador ", contador, len(model.Streams_paths_Dic[key_stream]))
             #Ecuacion 45
             link_anterior = (model.Streams_paths_Dic[key_stream][a-1],model.Streams_paths_Dic[key_stream][b-1])
             key_link_anterior = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link_anterior or value_stream == tuple(reversed(link_anterior))),None)          
             lower_bound = Lower_bound(send_link, link, model, key_stream, frame, key_link, key_link_anterior)
             model.Lower_bound[key_stream, key_link, frame] = lower_bound
             #print(f"Lower_bound[{key_stream, key_link, frame}] = {value(model.Lower_bound[key_stream, key_link, frame])}")
-            #Bound_dic = (lower_bound, Bound_dic[1])
-            
-            #Earliest_offset
             tiempo = Earliest_offset(model, frame, key_link, key_stream)
-            #print("stream   ",key_stream,"   key link  ",key_link, "  a  ", a , "  b  ",b)
-            #print("tiempo   ", tiempo, "     Bound_dic   ",Bound_dic, "flexibility_solution   ",flexibility_solution.get(key_link))
-            
-            #model.Solution[key_stream, key_link, frame] = tiempo[0]
-            #print(f"Solution[{key_stream}, {key_link}, {frame}] = {value(model.Solution[key_stream, key_link, frame])}")
-            print("tiempo  ", tiempo[0], "uuper ",  model.Upper_bound[key_stream, key_link, frame].value)
-            print("tiempo 2 ", tiempo[1])
+            #print("tiempo  ", tiempo[0], "uuper ",  model.Upper_bound[key_stream, key_link, frame].value)
+            #print("tiempo 2 ", tiempo[1])
 
-            #if value(model.Solution[key_stream, key_link, frame]) == float('inf'):
             if tiempo[0] == float('inf'):
                 return False, key_link
-
-            #elif value(model.Solution[key_stream, key_link, frame]) <= value(model.Upper_bound[key_link]):
-
             elif tiempo[0] <= model.Upper_bound[key_stream, key_link, frame].value:
-                #model.Streams_Period[key_stream]: #//no esta bien compara el tiempo escogido con el bound dic 
-                Add_Solution(key_link, tiempo, model, key_stream)
-                                
+                Add_Solution(key_link, tiempo, model, key_stream)       
                 model.Lower_bound[key_stream, key_link, frame] = tiempo[0] #model.Solution[key_stream, key_link, frame]
                 model.Upper_bound[key_stream, key_link, frame] = tiempo[1] #model.Solution[key_stream, key_link, frame]+100
-                print(f"Lower_bound[{key_stream, key_link, frame}] = {value(model.Lower_bound[key_stream, key_link, frame])}")
-                print(f"Upper_bound[{key_stream, key_link, frame}] = {value(model.Upper_bound[key_stream, key_link, frame])}")
-                #model.Ocupacion_Queue[key_link,model.Queue_Assignment[key_stream, key_link]] = tiempo
-                #Bound_dic = tiempo
+                #print(f"Lower_bound[{key_stream, key_link, frame}] = {value(model.Lower_bound[key_stream, key_link, frame])}")
+                #print(f"Upper_bound[{key_stream, key_link, frame}] = {value(model.Upper_bound[key_stream, key_link, frame])}")
                 a += 1
                 b += 1
-                #print("****************************111 else if a  ",a," b ",b," len ",len(model.Streams_paths_Dic[key_stream]))
                 if b < len(model.Streams_paths_Dic[key_stream]):
                     next_link = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
                     link = next_link
                     key_link = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
                     model.Upper_bound[key_stream, key_link, frame] = Latest_queue_available_time(key_link, model.Streams_Period[key_stream])
-                    print(f"Upper_boundlatest[{key_stream, key_link, frame}] = {value(model.Upper_bound[key_stream, key_link, frame])}")
+                    #print(f"Upper_boundlatest[{key_stream, key_link, frame}] = {value(model.Upper_bound[key_stream, key_link, frame])}")
                 contador +=1
             else:
-                print("22222 else   ")
                 a -= 1
                 b -= 1
                 link_next = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
                 link = link_next
                 key_link_next = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
                 key_link =key_link_next
-                print("**********  link_next  ",link_next, "  key_link_next  ",key_link_next)
+                #print("**********  link_next  ",link_next, "  key_link_next  ",key_link_next)
                 if key_link_next is not None:
                     model.Lower_bound[key_stream, key_link_next, frame] = Earliest_queue_available_time(key_link_next, model.Streams_Period[key_stream])
-                print(f"Lower_bound[{key_stream, key_link, frame}] = {value(model.Lower_bound[key_stream, key_link, frame])}")
-                print(f"Upper_bound[{key_stream, key_link, frame}] = {value(model.Upper_bound[key_stream, key_link, frame])}")
+                    #print(f"Lower_bound[{key_stream, key_link, frame}] = {value(model.Lower_bound[key_stream, key_link, frame])}")
+                    #print(f"Upper_bound[{key_stream, key_link, frame}] = {value(model.Upper_bound[key_stream, key_link, frame])}")
                 contador -=1
-
-            
-
-    #return True, key_link #, Result_offsets 
     return model.Latency[key_stream].value <= model.Deathline_Stream[key_stream], key_link
 
 def Add_Solution(key_link, tiempo, model, key_stream): #Es por las posibles repeticiones dentro de una trama 
     #print("-----------")
-    #print("key link ",key_link)
-    #print("timepo ", tiempo)
-    #print("Hyperperiod", model.Hyperperiod.value)
-    #print("period ", model.Streams_Period)
-    #resultado = model.Hyperperiod / model.Streams_Period[key_link]
-    resultado = 1
+    #print("key link ",key_link, " tiempo ", tiempo, " Hyperperiod", model.Hyperperiod.value, "period ", model.Streams_Period)
+    resultado = model.Hyperperiod / model.Streams_Period[key_stream]
+    #resultado = 1
     i = 0
     while i < resultado:
         if flexibility_solution.get(key_link) is None:
             flexibility_solution[key_link] = [tiempo]
         else:
-            flexibility_solution[key_link].append(tiempo)
+            #flexibility_solution[key_link].append(tiempo)
+            bisect.insort(flexibility_solution[key_link], tiempo)
         tiempo = (tiempo[0] + model.Streams_Period[key_stream], tiempo[1]+model.Streams_Period[key_stream])
         i += 1
 
@@ -225,14 +194,14 @@ def Earliest_offset(model, frame, key_link, key_stream):
     #EARLIEST OFFSET
     tiempo= 0.0
     #print("link  ", link,"Streams  ",stream)
-    #print("Bound_dic   ",Bound_dic[0])
     #print("flexibility_solution   ",flexibility_solution.get(key_link))
     #if model.Ocupacion_Queue[key_link, model.Queue_Assignment[key_stream, key_link]] is not None:
     #link_order = tuple(sorted(link))
     #print(f"Lower_bound[{key_stream, key_link, frame}] = {value(model.Lower_bound[key_stream, key_link, frame])}")
     a = model.Lower_bound[key_stream, key_link, frame].value
     if flexibility_solution.get(key_link)is not None:
-        b = int(flexibility_solution[key_link][-1][-1])
+        #b = int(flexibility_solution[key_link][-1][-1])
+        b = Earliest_queue_available_time(key_link, model.Streams_Period[key_stream])
         mayor_max = max(a, b)
         #print(mayor_max)
         #print(" ----------- mayor   ",mayor_max)
@@ -248,14 +217,17 @@ def Earliest_offset(model, frame, key_link, key_stream):
     else:
         tiempo = (a, a+model.Frame_Duration[key_stream,frame,key_link])
         #print("no existe ",tiempo)
+    print("tiempo  ", tiempo, "stream period  ",model.Streams_Period[key_stream])
+    #if tiempo[0] == model.Streams_Period[key_stream]:
+    #    tiempo = (-1, -1)
     return tiempo
 
 def Latest_queue_available_time(key_link, Streams_Period):# @CORREGIO ¿?QUE SIGNIFICA ESTO
     if flexibility_solution.get(key_link)is not None:
-    #    if flexibility_solution[key_link][-1][-1] == Streams_Period:
-    #        return float('inf')
-    #    else:
-    #        return max(flexibility_solution[key_link][-1][-1], Streams_Period)
+        if flexibility_solution[key_link][-1][-1] == Streams_Period:
+            return float('inf')
+        else:
+            return max(flexibility_solution[key_link][-1][-1], Streams_Period)
         print("existe ", key_link)
     else:
         tiempo = Streams_Period
@@ -265,30 +237,33 @@ def Latest_queue_available_time(key_link, Streams_Period):# @CORREGIO ¿?QUE SIG
 
 def Earliest_queue_available_time(key_link, Streams_Period):
     if flexibility_solution.get(key_link)is not None:
-        #for i in range(len(flexibility_solution.get(key_link)) - 1):
-        #    if flexibility_solution.get(key_link)[i][1] != flexibility_solution.get(key_link)[i + 1][0]:
-        #        tiempo =  flexibility_solution.get(key_link)[i][1]
-        tiempo = flexibility_solution[key_link][-1][-1]
-        print("existe ",tiempo)
+       tiempo = flexibility_solution[key_link][-1][-1]
+       for i in range(len(flexibility_solution.get(key_link)) - 1):
+            if flexibility_solution.get(key_link)[i][1] != flexibility_solution.get(key_link)[i + 1][0]:
+                tiempo =  flexibility_solution.get(key_link)[i][1]
+                break
     else:
-        tiempo = Streams_Period
+        tiempo = 0.0 #Streams_Period
+    print("Earliest_queue_available_time ",tiempo)
+
     return tiempo
 
 def Lower_bound(send_link, link, model, key_stream, frame, key_link, key_link_anterior):
     print("--link  ",link, "key_link ",key_link, "  send_link  ",send_link, "  key_link_anterior  ",key_link_anterior)
+    #print("tiempo ", Earliest_queue_available_time(key_link, model.Streams_Period[key_stream]))
     if frame == 0 and link == send_link:
         return 0.0
     elif frame >= 1  and link == send_link:
     #    print("2")
-        return flexibility_solution[key_link][-1][0] + model.Frame_Duration[key_stream, frame, key_link]
+        return Earliest_queue_available_time(key_link, model.Streams_Period[key_stream]) + model.Frame_Duration[key_stream, frame, key_link]
     elif frame == 0 and link != send_link:
         #print(" 3  ",link,"   ",send_link)
         #print("flexi  ",flexibility_solution[key_link_anterior])
-        return flexibility_solution[key_link_anterior][-1][0] + model.Frame_Duration[key_stream,frame,key_link] +  model.Max_Syn_Error    
+        return Earliest_queue_available_time(key_link_anterior, model.Streams_Period[key_stream]) + model.Frame_Duration[key_stream,frame,key_link_anterior] +  model.Max_Syn_Error    
     else:
     #    print("4  ")
-        a = flexibility_solution[key_link][-1][0] + model.Frame_Duration[key_stream,frame,key_link]
-        b = flexibility_solution[key_link_anterior][frame-1][0] + model.Frame_Duration[key_stream,frame,key_link] +  model.Max_Syn_Error
+        a = Earliest_queue_available_time(key_link, model.Streams_Period[key_stream]) + model.Frame_Duration[key_stream, frame, key_link]
+        b = Earliest_queue_available_time(key_link_anterior, model.Streams_Period[key_stream]) + model.Frame_Duration[key_stream,frame,key_link] +  model.Max_Syn_Error    
         return max(a,b)
 
 #Listar colas asociadas a la clave del link
@@ -311,29 +286,6 @@ def List_queue(model):
     #print(Queue_total)
     model.Queue_total = {0: 2, 1: 2, 2: 2, 3: 2}
     return Queue_total
-
-#ordenar los flows dependiendo de las reglas 
-#def Sort_flow(model):
-#    #Sort_Stream_Source_Destination = {}
-#    #Combine the keys of all three dictionaries into a list
-#    keys = sorted(set(model.Deathline_Stream.keys()) | set(model.Streams_Period.keys()) | set(model.Streams_Size_Dic.keys()))
-#    #Defines a function to sort the keys based on Deathline_Stream, Streams_Period and Streams_Size_Dic
-#    def sort_keys(key):
-#        value1 = model.Deathline_Stream.get(key, float('inf'))
-#        value2 = model.Streams_Period.get(key, float('inf'))
-#        value3 = model.Streams_Size_Dic.get(key, float('-inf'))
-#        #Sort first by Deathline_Stream, then by Streams_Period and finally by Streams_Size_Dic
-#        return (value1, value2, -value3)
-#    # Shot keys less to high
-#    sort_keys = sorted(keys, key=sort_keys)
-#    #print("SORT  KEYS",sort_keys)
-#    # sort deadthline line dictory short
-#    model.Sort_Deathline_Stream = {key: model.Deathline_Stream[key] for key in sort_keys}
-#    # keys list
-#    lista_de_claves = list(model.Sort_Deathline_Stream.keys())
-#    #Ordenar el diccionario segun la lista de las claves
-#    model.Sort_Stream_Source_Destination = {key: model.Stream_Source_Destination_Dic[key] for key in lista_de_claves}
-#    model.Link_order_Descriptor = list(model.Sort_Stream_Source_Destination.values())
 
 def Constraining_engress_port(model, key_stream, key_link, frame):
     #"bloquear value   " entre ello lo que hay que hacer
