@@ -12,7 +12,7 @@ from Heuristic_Generator import *
 import time
 from read import *
 
-input = "input6"
+input = "input5-1"
 file_input = "Solutions/"+input+".json"
 
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
@@ -38,10 +38,14 @@ def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
         #print("The lower latency of Stream", stream, "is",instance.Lower_Latency[stream].value)
         print("The latency of Stream ", stream, "is", instance.Latency[stream].value)
         Results_latencies.append(instance.Latency[stream].value)#
+    for i in instance.Streams:
+        for j in instance.Links:
+            instance.Num_Queues[j] = max(instance.Num_Queues[j].value , instance.Queue_Assignment[i,j].value)
+
 
     print("############### This is the set of queues ######################")
     for link in instance.Links:
-        print("The number of queues of link ", link, "is",instance.Num_Queues[link].value)#
+        print("The number of queues of link ", link, "is", instance.Num_Queues[link].value)
 
     print("############### This is the set of queues per stream and link######################")
     for stream in instance.Streams:

@@ -62,7 +62,7 @@ class Heuristic_class :
         self.model.Stream_Source_Destination_Dic = {key: value for key, value in enumerate(self.Stream_Source_Destination)}
         self.model.Streams_Size_Dic = {key: value for key, value in enumerate(self.Streams_size)}
         # Variables
-        self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=1)
+        self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=0)
         self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
         self.model.Queue_Link_Dic = {}
         self.model.Frame_Offset = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
@@ -101,7 +101,6 @@ def Greedy_Heuristic(model):
                 flexibility_solution = None
                 print("flexible  ", flexibility_solution)
                 print("ELSE +++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
-                #model.Num_Queues[link] = model.Num_Queues[link] + 1
                 if model.Queue_Assignment[key_stream, link].value > 3:#model.Num_Queues[link].value:
                     #success = True
                     print("ghklsdghjlsdghjksdghjksdghjkdfsghj")
