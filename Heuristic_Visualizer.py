@@ -45,7 +45,7 @@ def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
 
     print("############### This is the set of queues ######################")
     for link in instance.Links:
-        print("The number of queues of link ", link, "is", instance.Num_Queues[link].value)
+        print("The number of queues of link ", link, "is", instance.Num_Queues[link].value+1)
 
     print("############### This is the set of queues per stream and link######################")
     for stream in instance.Streams:
