@@ -1,6 +1,6 @@
 import json
 from RanNet_Generator import *
-from read import *
+#from read import *
 import matplotlib.pyplot as plt
 import networkx as nx 
 
@@ -54,6 +54,8 @@ def Read(file_input):
     plot_network = plt.figure(1, figsize=(14, 7))
     Sources = [link[0] for link in Network_links]
     Destinations = [link[1] for link in Network_links]
+
+
     # Build a dataframe with the Source and destination connections
     df = pd.DataFrame({ 'from': Sources , 'to': Destinations})
     # Build the graph
@@ -62,7 +64,7 @@ def Read(file_input):
     plot_network = plt.figure(1, figsize=(14, 7))
     plt.subplot(221)
     plt.title("Network  Topology")
-    nx.draw(G, with_labels=True)
+    nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination,
 
 def Read2(Number_of_Streams, file_input):

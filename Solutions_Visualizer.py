@@ -10,12 +10,13 @@ from Preprocessing import *
 from ILP_Generator import *
 import time
 from read import *
+from Plot import *
 
-input = "input5"
+input = "input4"
+latency=0.5
+queue=0.5
+input_name = input + "_ilp_" + str(latency) + "_" + str(queue)
 file_input = "Solutions/"+input+".json"
-latency=1
-queue=0
-
 
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
@@ -34,115 +35,34 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
                     Clean_offsets_collector.append(clean_offset)
                     if instance.Frame_Offset[i,j,k].value != 1 :
                         Feasibility_indicator = Feasibility_indicator + 1
+
     print("############### This is the set of latencies ######################")
     Results_latencies = []
     for stream in instance.Streams:
         #print("The lower latency of Stream", stream, "is",instance.Lower_Latency[stream].value)
         print("The latency of Stream ", stream, "is", int(instance.Latency[stream].value))
         Results_latencies.append(instance.Latency[stream].value)
-
     print("############### This is the set of queues ######################")
     for link in instance.Links:
         print("The number of queues of link ", link, "is",int(instance.Num_Queues[link].value))
-
     print("############### This is the set of queues per stream and link######################")
     for stream in instance.Streams:
         for link in instance.Links:
             print("The number of queues of Link",link , "Stream" , stream, "is", int(instance.Queue_Assignment[stream, link].value))
 
-#    print("############### This is the set of auxiliar queues variables######################")
-#    for stream in instance.Streams :
-#        for stream_2 in instance.Streams :
-#            for link in instance.Links :
-#                print("Aux variable for stream_1 ", stream, "Stream_2", stream_2, "link", link, ":", instance.Aux_Same_Queue[stream_2, link ,stream].value)
+    #    print("############### This is the set of auxiliar queues variables######################")
+    #    for stream in instance.Streams :
+    #        for stream_2 in instance.Streams :
+    #            for link in instance.Links :
+    #                print("Aux variable for stream_1 ", stream, "Stream_2", stream_2, "link", link, ":", instance.Aux_Same_Queue[stream_2, link ,stream].value)
     return Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies
-
-##### For printing the model results and variables #####
-#UNCOMMENT if necessary 
-
-# instance.display()
-# results.write()
-# results.solver.status 
-######################## For now on, this code is for generate the Gant chart ########################
-
-
-def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
-    data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
-    Repetitions = [repetition + 1 for repetition in Repetitions]
-    color=['black', 'red', 'green', 'blue', 'cyan', 'magenta',  'yellow', 'grey', 'orange', 'pink','fuchsia']
-    # This set of code is for generating the repetitions values in the dataset
-    #For printing the full gant Chart
-    New_offsets = []
-    stream_index = 0
-    for repetition in Repetitions :
-        for frame in Result_offsets:
-            substring = "'S', " +  str(stream_index)
-            if substring in frame["Task"] :
-                for i in range(int(repetition)) :
-                    Repeated_Stream = {'Task' : frame["Task"] , 'Start' : frame["Start"] + Streams_Period[stream_index]*(i), 'Color' : color[frame["Color"]]}
-                    New_offsets.append(Repeated_Stream)
-        stream_index = stream_index + 1
-
-    Result_offsets = New_offsets
-    data = [[frame['Task'], frame['Start'], frame['Color']] for frame in New_offsets]
-    df = pd.DataFrame(data, columns = ['Process_Name', 'Start', 'Color'])
-    #print("df.Process_Name     "+df.Process_Name)
-
-    # This is for printing the gant Chart 
-    plt.subplot(212)
-    #plt.figure(figsize=(12, 5))
-    plt.barh(y=df.Process_Name, left=df.Start, width=100, color=df.Color)
-    plt.grid(axis='x', alpha=0.5)
-    plt.ylabel("Frames")
-    plt.xlabel("Time in miliseconds")
-    plt.title("Gantt Chart")
-    #plt.savefig('testing.png')
-    #plt.show() 
-    return df
-
-
-def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths):
-    plt.subplot(222)
-    plt.text(0.1, 0.9, "Network links: \n" + str(Network_links), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.7, "Frames per stream: \n" + str(Num_of_Frames), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.5, "Stream periods: \n" + str(Streams_Period), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.3, "Indexed link order per stream: \n " + str(Link_order_Descriptor), bbox=dict(facecolor='red', alpha=0.5))
-    plt.text(0.1, 0.1, "Stream paths: \n " + str(Streams_links_paths), bbox=dict(facecolor='red', alpha=0.5))
-    plt.axis('off')
-    name="Solutions/"+input+"_ilp_"+str(latency)+"_"+str(queue)+".png"
-    plt.savefig(name, bbox_inches='tight', pad_inches=0)        
-    plt.show() # comment for avoiding showing de result
-
-
-def dataframe_printer(instance, Clean_offsets, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
-                    Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size):
-    Feasibility = False
-    if Feasibility_indicator > 1 :
-        Feasibility = True
-    # Definition of the Data Frame
-    # Each schedule provides the following:
-    Full_scheduled_data = {
-        #Parameter of the network 
-        "Adjacency_Matrix" : Adjacency_Matrix, 
-        #Parameters of the Streams
-        "Stream_Source_Destination" : Stream_Source_Destination, 
-        "Link_order_Descriptor" : Link_order_Descriptor,
-        "Links_per_Stream" : Links_per_Stream, 
-        "Number_of_Streams" : len(instance.Streams),
-        "Frames_per_Stream" : Frames_per_Stream,
-        "Deathline_Stream" : Deathline_Stream,
-        "Streams_Period" : Streams_Period,
-        #Results
-        "Streams_size" : Streams_size,
-        "Clean_offsets" : Clean_offsets,
-        "Latencies" : Results_latencies,
-        "Feasibility" : Feasibility
-    }
-  
-    #print(Full_scheduled_data)
-    ### This will store the results into a txt for further usage
-    with open('results.txt', 'a') as f :
-        f.write("\n" + str(Full_scheduled_data))
+      
+    ##### For printing the model results and variables #####
+    #UNCOMMENT if necessary 
+    # instance.display()
+    # results.write()
+    # results.solver.status 
+    ######################## For now on, this code is for generate the Gant chart ########################
 
 def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Streams) :
 
@@ -194,17 +114,33 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         
         ################################################################
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies  = ILP_results_visualizer(instance, Model_Descriptor_vector)
-        df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
-        information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
-        dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
+        df = gantt_chart_generator1(Result_offsets, Repetitions, Streams_Period)
+        information_generator1(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths,input_name)
+        dataframe_printer1(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
                      Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         ### This will store the results into a txt for further usage
         
         time_evaluation = final_time - initial_time
-        with open('results_gurobi_local'  + str(Number_of_edges)  + '_'
-                                    + str(Connection_probability) + '_'
-                                    + str(Number_of_Streams) + '.txt', 'a') as f :
+        with open('Results/' + input + '_' + 'ilp' + '_' + str(latency) + '_' + str(queue) + '.txt', 'a') as f :
+            f.write("\n")
+            f.write("Execution time:    ")
             f.write(str(time_evaluation) + "\n")
+            f.write("############### This is the set of offsets ######################" + "\n")
+            for i in instance.Streams:
+                for j in instance.Links:
+                    for k in instance.Frames:
+                        if Model_Descriptor_vector [i][k][j] :
+                            f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Frame_Offset[i,j,k].value) + "\n")
+            f.write("############### This is the set of latencies ######################" + "\n")
+            for stream in instance.Streams:
+                f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Lower_Latency[stream].value) + "\n")
+            f.write("############### This is the set of queues ######################" + "\n")
+            for link in instance.Links:
+                f.write("The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value) + "\n")
+            f.write("############### This is the set of queues per stream and link######################" + "\n")
+            for stream in instance.Streams:
+                for link in instance.Links:
+                    f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
     except ValueError:
         print("One error has occurred")
 
