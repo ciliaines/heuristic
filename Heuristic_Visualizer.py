@@ -123,7 +123,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         ### This will store the results into a txt for further usage
         
         time_evaluation = final_time - initial_time
-        with open('Results/' + input + '_' + 'heuristic' + '.txt', 'a') as f :
+        with open('Results/' + input_name + '.txt', 'a') as f :
             f.write("\n")
             f.write("Execution time:    ")
             f.write(str(time_evaluation) + "\n")

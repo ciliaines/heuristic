@@ -111,8 +111,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                         Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue)
         instance, results = scheduler.instance, scheduler.results
         final_time = time.time()
-        
         ################################################################
+        #Plot the values
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies  = ILP_results_visualizer(instance, Model_Descriptor_vector)
         df = gantt_chart_generator1(Result_offsets, Repetitions, Streams_Period)
         information_generator1(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths,input_name)
@@ -121,7 +121,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         ### This will store the results into a txt for further usage
         
         time_evaluation = final_time - initial_time
-        with open('Results/' + input + '_' + 'ilp' + '_' + str(latency) + '_' + str(queue) + '.txt', 'a') as f :
+        with open('Results/' + input_name + '.txt', 'a') as f :
             f.write("\n")
             f.write("Execution time:    ")
             f.write(str(time_evaluation) + "\n")
