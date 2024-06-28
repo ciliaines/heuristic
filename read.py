@@ -19,9 +19,6 @@ def Read(file_input):
             Number_of_edges = Number_of_edges+1
             Name_switch = switch["name"]
             Network_nodes = Network_nodes + [int(x) for x in Name_switch]
-            #ScheduleType_switch = switch["scheduleType"]
-            DefaultTimeToTravel_switch = switch["defaultTimeToTravel"]
-            DefaultPortSpeed_switch = switch["defaultPortSpeed"]
             change = True
             for port in switch["ports"]:
                 Name_port_switch = port["name"]
@@ -37,7 +34,6 @@ def Read(file_input):
                 if change == True:
                     Network_links = Network_links + [(int(x), int(y)) for x in Name_switch for y in ConnectsTo_port_switch]
                     change = False
-                TimeToTravel_port_switch = port["timeToTravel"]
         for flow in data["flows"]:
             Number_of_Streams =Number_of_Streams+1
             Name_flow = flow["name"]
