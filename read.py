@@ -1,10 +1,8 @@
 import json
 from RanNet_Generator import *
-#from read import *
 import matplotlib.pyplot as plt
 import networkx as nx 
 
-#file_input = "Solutions/input6.json"
  
 def Read(file_input):
     Number_of_edges=0  #numero de switch=4
@@ -18,7 +16,7 @@ def Read(file_input):
         for switch in data["switches"]:
             Number_of_edges = Number_of_edges+1
             Name_switch = switch["name"]
-            Final_switch = switch["name"]
+            Final_switch = switch["final"]
             Network_nodes = Network_nodes + [int(x) for x in Name_switch]
             change = True
             for port in switch["ports"]:
@@ -40,6 +38,7 @@ def Read(file_input):
     plot_network = plt.figure(1, figsize=(14, 7))
     Sources = [link[0] for link in Network_links]
     Destinations = [link[1] for link in Network_links]
+    print("file", file_input)
 
 
     # Build a dataframe with the Source and destination connections
@@ -53,3 +52,8 @@ def Read(file_input):
     nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination,
 
+def Write(file_input, hiperperiodo, Stream_links_paths):
+    print(" links ", Stream_links_paths)
+    #if hiperperiodo == 1:        
+    #if hiperperiodo == 6:
+    #if hiperperiodo == 30:    
