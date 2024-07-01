@@ -84,6 +84,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         initial_time = time.time()
         Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input)
         Stream_Source_Destination,Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size = Random(Stream_Source_Destination_total, Hyperperiod, Number_of_Streams)
+        print("Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination   ", Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination)
+
         ################################################################
         #Djikstra scheduler
         network = Network_Topology(Adjacency_Matrix) 
@@ -93,6 +95,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         Streams_links_paths = Streams_links_paths_generator(Streams_paths)
         print("Streams_links_paths", Streams_links_paths)
         Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
+        print("network, all_paths_matrix, Streams_paths, Streams_links_paths, Link_order_Descriptor ", network, all_paths_matrix, Streams_paths, Streams_links_paths, Link_order_Descriptor)
         ################################################################
         # Random Streams parameters
         #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)

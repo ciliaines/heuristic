@@ -12,12 +12,12 @@ def Read(file_input):
     Stream_Source_Destination = []
     Stream_Source_Destination_total = []
     with open(file_input, "r") as j:
+        print("jasdnfkasjbfkjasddbfkjasbdfkjadsbfkasdjbdfksajdbbbbbbbbfabkdjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
         data = json.load(j)
         Network_link = list()
         for switch in data["switches"]:
             Number_of_edges = Number_of_edges+1
             Name_switch = switch["name"]
-            Final_switch = switch["final"]
             Network_nodes = Network_nodes + [int(x) for x in Name_switch]
             change = True
             for port in switch["ports"]:
@@ -55,6 +55,7 @@ def Read(file_input):
     plt.subplot(221)
     plt.title("Network  Topology")
     nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
+    print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total
 
 

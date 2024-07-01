@@ -63,5 +63,55 @@
                         ]
 
                 }
+        ],
+        "links":[
+        	{
+        		"name":"link1",
+        		"devices":["0","3","1"]
+        	},
+			{
+			    "name":"link2",
+			    "devices":["0","3","2"]
+			},
+        	{
+        		"name":"link3",
+        		"devices":["0","3","4"]
+        	},
+			{
+			    "name":"link4",
+			    "devices":["1","3","0"]
+			},
+        	{
+        		"name":"link5",
+        		"devices":["1","3","2"]
+        	},
+			{
+			    "name":"link6",
+			    "devices":["1","3","4"]
+			},
+        	{
+        		"name":"link7",
+        		"devices":["2","3","0"]
+        	},
+			{
+			    "name":"link8",
+			    "devices":["2","3","1"]
+			},
+        	{
+        		"name":"link9",
+        		"devices":["2","3","4"]
+        	},
+			{
+			    "name":"link10",
+			    "devices":["4","3","0"]
+			},
+        	{
+        		"name":"link11",
+        		"devices":["4","3","1"]
+        	},
+			{
+			    "name":"link12",
+			    "devices":["4","3","2"]
+			}
         ]
 }
