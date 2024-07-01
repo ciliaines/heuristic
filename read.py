@@ -2,7 +2,7 @@ import json
 from RanNet_Generator import *
 import matplotlib.pyplot as plt
 import networkx as nx 
-
+import random
  
 def Read(file_input):
     Number_of_edges=0  #numero de switch=4
@@ -10,6 +10,7 @@ def Read(file_input):
     Network_nodes = list()
     Network_links = list()
     Stream_Source_Destination = []
+    Stream_Source_Destination_total = []
     with open(file_input, "r") as j:
         data = json.load(j)
         Network_link = list()
@@ -33,13 +34,17 @@ def Read(file_input):
                 if change == True:
                     Network_links = Network_links + [(int(x), int(y)) for x in Name_switch for y in ConnectsTo_port_switch]
                     change = False
+        for link in data["links"]:
+            Name_link = link["name"]
+            Devices = list()
+            for e in link["devices"]:
+                Devices = Devices + [int(x) for x in e]             
+            Stream_Source_Destination_total.append(Devices)
       
     Adjacency_Matrix = adj(Network_links)
     plot_network = plt.figure(1, figsize=(14, 7))
     Sources = [link[0] for link in Network_links]
     Destinations = [link[1] for link in Network_links]
-    print("file", file_input)
-
 
     # Build a dataframe with the Source and destination connections
     df = pd.DataFrame({ 'from': Sources , 'to': Destinations})
@@ -50,10 +55,52 @@ def Read(file_input):
     plt.subplot(221)
     plt.title("Network  Topology")
     nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
-    return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination,
+    return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total
 
-def Write(file_input, hiperperiodo, Stream_links_paths):
-    print(" links ", Stream_links_paths)
-    #if hiperperiodo == 1:        
-    #if hiperperiodo == 6:
-    #if hiperperiodo == 30:    
+
+def Random(Stream_Source_Destination_total, Hiperperiod, Number_of_Streams):
+    Stream_Source_Destination = []
+    Streams_Period = {}
+    Deathline_Stream = {}
+    Streams_size = list()
+    Number_of_Streams = Number_of_Streams+1
+    #Escoger los streams
+    choice = random.choice(Stream_Source_Destination_total)
+    Stream_Source_Destination.append(choice)
+    print("Stream_Source_Destination", Stream_Source_Destination)
+
+    #Escoger los periodos
+    if Hiperperiod == 1:
+        periodos = [0.1, 0.2, 0.5, 1]
+    if Hiperperiod == 6:
+        periodos = [0.1, 0.15, 0.5, 1, 2, 6]
+    if Hiperperiod == 30:
+        periodos = [0.1, 0.15, 0.2, 0.3, 0.5, 5, 10, 30]
+    Periodo = random.choice(periodos)
+    print("longuitud ",len(Stream_Source_Destination), "periodo", Periodo )
+    Streams_Period[len(Stream_Source_Destination)-1] = Periodo #{0:5000, 1:2500}
+    print("Stream_Period  ", Streams_Period)
+
+    #Equiparar el deathline
+    Deathline_Stream[len(Stream_Source_Destination)-1] = Periodo
+
+    #Escoger el datasize
+    if Periodo == 0.1 or Periodo == 0.15 or Periodo == 0.2 or Periodo == 0.3 or Periodo == 0.5:
+        size_pos = [1500,3000,4500]
+    else:
+        size_pos = [15000, 30000, 60000, 90000, 150000]
+    size = random.choice(size_pos)
+    print("size  ",size)
+    Streams_size = Streams_size + [size]             
+
+    print("Stream_size  ",Streams_size)
+    return Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size
+
+
+
+def Write(file_input, hiperperiodo, Streams_links_paths):
+    print("Streams_links_paths  ", Streams_links_paths)
+    #ESCOGER LOS FLOWS
+    stream_seleccionado = random.choice(Streams_links_paths)
+    print("stream seleccionado :", stream_seleccionado)
+    
