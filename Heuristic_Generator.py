@@ -33,7 +33,8 @@ class Heuristic_class :
         self.Streams_size = Streams_size
         self.Streams_paths = Streams_paths
         self.Sort_Stream_Source_Destination = Sort_Stream_Source_Destination
-
+        print("Link_order_Descriptor",Link_order_Descriptor)
+        print("Sort_Stream_Source_Destination",Sort_Stream_Source_Destination)
         self.model = AbstractModel()
         self.model.Streams = Set(initialize= range(self.Number_of_Streams)) 
         self.model.Repetitions = Set(initialize= range(int(max(Repetitions) + 1))) # This is the maximum number of Repetitions
@@ -87,6 +88,7 @@ def Greedy_Heuristic(model):
         value_stream = (0,0)
         success = False
         cola =0
+        print("self.model.Network_links_Di ", model.Network_links_Dic)
         while not success:
             booleano ,link = Schedule_flow(key_stream, value_stream, model, cola)
             Latency_Cal(key_stream, model)
