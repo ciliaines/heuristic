@@ -18,7 +18,7 @@ from Plot import *
 input = "input1"
 input_name = input + "_heuristic"
 file_input = "Solutions/"+input+".json"
-Hyperperiod = 10
+Hyperperiod = 1000
 #Hyperperiod = 6
 # Hyperperiod = 30
 
@@ -82,40 +82,31 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     # Generation of random Network
     try :
         initial_time = time.time()
+        #Read
         Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input)
         Stream_Source_Destination,Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size = Random(Stream_Source_Destination_total, Hyperperiod, Number_of_Streams)
-        print("----Stream_Source_Destination_total   ", Stream_Source_Destination_total)
-        print("----Stream_Source_Destination", Stream_Source_Destination)
-
         ################################################################
         #Djikstra scheduler
         network = Network_Topology(Adjacency_Matrix) 
         all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
         Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
-        print("Streams_paths", Streams_paths)
         Streams_links_paths = Streams_links_paths_generator(Streams_paths)
-        print("Streams_links_paths", Streams_links_paths)
         Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
-        print("Streams_paths,",Streams_paths, " Streams_links_paths",Streams_links_paths, " Link_order_Descriptor ", Link_order_Descriptor)
         ###############################################################
         # Random Streams parameters
         #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
         print("HIPERPERIODO", Hyperperiod)
-        Write(file_input, Hyperperiod, Streams_links_paths)
-
-
+        ###Write(file_input, Hyperperiod, Streams_links_paths)        
         #Link_order_Descriptor = cambiar la funcion a la del heuritsto ahora lo hago en el fichero 
         Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
         #Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
-        
         # Preprocessing
         Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
         Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
-        Frame_Duration = Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
+        Frame_Duration =  Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
         Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
-
         ################################################################
         scheduler = Heuristic_class(Number_of_Streams, Network_links, \
                 Link_order_Descriptor, \

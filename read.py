@@ -54,7 +54,6 @@ def Read(file_input):
     plt.subplot(221)
     plt.title("Network  Topology")
     nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
-    print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total
 
 
@@ -65,47 +64,43 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Number_of_Streams):
     Streams_size = list()
     Number_of_Streams = Number_of_Streams+1
     #Escoger los streams
-    choice = random.choice(Stream_Source_Destination_total)
-    
+    choice = random.choice(Stream_Source_Destination_total)   
     Stream_Source_Destination.append([choice[0], choice[-1]])
-    print("Stream_Source_Destination", Stream_Source_Destination)
 
     #Escoger los periodos
-    if Hiperperiod == 10:
+    if Hiperperiod == 1000:
        #periodos = [0.1, 0.2, 0.5, 1]
-       periodos = [1, 2, 5, 10]
+       periodos = [100, 200, 500, 1000]
     if Hiperperiod == 6:
         #periodos = [0.1, 0.15, 0.5, 1, 2, 6]
-        periodos = [1,5, 10, 20, 60]
+        periodos = [100, 150, 500, 1000, 2000, 6000]
     if Hiperperiod == 30:
         #periodos = [0.1, 0.15, 0.2, 0.3, 0.5, 5, 10, 30]
-        periodos = [1, 2, 3, 5, 50, 100, 300]
+        periodos = [100, 150, 200, 300, 500, 5000, 10000, 30000]
     Periodo = random.choice(periodos)
-    print("longuitud ",len(Stream_Source_Destination), "periodo", Periodo )
     Streams_Period[len(Stream_Source_Destination)-1] = Periodo #{0:5000, 1:2500}
-    print("Stream_Period  ", Streams_Period)
 
     #Equiparar el deathline
     Deathline_Stream[len(Stream_Source_Destination)-1] = Periodo
 
     #Escoger el datasize
 #    if Periodo == 0.1 or Periodo == 0.15 or Periodo == 0.2 or Periodo == 0.3 or Periodo == 0.5:
-    if Periodo == 1 or  Periodo == 2 or Periodo == 3 or Periodo == 5:
+    if Periodo == 100 or Periodo == 150 or Periodo == 200 or Periodo == 300 or Periodo == 500:
         size_pos = [1500,3000,4500]
     else:
         size_pos = [15000, 30000, 60000, 90000, 150000]
     size = random.choice(size_pos)
-    print("size  ",size)
     Streams_size = Streams_size + [size]             
 
-    print("Stream_size  ",Streams_size)
+    print("Stream_Source_Destination    ", Stream_Source_Destination)
+    print("Streams_Period   ", Streams_Period)
+    print("Number_of_Streams    ", Number_of_Streams)
+    print("Streams_size     ", Streams_size)
     return Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size
 
 
 
 def Write(file_input, hiperperiodo, Streams_links_paths):
-    print("Streams_links_paths  ", Streams_links_paths)
     #ESCOGER LOS FLOWS
     stream_seleccionado = random.choice(Streams_links_paths)
-    print("stream seleccionado :", stream_seleccionado)
     
