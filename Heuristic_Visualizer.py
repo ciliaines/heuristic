@@ -19,8 +19,8 @@ input = "input1"
 input_name = input + "_heuristic"
 file_input = "Solutions/"+input+".json"
 Hyperperiod = 1000
-#Hyperperiod = 6
-# Hyperperiod = 30
+#Hyperperiod = 6000
+# Hyperperiod = 30000
 
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")

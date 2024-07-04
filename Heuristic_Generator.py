@@ -62,6 +62,7 @@ class Heuristic_class :
         self.model.Network_links_Dic = {key: value for key, value in enumerate(self.Network_links)}
         self.model.Stream_Source_Destination_Dic = {key: value for key, value in enumerate(self.Stream_Source_Destination)}
         self.model.Streams_Size_Dic = {key: value for key, value in enumerate(self.Streams_size)}
+
         # Variables
         self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=0)
         self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
@@ -102,8 +103,48 @@ def Greedy_Heuristic(model):
                 print("ELSE +++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
                 if model.Queue_Assignment[key_stream, link].value > 3:#model.Num_Queues[link].value:
                     #success = True
-                    print("ghklsdghjlsdghjksdghjksdghjkdfsghj")
                     break
+        print("--111111-----------------------------------------------------------------------")
+        print("antes de acabar meter otro stream")
+        #primero comprobar la utilizacion
+        utilizacion = 0.45
+        x = utilizacion * model.Hyperperiod
+        print("x   ", x)
+        #como compruebo la utilizacion
+        print("flexibility_solution", flexibility_solution)
+        count = {}
+        #iterar sobre la estructura
+        for key1, subdict in flexibility_solution.items():
+            #count[key1] = {}
+            for key2, lista_vectores in subdict.items():
+                count[key2] = len(lista_vectores)*100
+        print("count",count)
+       
+        # condicion uno, media de todos los links superior x
+        #la media de los valores
+        all_values = []
+        for value in count.values():
+            all_values.append(value)
+            print("values  ", value)
+        if all_values:
+            mean_values = sum(all_values) / len(all_values)
+        print("Meida de los valores:", mean_values)
+        if mean_values < x:
+            #####SIGOOOOOO AÑADO UNO MAS
+            print("sigoooo")
+        
+        # condicion dos
+        #cada uno de la utilicacion --> count
+        for value in count.values():
+            print("values  ", value)
+            #si values son mas que el 20 porciento
+            veinte = value/model.Streams_Period[key_stream]
+            print("veinte   ", veinte)
+            VOLVER A PENSAR SOBRE EL VEINTE %%%
+            
+            
+        
+        # si uno de los dos se cumpre escribir los resultado en el read --> WRITE
 
 def Schedule_flow(key_stream, value_stream, model,cola):
     print("    ")
