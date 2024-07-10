@@ -33,14 +33,11 @@ class Heuristic_class :
         self.Streams_size = Streams_size
         self.Streams_paths = Streams_paths
         self.Sort_Stream_Source_Destination = Sort_Stream_Source_Destination
-        #print("Link_order_Descriptor",Link_order_Descriptor)
-        #print("Sort_Stream_Source_Destination",Sort_Stream_Source_Destination)
         self.model = AbstractModel()
         self.model.Streams = Set(initialize= range(self.Number_of_Streams)) 
         self.model.Repetitions = Set(initialize= range(int(max(Repetitions) + 1))) # This is the maximum number of Repetitions
         self.model.Frames = Set(initialize= frozenset(range(Max_frames))) # Maximum number of streams = [1,1,1]
         self.model.Links = Set(initialize = frozenset(range(len(Network_links)))) # Links Ids
-
         # Parameters
         self.model.Hyperperiod = Param(initialize=Hyperperiod)
         self.model.Max_Syn_Error = Param(initialize=0)
@@ -48,29 +45,25 @@ class Heuristic_class :
         self.model.Model_Descriptor = Param(self.model.Streams, self.model.Frames, self.model.Links, initialize= Model_Descriptor)
         self.model.Deathline_Stream = Param(self.model.Streams, initialize = Deathline_Stream)
         self.model.Period = Param(self.model.Streams, initialize=Streams_Period)
-
         self.model.Frames_per_Stream = self.Frames_per_Stream
         self.model.Stream_Source_Destination = self.Stream_Source_Destination
         self.model.Streams_Period = self.Streams_Period
         self.model.Streams_size = self.Streams_size
         self.model.Streams_paths = self.Streams_paths
         self.model.Sort_Stream_Source_Destination = self.Sort_Stream_Source_Destination
-
+        #Dictionary
         self.model.Num_of_Frames_Dic = {key: value for key, value in enumerate(self.Num_of_Frames)}
-        print("--num of frames ---",self.Num_of_Frames)
         self.model.Streams_paths_Dic = {key: value for key, value in enumerate(self.Streams_paths)}
         self.model.Network_links_Dic = {key: value for key, value in enumerate(self.Network_links)}
         self.model.Stream_Source_Destination_Dic = {key: value for key, value in enumerate(self.Stream_Source_Destination)}
         self.model.Streams_Size_Dic = {key: value for key, value in enumerate(self.Streams_size)}
-
         # Variables
         self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=0)
         self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
         self.model.Queue_Link_Dic = {}
         self.model.Frame_Offset = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
         self.model.Frame_Offset_up = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
-        self.model.Streams_Offset = Var(self.model.Streams, within=NonNegativeIntegers, initialize=0 )
-
+        self.model.Streams_Offset = Var(self.model.Streams, within=NonNegativeIntegers, initialize=0 )2
         self.model.Sort_Deathline_Stream = {}
         self.model.Queue_Assignment = Var(self.model.Streams, self.model.Links, within=NonNegativeIntegers, initialize=0)
         self.model.Solution = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
@@ -104,44 +97,38 @@ def Greedy_Heuristic(model):
                 if model.Queue_Assignment[key_stream, link].value > 3:#model.Num_Queues[link].value:
                     #success = True
                     break
-        print("--111111-----------------------------------------------------------------------")
-        print("antes de acabar meter otro stream")
+        print("--antes de acabar meter otro stream-----------------------------------------------------------------------")
         #primero comprobar la utilizacion
         utilizacion = 0.45
-        x = utilizacion * model.Hyperperiod
+        x = utilizacion * model.Hyperperiod 
         print("x   ", x)
         #como compruebo la utilizacion
-        print("flexibility_solution", flexibility_solution)
         count = {}
-        #iterar sobre la estructura
         for key1, subdict in flexibility_solution.items():
-            #count[key1] = {}
-            for key2, lista_vectores in subdict.items():
-                count[key2] = len(lista_vectores)*100
+            for key2, lista_vectores in subdict.items(): 
+                count[key2] = len(lista_vectores) * 100
+        #COUNT UTILIZACION PORCENTAJE
         print("count",count)
-       
-        # condicion uno, media de todos los links superior x
-        #la media de los valores
+        # condicion uno, media de todos los links superior x #la media de los valores ALL_VALUES SUMA DE TODOS LOS VALORES
         all_values = []
         for value in count.values():
             all_values.append(value)
-            print("values  ", value)
-        if all_values:
+            # condicion dos  #cada uno de la utilicacion --> count  #si values son mas que el 20 porciento
+            veinte = 0.2 * model.Streams_Period[key_stream]
+            print("period  ",model.Streams_Period[key_stream], "veinte   ", veinte, "value  ",value)
+            #VOLVER A PENSAR SOBRE EL VEINTE %%%
+            if veinte > value:
+                print("SE ACABA ")
+                return False           
+           
+        if all_values: #MEAN VALUES MEDIA DE LOS VAROES 
             mean_values = sum(all_values) / len(all_values)
         print("Meida de los valores:", mean_values)
         if mean_values < x:
             #####SIGOOOOOO AÑADO UNO MAS
-            print("sigoooo")
-        
-        # condicion dos
-        #cada uno de la utilicacion --> count
-        for value in count.values():
-            print("values  ", value)
-            #si values son mas que el 20 porciento
-            veinte = value/model.Streams_Period[key_stream]
-            print("veinte   ", veinte)
-            VOLVER A PENSAR SOBRE EL VEINTE %%%
-            
+            print("+++++++++++++++++++++++++++++++++++++++++++++++++++++igoooo")
+            return True
+        return False
             
         
         # si uno de los dos se cumpre escribir los resultado en el read --> WRITE
@@ -165,7 +152,7 @@ def Schedule_flow(key_stream, value_stream, model,cola):
         contador=1
         while contador < len(model.Streams_paths_Dic[key_stream]):
             print("------------------------------------------")
-            print("flexible solution   ", flexibility_solution)
+            #print("flexible solution   ", flexibility_solution)
             print("streams_paths_dic ", model.Streams_paths_Dic[key_stream])
             #Ecuacion 45
             link_anterior = (model.Streams_paths_Dic[key_stream][a-1],model.Streams_paths_Dic[key_stream][b-1])

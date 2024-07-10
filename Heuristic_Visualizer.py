@@ -1,5 +1,4 @@
 # This set of functions is for the visualization of the values of the ILP 
-
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -14,13 +13,12 @@ from read import *
 import textwrap
 from Plot import *
 
-
 input = "input1"
 input_name = input + "_heuristic"
 file_input = "Solutions/"+input+".json"
-Hyperperiod = 1000
+#Hyperperiod = 1000
 #Hyperperiod = 6000
-# Hyperperiod = 30000
+Hyperperiod = 30000
 
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
@@ -65,64 +63,61 @@ def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     return Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies
 
 ##### For printing the model results and variables #####
-#UNCOMMENT if necessary 
-
+#UNCOMMENT if necessary
 # instance.display()
 # results.write()
 # results.solver.status 
 ######################## For now on, this code is for generate the Gant chart ########################
 
 def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Streams) :
-
 ### This is just the part where the program can select betweeen generating a new network
-#Number_of_edges, Connection_probability = 2 , 0.8
-#Number_of_Streams = 5
-
 ################################################################
-    # Generation of random Network
     try :
         initial_time = time.time()
-        #Read
-        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input)
-        Stream_Source_Destination,Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size = Random(Stream_Source_Destination_total, Hyperperiod, Number_of_Streams)
-        ################################################################
-        #Djikstra scheduler
-        network = Network_Topology(Adjacency_Matrix) 
-        all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
-        Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
-        Streams_links_paths = Streams_links_paths_generator(Streams_paths)
-        Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
-        ###############################################################
-        # Random Streams parameters
-        #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
-        print("HIPERPERIODO", Hyperperiod)
-        ###Write(file_input, Hyperperiod, Streams_links_paths)        
-        #Link_order_Descriptor = cambiar la funcion a la del heuritsto ahora lo hago en el fichero 
-        Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
-        #Hyperperiod = Hyperperiod_generator(Streams_Period_list)
-        Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
-        ################################################################
-        # Preprocessing
-        Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
-        Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
-        Frame_Duration =  Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
-        Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
-        ################################################################
-        scheduler = Heuristic_class(Number_of_Streams, Network_links, \
-                Link_order_Descriptor, \
-                Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
-                Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
-                Repetitions, Repetitions_Descriptor, Frame_Duration, \
-                Stream_Source_Destination, Streams_size, Streams_paths, Sort_Stream_Source_Destination) #unused_links¿?
+        utilizacion = True
+        while utilizacion:
+            #Read from the JSON files
+            Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input)
+            Stream_Source_Destination,Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size = Random(Stream_Source_Destination_total, Hyperperiod, Number_of_Streams)
+            ################################################################
+            #Djikstra scheduler
+            network = Network_Topology(Adjacency_Matrix) 
+            all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
+            Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
+            Streams_links_paths = Streams_links_paths_generator(Streams_paths)
+            Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
+            ###############################################################
+            # Random Streams parameters
+            #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
+            print("HIPERPERIODO", Hyperperiod)
+            ###Write(file_input, Hyperperiod, Streams_links_paths)        
+            #Link_order_Descriptor = cambiar la funcion a la del heuritsto ahora lo hago en el fichero 
+            Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
+            #Hyperperiod = Hyperperiod_generator(Streams_Period_list)
+            Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
+            ################################################################
+            # Preprocessing
+            Links_per_Stream = Links_per_Stream_generator(Network_links, Link_order_Descriptor)
+            Model_Descriptor, Model_Descriptor_vector, Streams = Model_Descriptor_generator(Number_of_Streams, Max_frames, Network_links, Frames_per_Stream, Links_per_Stream)
+            Frame_Duration =  Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links )
+            Repetitions, Repetitions_Matrix, Repetitions_Descriptor, max_repetitions= Repetitions_generator(Streams_Period, Streams, Hyperperiod)
+            ################################################################
+            scheduler = Heuristic_class(Number_of_Streams, Network_links, \
+                    Link_order_Descriptor, \
+                    Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
+                    Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
+                    Repetitions, Repetitions_Descriptor, Frame_Duration, \
+                    Stream_Source_Destination, Streams_size, Streams_paths, Sort_Stream_Source_Destination) #unused_links¿?
 
-        instance, results = scheduler.instance, scheduler.results
-        Greedy_Heuristic(instance)
+            instance, results = scheduler.instance, scheduler.results
+            utilizacion = Greedy_Heuristic(instance)
+
         final_time = time.time()
         ################################################################
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies = Heuristic_results_visualizer(instance, Model_Descriptor_vector)
-        df = gantt_chart_generator1(Result_offsets, Repetitions, Streams_Period)
-        information_generator1(Repetitions, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths, input_name)
-        dataframe_printer1(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
+        df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
+        information_generator(Repetitions, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths, input_name)
+        dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
                      Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         ### This will store the results into a txt for further usage
         

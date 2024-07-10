@@ -10,7 +10,7 @@ import time
 import textwrap
 from read import *
 
-def gantt_chart_generator1(Result_offsets, Repetitions, Streams_Period):
+def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period):
     data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
     Repetitions = [repetition + 1 for repetition in Repetitions]
     color=['black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'grey', 'orange', 'pink','fuchsia']
@@ -48,7 +48,7 @@ def gantt_chart_generator1(Result_offsets, Repetitions, Streams_Period):
     return df
 
 
-def information_generator1(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths,input_name):
+def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths,input_name):
     plt.subplot(222)
     plt.text(0.1, 0.9, "Network links: \n" + str(Network_links), bbox=dict(facecolor='red', alpha=0.5), fontsize=7)
     plt.text(0.1, 0.75, "Frames per stream: \n" + str(Num_of_Frames), bbox=dict(facecolor='red', alpha=0.5), fontsize=7)
@@ -64,7 +64,7 @@ def information_generator1(Num_of_Frames, Streams_Period, Link_order_Descriptor,
     plt.show() # comment for avoiding showing de result
 
 
-def dataframe_printer1(instance, Clean_offsets, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
+def dataframe_printer(instance, Clean_offsets, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
                     Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size):
     Feasibility = False
     if Feasibility_indicator > 1 :
