@@ -33,40 +33,35 @@ class Heuristic_class :
         self.Streams_size = Streams_size
         self.Streams_paths = Streams_paths
         self.Sort_Stream_Source_Destination = Sort_Stream_Source_Destination
+        #model
         self.model = AbstractModel()
         self.model.Streams = Set(initialize= range(self.Number_of_Streams)) 
         self.model.Repetitions = Set(initialize= range(int(max(Repetitions) + 1))) # This is the maximum number of Repetitions
         self.model.Frames = Set(initialize= frozenset(range(Max_frames))) # Maximum number of streams = [1,1,1]
         self.model.Links = Set(initialize = frozenset(range(len(Network_links)))) # Links Ids
         # Parameters
-        self.model.Hyperperiod = Param(initialize=Hyperperiod)
-        self.model.Max_Syn_Error = Param(initialize=0)
-        self.model.Frame_Duration = Param(self.model.Streams, self.model.Frames, self.model.Links, initialize = self.Frame_Duration)
-        self.model.Model_Descriptor = Param(self.model.Streams, self.model.Frames, self.model.Links, initialize= Model_Descriptor)
-        self.model.Deathline_Stream = Param(self.model.Streams, initialize = Deathline_Stream)
-        self.model.Period = Param(self.model.Streams, initialize=Streams_Period)
-        self.model.Frames_per_Stream = self.Frames_per_Stream
-        self.model.Stream_Source_Destination = self.Stream_Source_Destination
-        self.model.Streams_Period = self.Streams_Period
-        self.model.Streams_size = self.Streams_size
-        self.model.Streams_paths = self.Streams_paths
-        self.model.Sort_Stream_Source_Destination = self.Sort_Stream_Source_Destination
+        #self.model.Hyperperiod = Param(initialize=Hyperperiod)
+        #self.model.Max_Syn_Error = Param(initialize=0)
+        #self.model.Frame_Duration = Param(self.model.Streams, self.model.Frames, self.model.Links, initialize = self.Frame_Duration)
+        #self.model.Model_Descriptor = Param(self.model.Streams, self.model.Frames, self.model.Links, initialize= Model_Descriptor)
+        #self.model.Deathline_Stream = Param(self.model.Streams, initialize = Deathline_Stream)
+        #self.model.Period = Param(self.model.Streams, initialize=Streams_Period)
+        #self.model.Frames_per_Stream = self.Frames_per_Stream
+        #self.model.Stream_Source_Destination = self.Stream_Source_Destination
+        #self.model.Streams_Period = self.Streams_Period
+        #self.model.Streams_size = self.Streams_size
+        #self.model.Streams_paths = self.Streams_paths
+        #self.model.Sort_Stream_Source_Destination = self.Sort_Stream_Source_Destination
         #Dictionary
-        self.model.Num_of_Frames_Dic = {key: value for key, value in enumerate(self.Num_of_Frames)}
-        self.model.Streams_paths_Dic = {key: value for key, value in enumerate(self.Streams_paths)}
-        self.model.Network_links_Dic = {key: value for key, value in enumerate(self.Network_links)}
-        self.model.Stream_Source_Destination_Dic = {key: value for key, value in enumerate(self.Stream_Source_Destination)}
-        self.model.Streams_Size_Dic = {key: value for key, value in enumerate(self.Streams_size)}
+        #self.model.Num_of_Frames_Dic = {key: value for key, value in enumerate(self.Num_of_Frames)}
+       # self.model.Streams_paths_Dic = {key: value for key, value in enumerate(self.Streams_paths)}
+         #self.model.Network_links_Dic = {key: value for key, value in enumerate(self.Network_links)}
+        #self.model.Stream_Source_Destination_Dic = {key: value for key, value in enumerate(self.Stream_Source_Destination)}
+        #self.model.Streams_Size_Dic = {key: value for key, value in enumerate(self.Streams_size)}
         # Variables
         self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=0)
         self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
-        self.model.Queue_Link_Dic = {}
-        self.model.Frame_Offset = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
-        self.model.Frame_Offset_up = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
-        self.model.Streams_Offset = Var(self.model.Streams, within=NonNegativeIntegers, initialize=0 )2
-        self.model.Sort_Deathline_Stream = {}
         self.model.Queue_Assignment = Var(self.model.Streams, self.model.Links, within=NonNegativeIntegers, initialize=0)
-        self.model.Solution = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
         self.model.Lower_bound = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
         self.model.Upper_bound = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
 
@@ -308,9 +303,6 @@ def Constraining_engress_port(model, key_stream, key_link, frame):
     #el eliminar lo generado en   --flexibility_solution--
     #print("NO se encontro solucion  ", flexibility_solution, "   value   ", value)
     #del flexibility_solution[key_link]
-    model.Solution[key_stream, key_link, frame].fix(None)
-
-
 ##Listar colas asociadas a la clave del link
 #def List_queue(model):
 #    #print("Stream_Source_Destination_Dic ",Sort_Stream_Source_Destination)
