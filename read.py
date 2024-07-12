@@ -1,8 +1,13 @@
+import pickle
+import os
+
 import json
 from RanNet_Generator import *
 import matplotlib.pyplot as plt
 import networkx as nx 
 import random
+
+filename = 'global_state.pk1'
 
 def Read(file_input):
     Number_of_edges=0  #numero de switch=4
@@ -56,12 +61,12 @@ def Read(file_input):
     nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total
 
-
-def Random(Stream_Source_Destination_total, Hiperperiod, Number_of_Streams):
-    Stream_Source_Destination = []
-    Streams_Period = {}
-    Deathline_Stream = {}
-    Streams_size = list()
+def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams,Streams_size  ):
+    #print("ksnfskjbskfdbskj", state["Stream_Source_Destination"])
+    #Stream_Source_Destination = []
+    #Streams_Period = {}
+    #Deathline_Stream = {}
+    #Streams_size = list()
     Number_of_Streams = Number_of_Streams+1
     #Escoger los streams
     choice = random.choice(Stream_Source_Destination_total)   
@@ -92,15 +97,16 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Number_of_Streams):
     size = random.choice(size_pos)
     Streams_size = Streams_size + [size]             
 
+    #state["Stream_Source_Destination"] = Stream_Source_Destination
     print("Stream_Source_Destination    ", Stream_Source_Destination)
     print("Streams_Period   ", Streams_Period)
     print("Number_of_Streams    ", Number_of_Streams)
     print("Streams_size     ", Streams_size)
+    #save_state(state)
     return Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size
 
 
 
-def Write(file_input, hiperperiodo, Streams_links_paths):
-    #ESCOGER LOS FLOWS
-    stream_seleccionado = random.choice(Streams_links_paths)
+#def Write(file_input, hiperperiodo, Streams_links_paths):
+   #Ecribir los valoes 
     
