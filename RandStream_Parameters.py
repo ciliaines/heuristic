@@ -62,7 +62,6 @@ def Hyperperiod_generator(Streams_Period_list) :
 # Provides also the maximum number of frames in an stream
 def Frames_per_Stream_generator(Streams_size):
     Frames_per_Stream = []
-    print("Streams_size    ", Streams_size)
     for repetition in (Streams_size):
         Frames_per_Stream.append([1 for frame in range(int(float(repetition)/1500))])
         Frames_per_Stream = [x if x else [1] for x in Frames_per_Stream]
@@ -71,6 +70,4 @@ def Frames_per_Stream_generator(Streams_size):
     Num_of_Frames = []
    
     for i in Frames_per_Stream : Num_of_Frames.append(len(i))
-    print("Frames_per_Stream   ",Frames_per_Stream)
-    print("Num_of_Frames       ",Num_of_Frames)
     return Frames_per_Stream, Max_frames, Num_of_Frames

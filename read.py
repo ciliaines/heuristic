@@ -1,13 +1,8 @@
-import pickle
-import os
-
 import json
 from RanNet_Generator import *
 import matplotlib.pyplot as plt
 import networkx as nx 
 import random
-
-filename = 'global_state.pk1'
 
 def Read(file_input):
     Number_of_edges=0  #numero de switch=4
@@ -62,34 +57,27 @@ def Read(file_input):
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total
 
 def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams,Streams_size  ):
-    #print("ksnfskjbskfdbskj", state["Stream_Source_Destination"])
-    #Stream_Source_Destination = []
-    #Streams_Period = {}
-    #Deathline_Stream = {}
-    #Streams_size = list()
     Number_of_Streams = Number_of_Streams+1
-    #Escoger los streams
+
+    #Ecoger los Streams
     choice = random.choice(Stream_Source_Destination_total)   
     Stream_Source_Destination.append([choice[0], choice[-1]])
+    print("Stream_Source_Destination  ",Stream_Source_Destination)
     periodos = []
     #Escoger los periodos
     if Hiperperiod == 1000:
-       #periodos = [0.1, 0.2, 0.5, 1]
        periodos = [100, 200, 500, 1000]
     if Hiperperiod == 6000:
-        #periodos = [0.1, 0.15, 0.5, 1, 2, 6]
         periodos = [100, 150, 500, 1000, 2000, 6000]
     if Hiperperiod == 30000:
-        #periodos = [0.1, 0.15, 0.2, 0.3, 0.5, 5, 10, 30]
         periodos = [100, 150, 200, 300, 500, 5000, 10000, 30000]
     Periodo = random.choice(periodos)
     Streams_Period[len(Stream_Source_Destination)-1] = Periodo #{0:5000, 1:2500}
-
+    
     #Equiparar el deathline
     Deathline_Stream[len(Stream_Source_Destination)-1] = Periodo
 
     #Escoger el datasize
-#    if Periodo == 0.1 or Periodo == 0.15 or Periodo == 0.2 or Periodo == 0.3 or Periodo == 0.5:
     if Periodo == 100 or Periodo == 150 or Periodo == 200 or Periodo == 300 or Periodo == 500:
         size_pos = [1500,3000,4500]
     else:
@@ -97,12 +85,11 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destinati
     size = random.choice(size_pos)
     Streams_size = Streams_size + [size]             
 
-    #state["Stream_Source_Destination"] = Stream_Source_Destination
-    print("Stream_Source_Destination    ", Stream_Source_Destination)
-    print("Streams_Period   ", Streams_Period)
-    print("Number_of_Streams    ", Number_of_Streams)
-    print("Streams_size     ", Streams_size)
-    #save_state(state)
+    #print("Stream_Source_Destination    ", Stream_Source_Destination)
+    #print("Streams_Period   ", Streams_Period)
+    #print("Number_of_Streams    ", Number_of_Streams)
+    #print("Streams_size     ", Streams_size)
+
     return Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size
 
 

@@ -1,5 +1,4 @@
 ##################################### Heuristic Strategy starts here #####################################
-
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from pyomo.core import Var
@@ -75,8 +74,9 @@ class Heuristic_class :
         self.results = opt.solve(self.instance)
         self.instance.solutions.load_from(self.results)
 
-def Greedy_Heuristic(model):
+def Greedy_Heuristic(model, num_stream):
     for key_stream in model.Streams:
+        key_stream = num_stream
         value_stream = (0,0)
         success = False
         cola =0
@@ -85,12 +85,12 @@ def Greedy_Heuristic(model):
             Latency_Cal(key_stream, model)
             if booleano == True:
                 success = True
-                print("IF  ++++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
+                #print("IF  ++++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
             else:
                 Constraining_engress_port(model, key_stream,link,0)
                 model.Queue_Assignment[key_stream, link] = model.Queue_Assignment[key_stream, link] + 1
                 cola = cola+1
-                print("ELSE +++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
+                #print("ELSE +++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
                 if model.Queue_Assignment[key_stream, link].value > 3:#model.Num_Queues[link].value:
                     #success = True
                     break
@@ -98,9 +98,9 @@ def Greedy_Heuristic(model):
         #primero comprobar la utilizacion
         utilizacion = 0.45
         utilizacion_hiperperiodo = utilizacion * model.Hyperperiod * 8
-        print("utilizacion_hiperperiodo   ", utilizacion_hiperperiodo)
         #como compruebo la utilizacion
-        count_valores = {}
+        count_valores = {} #cola link
+        #print("flexibility_solution             ", flexibility_solution)
         for key1, subdict in flexibility_solution.items():
             for key2, lista_vectores in subdict.items(): 
                 count_valores[key2] = len(lista_vectores) * 100
@@ -113,26 +113,26 @@ def Greedy_Heuristic(model):
             all_values.append(value)
             # condicion dos  #cada uno de la utilicacion --> count  #si values son mas que el 20 porciento
             utilizacion_periodo = value / (model.Hyperperiod*8)
-            print(" utilizacion_periodo ", utilizacion_periodo, "   periodo  ",model.Hyperperiod.value, "  value  ", value)
+            print(" utilizacion_periodo ", utilizacion_periodo, "  mayor 0,2")
             if utilizacion_periodo > 0.2: 
-                print("SE ACABA ")
+                print("indivicual  SE ACABA ")
                 return False           
            
         #if all_values != None: #MEAN VALUES MEDIA DE LOS VAROES 
         mean_values = sum(all_values) / len(all_values)
-        print("Meida de los valores:", mean_values, "  values  ", sum(all_values), "  len ",len(all_values)  )
+        print("mean_values ", mean_values, "  mayor a la utilizacion_hiperperiodo  ", utilizacion_hiperperiodo  )
         if mean_values > utilizacion_hiperperiodo:
             #####SIGOOOOOO AÑADO UNO MAS
-            print("+++++SE ACABA")
+            print("media SE ACABA")
             return False
         return True
-        
+        print("-----------------------------------------------------------------------------------------------------------")
         # si uno de los dos se cumpre escribir los resultado en el read --> WRITE
 
 def Schedule_flow(key_stream, value_stream, model,cola):
-    print("    ")
+    print("                ", key_stream)
     for frame in range(model.Frames_per_Stream[key_stream][0]):
-        print("frame   ", frame)
+        #print("frame   ", frame)
         a = 0
         b = 1
         # Generar un vector con el primer y segundo valor
@@ -147,7 +147,6 @@ def Schedule_flow(key_stream, value_stream, model,cola):
         #print(f"Upper_bound[{key_send_link}] = {value(model.Upper_bound[key_send_link])}")
         contador=1
         while contador < len(model.Streams_paths_Dic[key_stream]):
-            print("------------------------------------------")
             #print("flexible solution   ", flexibility_solution)
             #print("streams_paths_dic ", model.Streams_paths_Dic[key_stream])
             #Ecuacion 45
@@ -199,7 +198,7 @@ def Schedule_flow(key_stream, value_stream, model,cola):
 def Add_Solution(key_link, tiempo, model, key_stream, cola): #Es por las posibles repeticiones dentro de una trama 
     #print("ADD SOLUTION    key link ",key_link, " tiempo ", tiempo, " Hyperperiod", model.Hyperperiod.value, "period ", model.Streams_Period)
     resultado = model.Hyperperiod / model.Streams_Period[key_stream]
-    print("Resultado   ", resultado)
+    #print("Resultado   ", resultado)
     i = 0
     while i < resultado:
         if flexibility_solution.get(cola) is None:

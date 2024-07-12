@@ -76,12 +76,15 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     Streams_Period = {} 
     Deathline_Stream = {}
     Streams_size = list()
+    Number_of_Streams=0
     try :
         initial_time = time.time()
         utilizacion = True
+        num_stream = 0
         while utilizacion:
             #Read from the JSON files
-            Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input)
+            if num_stream == 0:
+                Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input)
             Stream_Source_Destination,Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size = Random(Stream_Source_Destination_total, Hyperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size)
             ################################################################
             #Djikstra scheduler
@@ -113,9 +116,10 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                     Stream_Source_Destination, Streams_size, Streams_paths, Sort_Stream_Source_Destination) #unused_links¿?
 
             instance, results = scheduler.instance, scheduler.results
-            utilizacion = Greedy_Heuristic(instance)
-            print("utilizacion3333333333333   ", utilizacion)
+            utilizacion = Greedy_Heuristic(instance, num_stream)
+            print("utilizacion   ", utilizacion)
             #utilizacion = False
+            num_stream = num_stream + 1
 
         final_time = time.time()
         ################################################################
