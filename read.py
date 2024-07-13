@@ -62,7 +62,6 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destinati
     #Ecoger los Streams
     choice = random.choice(Stream_Source_Destination_total)   
     Stream_Source_Destination.append([choice[0], choice[-1]])
-    print("Stream_Source_Destination  ",Stream_Source_Destination)
     periodos = []
     #Escoger los periodos
     if Hiperperiod == 1000:

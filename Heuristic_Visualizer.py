@@ -10,15 +10,16 @@ from ILP_Generator import *
 from Heuristic_Generator import *
 import time
 from read import *
+from write import *
 import textwrap
 from Plot import *
 
 input = "input1"
 input_name = input + "_heuristic"
 file_input = "Solutions/"+input+".json"
-#Hyperperiod = 1000
+Hyperperiod = 1000
 #Hyperperiod = 6000
-Hyperperiod = 30000
+#Hyperperiod = 30000
 
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
@@ -95,11 +96,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
             Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
             ###############################################################
             # Random Streams parameters
-            #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
-            ###Write(file_input, Hyperperiod, Streams_links_paths)        
-            #Link_order_Descriptor = cambiar la funcion a la del heuritsto ahora lo hago en el fichero 
             Sort_Stream_Source_Destination = Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size)
-            #Hyperperiod = Hyperperiod_generator(Streams_Period_list)
             Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
             ################################################################
             # Preprocessing
@@ -128,8 +125,13 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         information_generator(Repetitions, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths, input_name)
         dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
                      Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
-        ### This will store the results into a txt for further usage
+        #Escribir la topologia escogida en un json para ejecutarla ams tarde, se podria en la rama diario
+        Write(Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination)        
+
+
         
+
+        ### This will store the results into a txt for further usage
         time_evaluation = final_time - initial_time
         with open('Results/' + input_name + '.txt', 'a') as f :
             f.write("\n")

@@ -87,11 +87,11 @@ def Greedy_Heuristic(model, num_stream):
                 success = True
                 #print("IF  ++++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
             else:
-                Constraining_engress_port(model, key_stream,link,0)
+                #Constraining_engress_port(model, key_stream,link,0)
                 model.Queue_Assignment[key_stream, link] = model.Queue_Assignment[key_stream, link] + 1
                 cola = cola+1
                 #print("ELSE +++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
-                if model.Queue_Assignment[key_stream, link].value > 3:#model.Num_Queues[link].value:
+                if model.Queue_Assignment[key_stream, link].value > 8:#model.Num_Queues[link].value:
                     #success = True
                     break
         print("--antes de acabar meter otro stream-----------------------------------------------------------------------")
@@ -103,7 +103,10 @@ def Greedy_Heuristic(model, num_stream):
         #print("flexibility_solution             ", flexibility_solution)
         for key1, subdict in flexibility_solution.items():
             for key2, lista_vectores in subdict.items(): 
-                count_valores[key2] = len(lista_vectores) * 100
+                if count_valores.get(key2) is None:
+                    count_valores[key2] = len(lista_vectores) * 100
+                else:
+                    count_valores[key2] += len(lista_vectores) * 100
         #COUNT UTILIZACION PORCENTAJE
         print("contador de valores ",count_valores)
         
@@ -115,10 +118,8 @@ def Greedy_Heuristic(model, num_stream):
             utilizacion_periodo = value / (model.Hyperperiod*8)
             print(" utilizacion_periodo ", utilizacion_periodo, "  mayor 0,2")
             if utilizacion_periodo > 0.2: 
-                print("indivicual  SE ACABA ")
+                print("individual  SE ACABA ")
                 return False           
-           
-        #if all_values != None: #MEAN VALUES MEDIA DE LOS VAROES 
         mean_values = sum(all_values) / len(all_values)
         print("mean_values ", mean_values, "  mayor a la utilizacion_hiperperiodo  ", utilizacion_hiperperiodo  )
         if mean_values > utilizacion_hiperperiodo:
@@ -130,7 +131,7 @@ def Greedy_Heuristic(model, num_stream):
         # si uno de los dos se cumpre escribir los resultado en el read --> WRITE
 
 def Schedule_flow(key_stream, value_stream, model,cola):
-    print("                ", key_stream)
+    print("                ", key_stream, "        ", model.Streams_paths_Dic[key_stream])
     for frame in range(model.Frames_per_Stream[key_stream][0]):
         #print("frame   ", frame)
         a = 0
@@ -145,7 +146,8 @@ def Schedule_flow(key_stream, value_stream, model,cola):
         model.Upper_bound[key_stream, key_link, frame] = model.Streams_Period[key_stream]
         #print(f"Lower_bound[{key_send_link}] = {value(model.Lower_bound[key_send_link])}")
         #print(f"Upper_bound[{key_send_link}] = {value(model.Upper_bound[key_send_link])}")
-        contador=1
+        contador = 1
+        intentos = 0
         while contador < len(model.Streams_paths_Dic[key_stream]):
             #print("flexible solution   ", flexibility_solution)
             #print("streams_paths_dic ", model.Streams_paths_Dic[key_stream])
@@ -181,7 +183,7 @@ def Schedule_flow(key_stream, value_stream, model,cola):
                 a -= 1
                 b -= 1
                 #si el link es el send link, el link next no existe, por lo tanto es broke y reuturn false
-                if link == send_link:
+                if link == send_link or intentos == 3:
                     return False, key_link
                 link_next = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
                 link = link_next
@@ -191,6 +193,7 @@ def Schedule_flow(key_stream, value_stream, model,cola):
                 if key_link_next is not None:
                     model.Lower_bound[key_stream, key_link_next, frame] = Earliest_queue_available_time(key_link_next, model.Streams_Period[key_stream],cola)
                 contador -=1
+                intentos +=1
                 #print("link else   ",link)
 
     return model.Latency[key_stream].value <= model.Deathline_Stream[key_stream], key_link
