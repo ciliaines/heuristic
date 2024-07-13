@@ -12,9 +12,9 @@ import time
 from read import *
 from Plot import *
 
-input = "input4"
-latency=0.5
-queue=0.5
+input = "input1"
+latency=0
+queue=1
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue)
 file_input = "Solutions/"+input+".json"
 
@@ -74,10 +74,12 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     # Generation of random Network
     try :
         initial_time = time.time()
-        #Network_nodes, Network_links, Adjacency_Matrix, plot_network = Network_Generator(Number_of_edges, Connection_probability)
-        #Stream_Source_Destination = Flows_generator(Number_of_Streams, Number_of_edges) 
         ####LEER DEL FICHERO
-        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read(file_input)
+        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination, Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read_Complete()
+        print("1 ",Number_of_edges, Number_of_Streams, Network_nodes, Network_links)
+        # Adjacency_Matrix, plot_network, 
+        print("2 ",Sources, Destinations, Stream_Source_Destination, Streams_size)
+        print("3 ",Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams)
         ################################################################
         
         #Djikstra scheduler
@@ -89,8 +91,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         ################################################################
         
         # Random Streams parameters
-        #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Random_Stream_size_and_period_generator(Number_of_Streams)
-        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
+        #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
@@ -110,13 +111,14 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                         Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
                         Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue)
         instance, results = scheduler.instance, scheduler.results
+        print("kdhfbskbfks")
         final_time = time.time()
         ################################################################
         #Plot the values
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies  = ILP_results_visualizer(instance, Model_Descriptor_vector)
-        df = gantt_chart_generator1(Result_offsets, Repetitions, Streams_Period)
-        information_generator1(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths,input_name)
-        dataframe_printer1(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
+        df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
+        information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths,input_name)
+        dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
                      Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         ### This will store the results into a txt for further usage
         

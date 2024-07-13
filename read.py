@@ -91,8 +91,68 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destinati
 
     return Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size
 
+def Read_Complete():
+    file_input = "Resultado/input1.json"
+    Number_of_edges=0  #numero de switch=4
+    Number_of_Streams=0 #numero de flujos=3
+    Network_nodes = list()
+    Network_links = list()
+    Stream_Source_Destination = []
+    Streams_size = list()
+    Streams_Period = {}
+    Streams_Period_list = list()
+    Deathline_Stream_list = list()
+    Deathline_Stream = {}
+    with open(file_input, "r") as j:
+        data = json.load(j)
+        Network_link = list()
+        for switch in data["switches"]:
+            Number_of_edges = Number_of_edges+1
+            Name_switch = switch["name"]
+            Network_nodes = Network_nodes + [int(x) for x in Name_switch]
+            change = True
+            for port in switch["ports"]:
+                Name_port_switch = port["name"]
+                ConnectsTo_port_switch = port["connectsTo"]
+                if(Network_link == []):
+                    Network_link = Network_link + [(x, y) for x in Name_switch for y in ConnectsTo_port_switch]
+                for link in Network_link:
+                    if link[0] == ConnectsTo_port_switch and link[1] == Name_switch:
+                        change = False
+                        break
+                    else:
+                        change == True
+                if change == True:
+                    Network_links = Network_links + [(int(x), int(y)) for x in Name_switch for y in ConnectsTo_port_switch]
+                    change = False
+        
+        for flow in data["flows"]:
+            Number_of_Streams = Number_of_Streams + 1
+            Name_flow = flow["name"]
+            Period = flow["Period"]
+            Streams_Period_list.append(Period)
+            Streams_Period[int(Name_flow)] = Period
+            Deathline = flow["Deathline"]
+            Deathline_Stream[int(Name_flow)] = Deathline
+            Size = flow["Size"]
+            Streams_size.append(Size)
+            SourceDevice = flow["SourceDevice"]
+            EndDevice = flow["EndDevices"]
+            Steam = [int(SourceDevice), int(EndDevice)]
+            Stream_Source_Destination.append(Steam)
 
+    Adjacency_Matrix = adj(Network_links)
+    plot_network = plt.figure(1, figsize=(14, 7))
+    Sources = [link[0] for link in Network_links]
+    Destinations = [link[1] for link in Network_links]
 
-#def Write(file_input, hiperperiodo, Streams_links_paths):
-   #Ecribir los valoes 
-    
+    # Build a dataframe with the Source and destination connections
+    df = pd.DataFrame({ 'from': Sources , 'to': Destinations})
+    # Build the graph
+    G=nx.from_pandas_edgelist(df, 'from', 'to')
+    # Plot the graph
+    plot_network = plt.figure(1, figsize=(14, 7))
+    plt.subplot(221)
+    plt.title("Network  Topology")
+    nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
+    return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination, Streams_size, Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams

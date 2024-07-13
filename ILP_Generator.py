@@ -75,7 +75,7 @@ class ILP_Raagard_solver :
         #print("2",self.Frames_per_Stream,self.Max_frames, self.Num_of_Frames,self.Model_Descriptor,self.Model_Descriptor_vector)
         #print("3",self.Deathline_Stream,self.Repetitions, self.Repetitions_Descriptor,self.Frame_Duration)
         #print("4",self.Stream_Source_Destination,self.Streams_size,self.Streams_paths, self.Sort_Stream_Source_Destination)
-
+        print("hiper",  self.Hyperperiod)
         self.model = AbstractModel()
         self.model.Streams = Set(initialize= range(self.Number_of_Streams)) # Num of streams
         self.model.Repetitions = Set(initialize= range(int(max(Repetitions) + 1))) # This is the maximum number of Repetitions
