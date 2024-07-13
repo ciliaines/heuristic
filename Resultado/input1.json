@@ -1,0 +1,116 @@
+{
+    "switches": [
+        {
+            "name": "0",
+            "final": "true",
+            "ports": [
+                {
+                    "name": "eth1",
+                    "connectsTo": "3"
+                }
+            ]
+        },
+        {
+            "name": "1",
+            "final": "true",
+            "ports": [
+                {
+                    "name": "eth1",
+                    "connectsTo": "3"
+                }
+            ]
+        },
+        {
+            "name": "2",
+            "final": "true",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "3"
+                }
+            ]
+        },
+        {
+            "name": "3",
+            "final": "false",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "0"
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "1"
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "2"
+                },
+                {
+                    "name": "eth3",
+                    "connectsTo": "4"
+                }
+            ]
+        },
+        {
+            "name": "4",
+            "final": "true",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "3"
+                }
+            ]
+        }
+    ],
+    "flows": [
+        {
+            "name": 0,
+            "Period": 500,
+            "Deathline": 500,
+            "Size": 1500,
+            "SourceDevice": 1,
+            "EndDevices": 2
+        },
+        {
+            "name": 1,
+            "Period": 1000,
+            "Deathline": 1000,
+            "Size": 60000,
+            "SourceDevice": 2,
+            "EndDevices": 1
+        },
+        {
+            "name": 2,
+            "Period": 1000,
+            "Deathline": 1000,
+            "Size": 90000,
+            "SourceDevice": 0,
+            "EndDevices": 1
+        },
+        {
+            "name": 3,
+            "Period": 200,
+            "Deathline": 200,
+            "Size": 4500,
+            "SourceDevice": 0,
+            "EndDevices": 1
+        },
+        {
+            "name": 4,
+            "Period": 500,
+            "Deathline": 500,
+            "Size": 1500,
+            "SourceDevice": 1,
+            "EndDevices": 4
+        },
+        {
+            "name": 5,
+            "Period": 100,
+            "Deathline": 100,
+            "Size": 1500,
+            "SourceDevice": 2,
+            "EndDevices": 0
+        }
+    ]
+}
