@@ -2,254 +2,123 @@
         "switches": [
                 {
                         "name": "0",
-                        "scheduleType": "hypercycle",
-                        "defaultTimeToTravel": 1,
-                        "defaultPortSpeed": 125,
                         "ports": [
                                 {
                                         "name": "eth0",
-                                        "connectsTo": "1",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "1"
                                 },
                                 {
                                         "name": "eth1",
-                                        "connectsTo": "2",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "2"
                                 },
                                 {
                                         "name": "eth2",
-                                        "connectsTo": "3",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "3"
                                 },
                                 {
                                         "name": "eth3",
-                                        "connectsTo": "4",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "4"
                                 },
                                 {
                                         "name": "eth4",
-                                        "connectsTo": "5",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "5"
                                 }
 
                         ]
                 },
                 {
                         "name": "1",
-                        "scheduleType": "hypercycle",
-                        "defaultTimeToTravel": 1,
-                        "defaultPortSpeed": 125,
                         "ports": [
                                 {
                                         "name": "eth0",
-                                        "connectsTo": "0",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "0"
                                 },
                                 {
                                         "name": "eth1",
-                                        "connectsTo": "2",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "2"
                                 },
                                 {
                                         "name": "eth2",
-                                        "connectsTo": "5",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "5"
                                 }
                         ]
                 },
                 {
                         "name": "2",
-                        "scheduleType": "hypercycle",
-                        "defaultTimeToTravel": 1,
-                        "defaultPortSpeed": 125,
                         "ports": [
                                 {
                                         "name": "eth0",
-                                        "connectsTo": "0",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "0"
                                 },
                                 {
                                         "name": "eth1",
-                                        "connectsTo": "1",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "1"
                                 },
                                 {
                                         "name": "eth2",
-                                        "connectsTo": "3",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "3"
                                 }
                         ]
                 },
                 {
                         "name": "3",
-                        "scheduleType": "hypercycle",
-                        "defaultTimeToTravel": 1,
-                        "defaultPortSpeed": 125,
                         "ports": [
                                 {
                                         "name": "eth0",
-                                        "connectsTo": "0",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "0"
                                 },
                                 {
                                         "name": "eth1",
-                                        "connectsTo": "2",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "2"
                                 },
                                 {
                                         "name": "eth2",
-                                        "connectsTo": "4",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "4"
                                 }
                         ]
                 },
                 {
                         "name": "4",
-                        "scheduleType": "hypercycle",
-                        "defaultTimeToTravel": 1,
-                        "defaultPortSpeed": 125,
                         "ports": [
                                 {
                                         "name": "eth0",
-                                        "connectsTo": "0",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "0"
                                 },
                                 {
                                         "name": "eth1",
-                                        "connectsTo": "3",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "3"
                                 },
                                 {
                                         "name": "eth2",
-                                        "connectsTo": "5",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "5"
                                 }
                         ]
                 },
                 {
                         "name": "5",
-                        "scheduleType": "hypercycle",
-                        "defaultTimeToTravel": 1,
-                        "defaultPortSpeed": 125,
                         "ports": [
                                 {
                                         "name": "eth0",
-                                        "connectsTo": "0",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "0"
                                 },
                                 {
                                         "name": "eth1",
-                                        "connectsTo": "1",
-                                        "timeToTravel": 1,
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "1"
                                 },
                                 {
                                         "name": "eth2",
-                                        "connectsTo": "4",
-                                        "timeToTravel": 1,
-                                        "scheduleType": "microcycle",
-                                        "maximumSlotDuration": 50,
-                                        "cycleStart": 0
+                                        "connectsTo": "4"
                                 }
                         ]
-                }
-        ],
-        "devices": [
-                {
-                        "name": "dev0",
-                        "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 2500,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
-                },
-                {
-                        "name": "dev1",
-                        "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 2500,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
-                },
-                {
-                        "name": "dev2",
-                        "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 1000,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
-                },
-                {
-                        "name": "dev3",
-                        "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 1000,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
-                },
-                {
-                        "name": "dev4",
-                        "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 1000,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
-                },
-                {
-                        "name": "dev5",
-                        "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 5000,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
                 }
         ],
         "flows": [
                 {
                         "name": "flow1",
                         "type": "unicast",
+                        "defaultPacketPeriodicity": 2500,
+                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53,
                         "sourceDevice": "1",
                         "endDevices": [
                                 "3"
@@ -268,6 +137,9 @@
                 {
                         "name": "flow2",
                         "type": "unicast",
+                        "defaultPacketPeriodicity": 2500,
+                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53,
                         "sourceDevice": "4",
                         "endDevices": [
                                 "3"
@@ -286,6 +158,9 @@
                 {
                         "name": "flow3",
                         "type": "unicast",
+                        "defaultPacketPeriodicity": 2500,
+						"defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53,
                         "sourceDevice": "2",
                         "endDevices": [
                                 "3"
@@ -304,6 +179,9 @@
                 {
                         "name": "flow4",
                         "type": "unicast",
+                        "defaultPacketPeriodicity": 2500,
+                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketSize": 53,
                         "sourceDevice": "5",
                         "endDevices": [
                                 "3"
@@ -321,3 +199,4 @@
                 }
         ]
 }
+**
