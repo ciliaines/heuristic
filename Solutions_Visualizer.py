@@ -9,7 +9,7 @@ from RandStream_Parameters import *
 from Preprocessing import *
 from ILP_Generator import *
 import time
-from read import *
+from read_ilp import *
 from Plot import *
 
 input = "input1"
@@ -75,11 +75,11 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     try :
         initial_time = time.time()
         ####LEER DEL FICHERO
-        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination, Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read_Complete()
+        print("ller")
+        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read_ilp("Resultado/input1.json")
         print("1 ",Number_of_edges, Number_of_Streams, Network_nodes, Network_links)
         # Adjacency_Matrix, plot_network, 
-        print("2 ",Sources, Destinations, Stream_Source_Destination, Streams_size)
-        print("3 ",Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams)
+        #print("2 ",Sources, Destinations, Stream_Source_Destination, Streams_size)
         ################################################################
         
         #Djikstra scheduler
@@ -91,7 +91,9 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         ################################################################
         
         # Random Streams parameters
-        #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams,file_input)
+        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2_ilp(Number_of_Streams,"Resultado/input1.json")
+        print("3 ",Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams)
+
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################

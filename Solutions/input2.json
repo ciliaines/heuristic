@@ -115,88 +115,39 @@
         "flows": [
                 {
                         "name": "flow1",
-                        "type": "unicast",
-                        "defaultPacketPeriodicity": 2500,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53,
+                        "period": 2500,
+                        "deathline": 10000,
+                        "packetSize": 53,
                         "sourceDevice": "1",
-                        "endDevices": [
-                                "3"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "1",
-                                        "nextNodeName": "0"
-                                },
-                                {
-                                        "currentNodeName": "0",
-                                        "nextNodeName": "3"
-                                }
-                        ]
+                        "endDevices": "3"
+                        
                 },
                 {
                         "name": "flow2",
-                        "type": "unicast",
-                        "defaultPacketPeriodicity": 2500,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53,
+                        "period": 2500,
+                        "deathline": 10000,
+                        "packetSize": 53,
                         "sourceDevice": "4",
-                        "endDevices": [
-                                "3"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "4",
-                                        "nextNodeName": "0"
-                                },
-                                {
-                                        "currentNodeName": "0",
-                                        "nextNodeName": "3"
-                                }
-                        ]
+                        "endDevices": "3"
+                        
                 },
                 {
                         "name": "flow3",
-                        "type": "unicast",
-                        "defaultPacketPeriodicity": 2500,
-						"defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53,
+                        "period": 2500,
+						"deathline": 10000,
+                        "packetSize": 53,
                         "sourceDevice": "2",
-                        "endDevices": [
-                                "3"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "2",
-                                        "nextNodeName": "0"
-                                },
-                                {
-                                        "currentNodeName": "0",
-                                        "nextNodeName": "3"
-                                }
-                        ]
+                        "endDevices": "3"
+                       
                 },
                 {
                         "name": "flow4",
-                        "type": "unicast",
-                        "defaultPacketPeriodicity": 2500,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53,
+                        "period": 2500,
+                        "deathline": 10000,
+                        "packetSize": 53,
                         "sourceDevice": "5",
-                        "endDevices": [
-                                "3"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "5",
-                                        "nextNodeName": "0"
-                                },
-                                {
-                                        "currentNodeName": "0",
-                                        "nextNodeName": "3"
-                                }
-                        ]
+                        "endDevices": "3"
+                        
                 }
         ]
 }
-**
