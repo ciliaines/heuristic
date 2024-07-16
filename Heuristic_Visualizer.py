@@ -16,7 +16,9 @@ from Plot import *
 
 input = "input1"
 input_name = input + "_heuristic"
+file_input_topo = "Inputs/"+input+"_topo.json"
 file_input = "Solutions/"+input+".json"
+file_result = "Results/"+input+"_result.json"
 Hyperperiod = 1000
 #Hyperperiod = 6000
 #Hyperperiod = 30000
@@ -85,7 +87,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         while utilizacion:
             #Read from the JSON files
             if num_stream == 0:
-                Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input)
+                Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input_topo)
             Stream_Source_Destination,Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size = Random(Stream_Source_Destination_total, Hyperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size)
             ################################################################
             #Djikstra scheduler
@@ -126,7 +128,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
                      Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         #Escribir la topologia escogida en un json para ejecutarla ams tarde, se podria en la rama diario
-        Write(Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination)        
+        Write(input, Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination)        
 
 
         

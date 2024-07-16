@@ -1,10 +1,10 @@
 import json 
 
-def Write(Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination):
+def Write(input,Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination):
     #dic 1 switches
     #duplicar fichero json 
-    original_file = 'Solutions/input1.json'
-    duplicate_file = 'Resultado/input1.json'
+    original_file = 'Inputs/'+input+'_topo.json'
+    duplicate_file = 'Resultado/'+input+'.json'
 
     with open(original_file, 'r', encoding='utf-8') as file:
        data = json.load(file)
@@ -22,11 +22,11 @@ def Write(Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Str
     
         flow ={
                 "name" : key_stream,
-                "Period" : Streams_Period[key_stream],
-                "Deathline" : Deathline_Stream[key_stream],
-                "Size" : Streams_size[key_stream],
-                "SourceDevice" : Stream_Source_Destination[key_stream][0],
-                "EndDevices" : Stream_Source_Destination[key_stream][1]
+                "period" : Streams_Period[key_stream],
+                "deathline" : Deathline_Stream[key_stream],
+                "packetSize" : Streams_size[key_stream],
+                "sourceDevice" : Stream_Source_Destination[key_stream][0],
+                "endDevices" : Stream_Source_Destination[key_stream][1]
             }
 
                 

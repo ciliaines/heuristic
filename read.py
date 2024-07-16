@@ -91,8 +91,7 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destinati
 
     return Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size
 
-def Read_Complete():
-    file_input = "Resultado/input1.json"
+def Read_Complete(file_result):
     Number_of_edges=0  #numero de switch=4
     Number_of_Streams=0 #numero de flujos=3
     Network_nodes = list()

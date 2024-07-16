@@ -17,6 +17,7 @@ latency=0
 queue=1
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue)
 file_input = "Solutions/"+input+".json"
+file_resultado_input = "Resultado/"+input+".json"
 
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
@@ -76,7 +77,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         initial_time = time.time()
         ####LEER DEL FICHERO
         print("ller")
-        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read_ilp("Resultado/input1.json")
+        Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read_ilp(file_resultado_input)
         print("1 ",Number_of_edges, Number_of_Streams, Network_nodes, Network_links)
         # Adjacency_Matrix, plot_network, 
         #print("2 ",Sources, Destinations, Stream_Source_Destination, Streams_size)
@@ -91,7 +92,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         ################################################################
         
         # Random Streams parameters
-        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2_ilp(Number_of_Streams,"Resultado/input1.json")
+        Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2_ilp(Number_of_Streams,file_resultado_input)
         print("3 ",Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams)
 
         Hyperperiod = Hyperperiod_generator(Streams_Period_list)
