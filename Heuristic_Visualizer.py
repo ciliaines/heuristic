@@ -19,9 +19,9 @@ input_name = input + "_heuristic"
 file_input_topo = "Inputs/"+input+"_topo.json"
 file_input = "Solutions/"+input+".json"
 file_result = "Results/"+input+"_result.json"
-Hyperperiod = 1000
+#Hyperperiod = 1000
 #Hyperperiod = 6000
-#Hyperperiod = 30000
+Hyperperiod = 30000
 
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")

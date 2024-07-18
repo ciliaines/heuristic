@@ -18,6 +18,9 @@ queue=1
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue)
 file_input = "Solutions/"+input+".json"
 file_resultado_input = "Resultado/"+input+".json"
+#Hyperperiod = 1000
+#Hyperperiod = 6000
+Hyperperiod = 30000
 
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
@@ -93,9 +96,9 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         
         # Random Streams parameters
         Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2_ilp(Number_of_Streams,file_resultado_input)
-        print("3 ",Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams)
+        print("3 ",Streams_size)
 
-        Hyperperiod = Hyperperiod_generator(Streams_Period_list)
+        #Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
         
@@ -107,14 +110,14 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         unused_links = unused_links_generator(Network_links, Link_order_Descriptor)
 
         ################################################################
-
+        print("inicioooooooooooooooooooooooooooooooooooooooooooooooooo")
         scheduler = ILP_Raagard_solver(Number_of_Streams, Network_links, \
                         Link_order_Descriptor, \
                         Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
                         Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
                         Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue)
         instance, results = scheduler.instance, scheduler.results
-        print("kdhfbskbfks")
+        print("finalllllllllllllllllllllllllllllllllllllllllllllllllll")
         final_time = time.time()
         ################################################################
         #Plot the values

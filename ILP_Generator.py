@@ -71,9 +71,9 @@ class ILP_Raagard_solver :
         self.latency = latency
         self.queue = queue
 
-        #print("self  ",self.Number_of_Streams, self.Network_links, self.Link_order_Descriptor, self.Streams_Period, self.Hyperperiod)
-        #print("2",self.Frames_per_Stream,self.Max_frames, self.Num_of_Frames,self.Model_Descriptor,self.Model_Descriptor_vector)
-        #print("3",self.Deathline_Stream,self.Repetitions, self.Repetitions_Descriptor,self.Frame_Duration)
+        print("self  ",self.Number_of_Streams, self.Network_links, self.Link_order_Descriptor, self.Streams_Period, self.Hyperperiod)
+        print("2",self.Frames_per_Stream,self.Max_frames, self.Num_of_Frames,self.Model_Descriptor,self.Model_Descriptor_vector)
+        print("3",self.Deathline_Stream,self.Repetitions, self.Repetitions_Descriptor,self.Frame_Duration)
         #print("4",self.Stream_Source_Destination,self.Streams_size,self.Streams_paths, self.Sort_Stream_Source_Destination)
         print("hiper",  self.Hyperperiod)
         self.model = AbstractModel()
@@ -109,7 +109,6 @@ class ILP_Raagard_solver :
 #        self.model.Num_Queues = Var(self.model.Links, within=PositiveIntegers, initialize=1)
         self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=1)
         
-        
         # Defining the objective function  funcion objetivo
         @self.model.Objective(sense=minimize)
         def Latency_Num_Queues_rule(model):
@@ -120,10 +119,7 @@ class ILP_Raagard_solver :
         #    return (0.5) * sum(model.Latency[stream] for stream in model.Streams ) + (0.5) * sum(model.Num_Queues[link]  for link in model.Links )
         #    return (0.0) * sum(model.Latency[stream] for stream in model.Streams ) + (1.0) * sum(model.Num_Queues[link]  for link in model.Links )
         #    return (1.0) * sum(model.Latency[stream] for stream in model.Streams ) + (0.0) * sum(model.Num_Queues[link]  for link in model.Links )
-            return (model.latency) * sum(model.Latency[stream] for stream in model.Streams ) + (model.queue) * sum(model.Num_Queues[link]  for link in model.Links )
-
-
-        
+            return (model.latency) * sum(model.Latency[stream] for stream in model.Streams ) + (model.queue) * sum(model.Num_Queues[link]  for link in model.Links )        
         # Defining the constraints
         @self.model.Constraint(self.model.Streams, self.model.Links)
         def Constraint_27_rule(model, stream, link):
@@ -134,11 +130,9 @@ class ILP_Raagard_solver :
         @self.model.Constraint(self.model.Streams)
         def Constraint_28_rule(model, stream): 
             return model.Latency[stream] == model.Frame_Offset[stream, self.Link_order_Descriptor[stream][-1], (len(self.Frames_per_Stream[stream]) -1) ] + model.Frame_Duration[stream, (len(self.Frames_per_Stream[stream]) -1) , self.Link_order_Descriptor[stream][-1] ] - model.Frame_Offset[stream, self.Link_order_Descriptor[stream][0] , 0 ]
-        
         @self.model.Constraint(self.model.Streams)
         def Constraint_29_rule(model, stream):
             return model.Latency[stream] <= model.Deathline_Stream[stream]        
-        
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links)
         def Constraint_30_rule(model, stream, frame, link):
             if self.Model_Descriptor[(stream, frame, link)] and self.Link_order_Descriptor[stream].index(link) == 0 :
@@ -158,14 +152,12 @@ class ILP_Raagard_solver :
             else:
                 return Constraint.Skip
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links, self.model.Streams, self.model.Frames, self.model.Repetitions, self.model.Repetitions)
-
         def Constraint_34_rule(model, stream, frame, link, stream_2, frame_2, repetition, repetition_2):
             if frame_exists(self.Model_Descriptor_vector, stream, frame) and frame_exists(self.Model_Descriptor_vector, stream_2, frame_2) and self.Model_Descriptor[(stream,frame,link)] and self.Model_Descriptor[(stream_2,frame_2,link)] and self.Repetitions_Descriptor[stream][repetition] != 9 and self.Repetitions_Descriptor[stream_2][repetition_2] != 9 and stream != stream_2 :
                 return self.Repetitions_Descriptor[stream][repetition] * model.Period[(stream)] + model.Frame_Offset[stream, link, frame] + model.Frame_Duration[stream, frame, link] <= self.Repetitions_Descriptor[stream_2][repetition_2] * model.Period[(stream_2)] + model.Frame_Offset[stream_2, link, frame_2] +  model.Large_Number * model.Aux_Var_Dis[stream, frame, stream_2, frame_2, link, repetition, repetition_2]
             else:
                 return Constraint.Skip
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links, self.model.Streams, self.model.Frames, self.model.Repetitions, self.model.Repetitions)
-
         def Constraint_35_rule(model, stream, frame, link, stream_2, frame_2, repetition, repetition_2):
             if frame_exists(self.Model_Descriptor_vector, stream, frame) and frame_exists(self.Model_Descriptor_vector, stream_2, frame_2) and self.Model_Descriptor[(stream,frame,link)] and self.Model_Descriptor[(stream_2,frame_2,link)] and self.Repetitions_Descriptor[stream][repetition] != 9 and self.Repetitions_Descriptor[stream_2][repetition_2] != 9 and stream != stream_2:
                 return self.Repetitions_Descriptor[stream_2][repetition_2] * model.Period[(stream_2)] + model.Frame_Offset[stream_2, link, frame_2] + model.Frame_Duration[stream_2, frame_2, link] <= self.Repetitions_Descriptor[stream][repetition] * model.Period[(stream)] + model.Frame_Offset[stream, link, frame] + model.Large_Number * (1 - model.Aux_Var_Dis[stream, frame, stream_2, frame_2, link, repetition, repetition_2]) 
@@ -255,13 +247,14 @@ class ILP_Raagard_solver :
                 return model.Num_Queues[link] == 0
             else : 
                 return Constraint.Skip
-                
+
         ### This part is the creation of the instance in the ilp system
         opt = SolverFactory('gurobi')
         #opt = SolverFactory('glpk')
 
         self.instance = self.model.create_instance()
         self.results = opt.solve(self.instance)
+        print("AQUIIIIIII")
         self.instance.solutions.load_from(self.results)
 
 

@@ -96,8 +96,9 @@ def Greedy_Heuristic(model, num_stream):
                     break
         print("--antes de acabar meter otro stream-----------------------------------------------------------------------")
         #primero comprobar la utilizacion
-        utilizacion = 0.45
+        utilizacion = 0.25
         utilizacion_hiperperiodo = utilizacion * model.Hyperperiod * 8
+        print("utilizacion hiperperiodo  ",utilizacion_hiperperiodo)
         #como compruebo la utilizacion
         count_valores = {} #cola link
         #print("flexibility_solution             ", flexibility_solution)
