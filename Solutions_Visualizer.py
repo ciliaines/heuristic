@@ -18,9 +18,9 @@ queue=1
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue)
 file_input = "Solutions/"+input+".json"
 file_resultado_input = "Resultado/"+input+".json"
-#Hyperperiod = 1000
+Hyperperiod = 1000
 #Hyperperiod = 6000
-Hyperperiod = 30000
+#Hyperperiod = 30000
 
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
@@ -91,7 +91,9 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
         Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
         Streams_links_paths = Streams_links_paths_generator(Streams_paths)
+        print("Streams_links_paths  ", Streams_links_paths)
         Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
+        print("Link_order_Descriptor ",Link_order_Descriptor)
         ################################################################
         
         # Random Streams parameters

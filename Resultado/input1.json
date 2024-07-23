@@ -66,9 +66,9 @@
     "flows": [
         {
             "name": 0,
-            "period": 5000,
-            "deathline": 5000,
-            "packetSize": 15000,
+            "period": 100,
+            "deathline": 100,
+            "packetSize": 1500,
             "sourceDevice": 4,
             "endDevices": 2
         }
