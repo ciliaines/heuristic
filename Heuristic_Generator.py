@@ -1,4 +1,4 @@
-##################################### Heuristic Strategy starts here #####################################
+33##################################### Heuristic Strategy starts here #####################################
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from pyomo.core import Var
@@ -48,7 +48,7 @@ class Heuristic_class :
         self.model.Frames_per_Stream = self.Frames_per_Stream
         #self.model.Stream_Source_Destination = self.Stream_Source_Destination
         self.model.Streams_Period = self.Streams_Period
-        #self.model.Streams_size = self.Streams_size
+        self.model.Streams_size = self.Streams_size
         #self.model.Streams_paths = self.Streams_paths
         #self.model.Sort_Stream_Source_Destination = self.Sort_Stream_Source_Destination
         #Dictionary
@@ -75,7 +75,9 @@ class Heuristic_class :
         self.instance.solutions.load_from(self.results)
 
 def Greedy_Heuristic(model, num_stream):
+    total_utilizacion_enlace = 0
     for key_stream in model.Streams:
+        print("                ", key_stream," ",num_stream, "        ", model.Streams.value)
         key_stream = num_stream
         value_stream = (0,0)
         success = False
@@ -95,6 +97,20 @@ def Greedy_Heuristic(model, num_stream):
                     #success = True
                     break
         print("--antes de acabar meter otro stream-----------------------------------------------------------------------")
+#        utilicacion_enlace = model.Streams_size[key_stream] /( model.Streams_Period[key_stream]* 1000000000)
+#        print("utilicacion_enlace   ",utilicacion_enlace)
+#        if utilicacion_enlace > 0.2: 
+#            print("individual  SE ACABA ")
+#            return False          
+#        if total_utilizacion_enlace is None:
+#            total_utilizacion_enlace = utilicacion_enlace
+#        else:
+#            total_utilizacion_enlace += utilicacion_enlace
+#        print("total_utilizacion_enlace     ",total_utilizacion_enlace)
+#        if total_utilizacion_enlace > 0.45:
+#            print("global  SE ACABA ")
+#            return False
+#        return True
         #primero comprobar la utilizacion
         utilizacion = 0.25
         utilizacion_hiperperiodo = utilizacion * model.Hyperperiod * 8
@@ -109,8 +125,7 @@ def Greedy_Heuristic(model, num_stream):
                 else:
                     count_valores[key2] += len(lista_vectores) * 100
         #COUNT UTILIZACION PORCENTAJE
-        print("contador de valores ",count_valores)
-        
+        print("contador de valores ",count_valores)      
         # condicion uno, media de todos los links superior x #la media de los valores ALL_VALUES SUMA DE TODOS LOS VALORES
         all_values = []
         for value in count_valores.values():
@@ -132,7 +147,6 @@ def Greedy_Heuristic(model, num_stream):
         # si uno de los dos se cumpre escribir los resultado en el read --> WRITE
 
 def Schedule_flow(key_stream, value_stream, model,cola):
-    print("                ", key_stream, "        ", model.Streams_paths_Dic[key_stream])
     for frame in range(model.Frames_per_Stream[key_stream][0]):
         #print("frame   ", frame)
         a = 0
