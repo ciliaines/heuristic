@@ -1,4 +1,4 @@
-##################################### ILP Model starts here #####################################
+################################### ILP Model starts here #####################################
 # The ILP took as base for this code appears in the paper 
 # Optimization algorithms for the scheduling of IEEE 802.1 Time-Sensitive Networking (TSN)
 # The authors are Michael Lander and Raagaard Paul Pop
@@ -71,9 +71,9 @@ class ILP_Raagard_solver :
         self.latency = latency
         self.queue = queue
 
-        #print("self  ",self.Number_of_Streams, self.Network_links, self.Link_order_Descriptor, self.Streams_Period, self.Hyperperiod)
-        #print("2",self.Frames_per_Stream,self.Max_frames, self.Num_of_Frames,self.Model_Descriptor,self.Model_Descriptor_vector)
-        #print("3",self.Deathline_Stream,self.Repetitions, self.Repetitions_Descriptor,self.Frame_Duration)
+        print("self  ",self.Number_of_Streams, self.Network_links, self.Link_order_Descriptor, self.Streams_Period, self.Hyperperiod)
+        print("2",self.Frames_per_Stream,self.Max_frames, self.Num_of_Frames,self.Model_Descriptor,self.Model_Descriptor_vector)
+        print("3",self.Deathline_Stream,self.Repetitions, self.Repetitions_Descriptor,self.Frame_Duration)
         #print("4",self.Stream_Source_Destination,self.Streams_size,self.Streams_paths, self.Sort_Stream_Source_Destination)
 
         self.model = AbstractModel()

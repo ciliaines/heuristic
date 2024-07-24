@@ -12,7 +12,7 @@ import time
 from read import *
 from Plot import *
 
-input = "input4"
+input = "input1"
 latency=0.5
 queue=0.5
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue)

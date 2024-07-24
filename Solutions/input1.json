@@ -133,50 +133,14 @@
                 {
                         "name": "dev4",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 2500,
-                        "defaultHardConstraintTime": 10000,
+                        "defaultPacketPeriodicity": 100,
+                        "defaultHardConstraintTime": 100,
                         "defaultPacketSize": 45
                 }
         ],
         "flows": [
                 {
                         "name": "flow1",
-                        "type": "unicast",
-                        "sourceDevice": "0",
-                        "endDevices": [
-                                "2"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "0",
-                                        "nextNodeName": "3"
-                                },
-                                {
-                                        "currentNodeName": "3",
-                                        "nextNodeName": "2"
-                                }
-                        ]
-                },
-                {
-                        "name": "flow2",
-                        "type": "unicast",
-                        "sourceDevice": "1",
-                        "endDevices": [
-                                "2"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "1",
-                                        "nextNodeName": "3"
-                                },
-                                {
-                                        "currentNodeName": "3",
-                                        "nextNodeName": "2"
-                                }
-                        ]
-                },
-                {
-                        "name": "flow3",
                         "type": "unicast",
                         "sourceDevice": "4",
                         "endDevices": [
