@@ -105,14 +105,14 @@
                 {
                         "name": "dev0",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 5000,
+                        "defaultPacketPeriodicity": 500,
                         "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 45
+                        "defaultPacketSize": 4500
                 },
                 {
                         "name": "dev1",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 2500,
+                        "defaultPacketPeriodicity": 1000,
                         "defaultHardConstraintTime": 10000,
                         "defaultPacketSize": 45
                 },
@@ -133,7 +133,7 @@
                 {
                         "name": "dev4",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 100,
+                        "defaultPacketPeriodicity": 1000,
                         "defaultHardConstraintTime": 100,
                         "defaultPacketSize": 45
                 }
@@ -142,13 +142,31 @@
                 {
                         "name": "flow1",
                         "type": "unicast",
-                        "sourceDevice": "4",
+                        "sourceDevice": "0",
+                        "endDevices": [
+                                "1"
+                        ],
+                        "hops": [
+                                {
+                                        "currentNodeName": "0",
+                                        "nextNodeName": "3"
+                                },
+                                {
+                                        "currentNodeName": "3",
+                                        "nextNodeName": "1"
+                                }
+                        ]
+                },
+                {
+                        "name": "flow1",
+                        "type": "unicast",
+                        "sourceDevice": "0",
                         "endDevices": [
                                 "2"
                         ],
                         "hops": [
                                 {
-                                        "currentNodeName": "4",
+                                        "currentNodeName": "0",
                                         "nextNodeName": "3"
                                 },
                                 {
@@ -156,6 +174,6 @@
                                         "nextNodeName": "2"
                                 }
                         ]
-                }
+                 }
         ]
 }
