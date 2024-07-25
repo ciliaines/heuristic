@@ -68,9 +68,9 @@
             "name": 0,
             "period": 100,
             "deathline": 100,
-            "packetSize": 1500,
-            "sourceDevice": 4,
-            "endDevices": 2
+            "packetSize": 3000,
+            "sourceDevice": 0,
+            "endDevices": 4
         }
     ]
 }

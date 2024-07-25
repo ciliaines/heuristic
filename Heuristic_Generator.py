@@ -1,4 +1,4 @@
-33##################################### Heuristic Strategy starts here #####################################
+##################################### Heuristic Strategy starts here #####################################
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from pyomo.core import Var
@@ -33,6 +33,8 @@ class Heuristic_class :
         self.Streams_paths = Streams_paths
         self.Sort_Stream_Source_Destination = Sort_Stream_Source_Destination
         #model
+
+        
         self.model = AbstractModel()
         self.model.Streams = Set(initialize= range(self.Number_of_Streams)) 
         self.model.Repetitions = Set(initialize= range(int(max(Repetitions) + 1))) # This is the maximum number of Repetitions

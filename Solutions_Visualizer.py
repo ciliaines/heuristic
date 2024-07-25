@@ -18,9 +18,9 @@ queue=1
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue)
 file_input = "Solutions/"+input+".json"
 file_resultado_input = "Resultado/"+input+".json"
-Hyperperiod = 1000
+#Hyperperiod = 1000
 #Hyperperiod = 6000
-#Hyperperiod = 30000
+Hyperperiod = 30000
 
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
