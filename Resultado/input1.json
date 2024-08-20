@@ -66,11 +66,11 @@
     "flows": [
         {
             "name": 0,
-            "period": 100,
-            "deathline": 100,
+            "period": 200,
+            "deathline": 10000,
             "packetSize": 3000,
-            "sourceDevice": 0,
-            "endDevices": 4
+            "sourceDevice": 4,
+            "endDevices": 1
         }
     ]
 }

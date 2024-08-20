@@ -67,7 +67,7 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destinati
     if Hiperperiod == 1000:
        periodos = [100, 200, 500, 1000]
     if Hiperperiod == 6000:
-        periodos = [100, 150, 500, 1000, 2000, 6000]
+        periodos = [100, 150, 200, 500, 1000, 2000, 6000]
     if Hiperperiod == 30000:
         periodos = [100, 150, 200, 300, 500, 5000, 10000, 30000]
     Periodo = random.choice(periodos)
