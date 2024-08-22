@@ -9,7 +9,7 @@ from RandStream_Parameters import *
 from Preprocessing import *
 from ILP_Generator import *
 import time
-from read_ilp import *
+from read_ilp_2 import *
 from Plot import *
 
 input = "input1"
