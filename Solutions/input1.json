@@ -106,8 +106,8 @@
                         "name": "dev0",
                         "defaultFirstSendingTime": 0,
                         "defaultPacketPeriodicity": 500,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 4500
+                        "defaultHardConstraintTime": 500,
+                        "defaultPacketSize": 3000
                 },
                 {
                         "name": "dev1",
@@ -156,24 +156,6 @@
                                         "nextNodeName": "1"
                                 }
                         ]
-                },
-                {
-                        "name": "flow1",
-                        "type": "unicast",
-                        "sourceDevice": "0",
-                        "endDevices": [
-                                "2"
-                        ],
-                        "hops": [
-                                {
-                                        "currentNodeName": "0",
-                                        "nextNodeName": "3"
-                                },
-                                {
-                                        "currentNodeName": "3",
-                                        "nextNodeName": "2"
-                                }
-                        ]
-                 }
+                }
         ]
 }
