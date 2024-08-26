@@ -7,17 +7,23 @@ from RanNet_Generator import *
 from Djikstra_Path_Calculator import *
 from RandStream_Parameters import *
 from Preprocessing import *
-from ILP_Generator import *
+from ILP_Generator_2 import *
 import time
 from read_ilp_2 import *
 from Plot import *
 
-input = "input1"
+#leer la variable timestamp
+with open('variable.txt', 'r') as file:
+    timestamp = file.read().strip()
+
 latency=0
 queue=1
-input_name = input + "_ilp_" + str(latency) + "_" + str(queue)
-file_input = "Solutions/"+input+".json"
-file_resultado_input = "Resultado/"+input+".json"
+
+input = "input1"
+input_timestamp = input +"_" + timestamp
+input_name = input + "_ilp_" + str(latency) + "_" + str(queue) + "_" + timestamp
+file_input = "Solutions/" + input_timestamp + ".json"
+file_resultado_input = "Resultado/" + input_timestamp + ".json"
 #Hyperperiod = 1000
 #Hyperperiod = 6000
 Hyperperiod = 30000
@@ -79,11 +85,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
     try :
         initial_time = time.time()
         ####LEER DEL FICHERO
-        print("ller")
         Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination = Read_ilp(file_resultado_input)
-        print("1 ",Number_of_edges, Number_of_Streams, Network_nodes, Network_links)
         # Adjacency_Matrix, plot_network, 
-        #print("2 ",Sources, Destinations, Stream_Source_Destination, Streams_size)
         ################################################################
         
         #Djikstra scheduler
@@ -91,15 +94,11 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
         Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
         Streams_links_paths = Streams_links_paths_generator(Streams_paths)
-        print("Streams_links_paths  ", Streams_links_paths)
         Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
-        print("Link_order_Descriptor ",Link_order_Descriptor)
         ################################################################
         
         # Random Streams parameters
         Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2_ilp(Number_of_Streams,file_resultado_input)
-        print("3 ",Streams_size)
-
         #Hyperperiod = Hyperperiod_generator(Streams_Period_list)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
@@ -112,14 +111,12 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         unused_links = unused_links_generator(Network_links, Link_order_Descriptor)
 
         ################################################################
-        print("inicioooooooooooooooooooooooooooooooooooooooooooooooooo")
         scheduler = ILP_Raagard_solver(Number_of_Streams, Network_links, \
                         Link_order_Descriptor, \
                         Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
                         Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
                         Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue)
         instance, results = scheduler.instance, scheduler.results
-        print("finalllllllllllllllllllllllllllllllllllllllllllllllllll")
         final_time = time.time()
         ################################################################
         #Plot the values

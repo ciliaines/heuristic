@@ -1,4 +1,4 @@
-##################################### Heuristic Strategy starts here #####################################
+ ##################################### Heuristic Strategy starts here #####################################
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from pyomo.core import Var
@@ -33,8 +33,6 @@ class Heuristic_class :
         self.Streams_paths = Streams_paths
         self.Sort_Stream_Source_Destination = Sort_Stream_Source_Destination
         #model
-
-        
         self.model = AbstractModel()
         self.model.Streams = Set(initialize= range(self.Number_of_Streams)) 
         self.model.Repetitions = Set(initialize= range(int(max(Repetitions) + 1))) # This is the maximum number of Repetitions
@@ -79,7 +77,6 @@ class Heuristic_class :
 def Greedy_Heuristic(model, num_stream):
     total_utilizacion_enlace = 0
     for key_stream in model.Streams:
-        print("                ", key_stream," ",num_stream, "        ", model.Streams.value)
         key_stream = num_stream
         value_stream = (0,0)
         success = False
@@ -95,28 +92,13 @@ def Greedy_Heuristic(model, num_stream):
                 model.Queue_Assignment[key_stream, link] = model.Queue_Assignment[key_stream, link] + 1
                 cola = cola+1
                 #print("ELSE +++++++++++++ SOLUTION  ",model.Queue_Assignment[key_stream, link].value)
-                if model.Queue_Assignment[key_stream, link].value > 8:#model.Num_Queues[link].value:
+                if model.Queue_Assignment[key_stream, link].value >7 : #model.Num_Queues[link].value:
                     #success = True
                     break
-        print("--antes de acabar meter otro stream-----------------------------------------------------------------------")
-#        utilicacion_enlace = model.Streams_size[key_stream] /( model.Streams_Period[key_stream]* 1000000000)
-#        print("utilicacion_enlace   ",utilicacion_enlace)
-#        if utilicacion_enlace > 0.2: 
-#            print("individual  SE ACABA ")
-#            return False          
-#        if total_utilizacion_enlace is None:
-#            total_utilizacion_enlace = utilicacion_enlace
-#        else:
-#            total_utilizacion_enlace += utilicacion_enlace
-#        print("total_utilizacion_enlace     ",total_utilizacion_enlace)
-#        if total_utilizacion_enlace > 0.45:
-#            print("global  SE ACABA ")
-#            return False
-#        return True
         #primero comprobar la utilizacion
         utilizacion = 0.25
         utilizacion_hiperperiodo = utilizacion * model.Hyperperiod * 8
-        print("utilizacion hiperperiodo  ",utilizacion_hiperperiodo)
+        #print("utilizacion hiperperiodo  ",utilizacion_hiperperiodo)
         #como compruebo la utilizacion
         count_valores = {} #cola link
         #print("flexibility_solution             ", flexibility_solution)
@@ -127,25 +109,25 @@ def Greedy_Heuristic(model, num_stream):
                 else:
                     count_valores[key2] += len(lista_vectores) * 100
         #COUNT UTILIZACION PORCENTAJE
-        print("contador de valores ",count_valores)      
+        #print("contador de valores ",count_valores)      
         # condicion uno, media de todos los links superior x #la media de los valores ALL_VALUES SUMA DE TODOS LOS VALORES
         all_values = []
         for value in count_valores.values():
             all_values.append(value)
             # condicion dos  #cada uno de la utilicacion --> count  #si values son mas que el 20 porciento
             utilizacion_periodo = value / (model.Hyperperiod*8)
-            print(" utilizacion_periodo ", utilizacion_periodo, "  mayor 0,2")
+            #print(" utilizacion_periodo ", utilizacion_periodo, "  mayor 0,2")
             if utilizacion_periodo > 0.2: 
-                print("individual  SE ACABA ")
+                #print("individual  SE ACABA ")
                 return False           
         mean_values = sum(all_values) / len(all_values)
-        print("mean_values ", mean_values, "  mayor a la utilizacion_hiperperiodo  ", utilizacion_hiperperiodo  )
+        #print("mean_values ", mean_values, "  mayor a la utilizacion_hiperperiodo  ", utilizacion_hiperperiodo  )
         if mean_values > utilizacion_hiperperiodo:
             #####SIGOOOOOO AÑADO UNO MAS
-            print("media SE ACABA")
+            #print("media SE ACABA")
             return False
         return True
-        print("-----------------------------------------------------------------------------------------------------------")
+        #print("-----------------------------------------------------------------------------------------------------------")
         # si uno de los dos se cumpre escribir los resultado en el read --> WRITE
 
 def Schedule_flow(key_stream, value_stream, model,cola):

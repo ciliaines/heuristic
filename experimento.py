@@ -1,13 +1,20 @@
-#automatizar los test del experimento
+import subprocess
 
-#establecer los parametros de hyperperiodo
-Hyperperiod = 1000
-Hyperperiod = 6000
-Hyperperiod = 30000
+script1 = 'Heuristic_Visualizer.py'
+script2 = 'Solutions_Visualizer.py'
+#ejecutar x veces
+#por ahora 5 veces
+for i in range(5):
+    print(" Proceso numero", i)
+    #primero el heuristic Visualization
+    print(" Heuristico ")
+    subprocess.run(['python', script1])
 
-#cuantos test hay que hacer con este hyperperiodo
-90 test para cada hyperperiodo que luego reparto por su utilizacion 
-- guardar la utilizacion y el hyperperiodo en el txt y json repectivamente 
+    #cuando acabe ejecuto el solution Visualization
+    print(" ILP  ")
+    subprocess.run(['python', script2])
 
-total 270 test 
-# guardar los 
+print("terminado")
+
+
+

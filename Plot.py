@@ -5,7 +5,7 @@ from RanNet_Generator import *
 from Djikstra_Path_Calculator import *
 from RandStream_Parameters import *
 from Preprocessing import *
-from ILP_Generator import *
+from ILP_Generator_2 import *
 import time
 import textwrap
 from read import *

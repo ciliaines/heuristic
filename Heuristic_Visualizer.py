@@ -6,19 +6,23 @@ from RanNet_Generator import *
 from Djikstra_Path_Calculator import *
 from RandStream_Parameters import *
 from Preprocessing import *
-from ILP_Generator import *
 from Heuristic_Generator import *
 import time
 from read import *
 from write import *
 import textwrap
 from Plot import *
+from datetime import datetime
+
+now = datetime.now()
+timestamp = now.strftime("%Y-%m-%d_%H:%M:%S")
 
 input = "input1"
-input_name = input + "_heuristic"
-file_input_topo = "Inputs/"+input+"_topo.json"
-file_input = "Solutions/"+input+".json"
-file_result = "Results/"+input+"_result.json"
+input_timestamp = "input1_" + timestamp
+input_name = input + "_heuristic_" + timestamp
+file_input_topo = "Inputs/" + input + "_topo.json"
+file_input = "Solutions/" + input_timestamp + ".json"
+file_result = "Results/"+ input + "_result_" + ".json"
 #Hyperperiod = 1000
 #Hyperperiod = 6000
 Hyperperiod = 30000
@@ -116,7 +120,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
 
             instance, results = scheduler.instance, scheduler.results
             utilizacion = Greedy_Heuristic(instance, num_stream)
-            print("utilizacion   ", utilizacion)
+            #print("utilizacion   ", utilizacion)
             #utilizacion = False
             num_stream = num_stream + 1
 
@@ -128,9 +132,11 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
                      Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         #Escribir la topologia escogida en un json para ejecutarla ams tarde, se podria en la rama diario
-        Write(input, Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination)        
+        Write(input, input_timestamp, Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination)        
 
-
+        #guardar varibale del tiempo en un archovp
+        with open ('variable.txt', 'w') as file:
+            file.write(timestamp)
         
 
         ### This will store the results into a txt for further usage
