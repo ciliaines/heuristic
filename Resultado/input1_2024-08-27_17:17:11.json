@@ -66,43 +66,11 @@
     "flows": [
         {
             "name": 0,
-            "period": 300,
-            "deathline": 300,
-            "packetSize": 1500,
-            "sourceDevice": 0,
-            "endDevices": 2
-        },
-        {
-            "name": 1,
-            "period": 10000,
-            "deathline": 10000,
-            "packetSize": 30000,
-            "sourceDevice": 4,
-            "endDevices": 1
-        },
-        {
-            "name": 2,
-            "period": 500,
-            "deathline": 500,
+            "period": 200,
+            "deathline": 200,
             "packetSize": 4500,
-            "sourceDevice": 2,
-            "endDevices": 1
-        },
-        {
-            "name": 3,
-            "period": 30000,
-            "deathline": 30000,
-            "packetSize": 90000,
-            "sourceDevice": 4,
+            "sourceDevice": 1,
             "endDevices": 0
-        },
-        {
-            "name": 4,
-            "period": 150,
-            "deathline": 150,
-            "packetSize": 3000,
-            "sourceDevice": 2,
-            "endDevices": 4
         }
     ]
 }

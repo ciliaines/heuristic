@@ -1,4 +1,4 @@
-# This set of functions is for the visualization of the values of the ILP 
+#This set of functions is for the visualization of the values of the ILP 
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ from Plot import *
 #leer la variable timestamp
 with open('variable.txt', 'r') as file:
     timestamp = file.read().strip()
-
+print("timestamp  ", timestamp)
 latency=0
 queue=1
 
@@ -111,11 +111,13 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         unused_links = unused_links_generator(Network_links, Link_order_Descriptor)
 
         ################################################################
+        print("djkfbaksjfbkasjdbf")
         scheduler = ILP_Raagard_solver(Number_of_Streams, Network_links, \
                         Link_order_Descriptor, \
                         Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
                         Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
                         Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue)
+        print("gggggggggggggggggg")
         instance, results = scheduler.instance, scheduler.results
         final_time = time.time()
         ################################################################
@@ -126,7 +128,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
                      Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         ### This will store the results into a txt for further usage
-        
+
         time_evaluation = final_time - initial_time
         with open('Results/' + input_name + '.txt', 'a') as f :
             f.write("\n")
