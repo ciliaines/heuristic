@@ -180,7 +180,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         # Random Streams parameters
         #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Random_Stream_size_and_period_generator(Number_of_Streams)
         Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
-        Hyperperiod = Hyperperiod_generator(Streams_Period_list)
+        #Hyperperiod = Hyperperiod_generator(Streams_Period_list)
+        Hyperperiod = 6000
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
         # Preprocessing

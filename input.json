@@ -148,9 +148,9 @@
                 {
                         "name": "dev0",
                         "defaultFirstSendingTime": 0,
-                        "defaultPacketPeriodicity": 2500,
-                        "defaultHardConstraintTime": 10000,
-                        "defaultPacketSize": 53
+                        "defaultPacketPeriodicity": 100,
+                        "defaultHardConstraintTime": 100,
+                        "defaultPacketSize": 1500
                 },
                 {
                         "name": "dev1",
