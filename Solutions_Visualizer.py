@@ -37,7 +37,6 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
     #print("############### This is the set of queues ######################")
     for link in instance.Links:
         print("The number of queues of link ", link, "is",instance.Num_Queues[link].value)
-        print("heloo ",link)
 
     #print("############### This is the set of queues per stream and link######################")
 #    for stream in instance.Streams:
@@ -105,11 +104,6 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period) :
 
 
 def information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths):
-    print("Num_of_Frames      " +str(Num_of_Frames))
-    #print("Streams_Period     "+str(Streams_Period))
-    #print("Link_order_Descriptor       "+str (Link_order_Descriptor))
-    #print("Network_links          "+str(Network_links))
-    #print("Streams_links_paths       "+str(Streams_links_paths))
     plt.subplot(222)
     plt.text(0.1, 0.9, "Network-links: \n" + str(Network_links), bbox=dict(facecolor='red', alpha=0.5))
     plt.text(0.1, 0.7, "Frames per stream: \n" + str(Num_of_Frames), bbox=dict(facecolor='red', alpha=0.5))
@@ -172,7 +166,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         #print("Network_Topology  network   "+str(network))
         all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
         #print("Djikstra  all paths matrix    "+str(all_paths_matrix))
-
+    
         Streams_paths = Streams_paths_generator(all_paths_matrix, Stream_Source_Destination)
         Streams_links_paths = Streams_links_paths_generator(Streams_paths)
         Link_order_Descriptor = Link_order_Descriptor_generator(Streams_links_paths, Network_links)
@@ -181,7 +175,10 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         #Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Random_Stream_size_and_period_generator(Number_of_Streams)
         Streams_size , Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams = Read2(Number_of_Streams)
         #Hyperperiod = Hyperperiod_generator(Streams_Period_list)
-        Hyperperiod = 6000
+        Hyperperiod = 30000
+        print("Hyperperiod", Hyperperiod       )
+        print("Streams_Period ", Streams_Period)
+        print("Deathline_Stream ", Deathline_Stream)
         Frames_per_Stream, Max_frames, Num_of_Frames = Frames_per_Stream_generator(Streams_size)
         ################################################################
         # Preprocessing
@@ -206,7 +203,6 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         final_time = time.time()
         ################################################################
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies  = ILP_results_visualizer(instance, Model_Descriptor_vector)
-        print("Result_offsets", Result_offsets)
         df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
         information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths)
         dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
