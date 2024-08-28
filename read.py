@@ -74,7 +74,7 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destinati
     Streams_Period[len(Stream_Source_Destination)-1] = Periodo #{0:5000, 1:2500}
     
     #Equiparar el deathline
-    Deathline_Stream[len(Stream_Source_Destination)-1] = Periodo
+    Deathline_Stream[len(Stream_Source_Destination)-1] = Periodo * 3
 
     #Escoger el datasize
     if Periodo == 100 or Periodo == 150 or Periodo == 200 or Periodo == 300 or Periodo == 500:
