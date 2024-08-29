@@ -66,51 +66,63 @@
         ],
         "links":[
         	{
-        		"name":"link1",
+        		"name":1,
+        		"number":3,
         		"devices":["0","3","1"]
         	},
 			{
-			    "name":"link2",
+			    "name":2,
+			    "number":3,
 			    "devices":["0","3","2"]
 			},
         	{
-        		"name":"link3",
+        		"name":3,
+        		"number":3,
         		"devices":["0","3","4"]
         	},
 			{
-			    "name":"link4",
+			    "name":4,
+			    "number":3,
 			    "devices":["1","3","0"]
 			},
         	{
-        		"name":"link5",
+        		"name":5,
+        		"number":3,
         		"devices":["1","3","2"]
         	},
 			{
-			    "name":"link6",
+			    "name":6,
+			    "number":3,
 			    "devices":["1","3","4"]
 			},
         	{
-        		"name":"link7",
+        		"name":7,
+        		"number":3,
         		"devices":["2","3","0"]
         	},
 			{
-			    "name":"link8",
+			    "name":8,
+			    "number":3,
 			    "devices":["2","3","1"]
 			},
         	{
-        		"name":"link9",
+        		"name":9,
+        		"number":3,
         		"devices":["2","3","4"]
         	},
 			{
-			    "name":"link10",
+			    "name":10,
+			    "number":3,
 			    "devices":["4","3","0"]
 			},
         	{
-        		"name":"link11",
+        		"name":11,
+        		"number":3,
         		"devices":["4","3","1"]
         	},
 			{
-			    "name":"link12",
+			    "name":12,
+			    "number":3,
 			    "devices":["4","3","2"]
 			}
         ]

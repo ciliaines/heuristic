@@ -16,8 +16,8 @@ from Plot import *
 with open('variable.txt', 'r') as file:
     timestamp = file.read().strip()
 print("timestamp  ", timestamp)
-latency=0
-queue=1
+latency=1
+queue=0
 
 input = "input1"
 input_timestamp = input +"_" + timestamp
@@ -111,13 +111,11 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         unused_links = unused_links_generator(Network_links, Link_order_Descriptor)
 
         ################################################################
-        print("djkfbaksjfbkasjdbf")
         scheduler = ILP_Raagard_solver(Number_of_Streams, Network_links, \
                         Link_order_Descriptor, \
                         Streams_Period, Hyperperiod, Frames_per_Stream, Max_frames, Num_of_Frames, \
                         Model_Descriptor, Model_Descriptor_vector, Deathline_Stream, \
                         Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue)
-        print("gggggggggggggggggg")
         instance, results = scheduler.instance, scheduler.results
         final_time = time.time()
         ################################################################

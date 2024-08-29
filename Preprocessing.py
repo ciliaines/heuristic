@@ -1,5 +1,4 @@
-# This code is for calculation the previous parameters of the ILP 
- 
+# This code is for calculation the previous parameters of the ILP  
 # This code generates a matrix that will be used to 
 # indicate wheter of not a frame in a stream and in a link exists or not
 from RanNet_Generator import Random_Network_Generator
@@ -51,7 +50,7 @@ def Frame_Duration_Generator(Number_of_Streams, Max_frames, Network_links ) :
     for stream in range(Number_of_Streams):
         for frame in range(Max_frames):
             for link in range(len(Network_links)):
-                Frame_Duration[(stream,frame,link)]= 100 # This has to be 12
+                Frame_Duration[(stream,frame,link)]= 12 # This has to be 12
     return Frame_Duration
 
 

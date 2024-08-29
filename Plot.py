@@ -34,11 +34,11 @@ def gantt_chart_generator(Result_offsets, Repetitions, Streams_Period):
     # This is for printing the gant Chart 
     plt.subplot(212)
     #plt.figure(figsize=(12, 5))
-    plt.barh(y=df.Process_Name, left=df.Start, width=100, color=df.Color)
+    plt.barh(y=df.Process_Name, left=df.Start, width=12, color=df.Color)
     plt.grid(axis='x', alpha=0.5)
     plt.grid(axis='y',alpha=0.5)
     plt.ylabel("Frames")
-    plt.xlabel("Time in miliseconds")
+    plt.xlabel("Time in microseconds")
     plt.xticks(fontsize=7)
     plt.yticks(fontsize=7)
     plt.title("Gantt Chart")

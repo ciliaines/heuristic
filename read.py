@@ -9,6 +9,7 @@ def Read(file_input):
     Number_of_Streams=0 #numero de flujos=3
     Network_nodes = list()
     Network_links = list()
+    Number_enlace = list()
     Stream_Source_Destination = []
     Stream_Source_Destination_total = []
     with open(file_input, "r") as j:
@@ -35,10 +36,15 @@ def Read(file_input):
                     change = False
         for link in data["links"]:
             Name_link = link["name"]
+            Number = link["number"]
+            #print("Name_link  ", Name_link)
+            #print("Number   ", Number)
+            #Number_enlace = Number_enlace + [(int(x), int(y)) for x in Name_link for y in Number]
             Devices = list()
             for e in link["devices"]:
                 Devices = Devices + [int(x) for x in e]             
             Stream_Source_Destination_total.append(Devices)
+        #print("Number_enlace   ",Number_enlace)
       
     Adjacency_Matrix = adj(Network_links)
     plot_network = plt.figure(1, figsize=(14, 7))
@@ -54,6 +60,7 @@ def Read(file_input):
     plt.subplot(221)
     plt.title("Network  Topology")
     nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
+    print("Number_of_edges  ",Number_of_edges)
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total
 
 def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams,Streams_size  ):
