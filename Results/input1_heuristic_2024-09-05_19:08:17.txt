@@ -1,0 +1,49 @@
+
+Execution time:    0.4251828193664551
+############### This is the set of offsets ######################
+The offset of stream 0 link 2 frame 0 is 144.0
+The offset of stream 0 link 3 frame 0 is 156.0
+The offset of stream 1 link 1 frame 0 is 168.0
+The offset of stream 1 link 1 frame 1 is 180.0
+The offset of stream 1 link 1 frame 2 is 192.0
+The offset of stream 1 link 1 frame 3 is 204.0
+The offset of stream 1 link 1 frame 4 is 216.0
+The offset of stream 1 link 1 frame 5 is 228.0
+The offset of stream 1 link 1 frame 6 is 240.0
+The offset of stream 1 link 1 frame 7 is 252.0
+The offset of stream 1 link 1 frame 8 is 264.0
+The offset of stream 1 link 1 frame 9 is 276.0
+The offset of stream 1 link 2 frame 0 is 156.0
+The offset of stream 1 link 2 frame 1 is 168.0
+The offset of stream 1 link 2 frame 2 is 180.0
+The offset of stream 1 link 2 frame 3 is 192.0
+The offset of stream 1 link 2 frame 4 is 204.0
+The offset of stream 1 link 2 frame 5 is 216.0
+The offset of stream 1 link 2 frame 6 is 228.0
+The offset of stream 1 link 2 frame 7 is 240.0
+The offset of stream 1 link 2 frame 8 is 252.0
+The offset of stream 1 link 2 frame 9 is 264.0
+The offset of stream 2 link 0 frame 0 is 0.0
+The offset of stream 2 link 3 frame 0 is 36.0
+############### This is the set of latencies ######################
+The lower latency of Stream 0 is 24.0
+The lower latency of Stream 1 is 24.0
+The lower latency of Stream 2 is 48.0
+############### This is the set of queues ######################
+The number of queues of link 0 is 1
+The number of queues of link 1 is 1
+The number of queues of link 2 is 1
+The number of queues of link 3 is 1
+############### This is the set of queues per stream and link######################
+The number of queues of Link 0 stream 0 is 0
+The number of queues of Link 1 stream 0 is 0
+The number of queues of Link 2 stream 0 is 0
+The number of queues of Link 3 stream 0 is 0
+The number of queues of Link 0 stream 1 is 0
+The number of queues of Link 1 stream 1 is 0
+The number of queues of Link 2 stream 1 is 0
+The number of queues of Link 3 stream 1 is 0
+The number of queues of Link 0 stream 2 is 0
+The number of queues of Link 1 stream 2 is 0
+The number of queues of Link 2 stream 2 is 0
+The number of queues of Link 3 stream 2 is 0

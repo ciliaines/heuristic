@@ -47,21 +47,19 @@ def Read(file_input):
         #print("Number_enlace   ",Number_enlace)
       
     Adjacency_Matrix = adj(Network_links)
-    plot_network = plt.figure(1, figsize=(14, 7))
     Sources = [link[0] for link in Network_links]
     Destinations = [link[1] for link in Network_links]
 
     # Build a dataframe with the Source and destination connections
-    df = pd.DataFrame({ 'from': Sources , 'to': Destinations})
+    #df = pd.DataFrame({ 'from': Sources , 'to': Destinations})
     # Build the graph
-    G=nx.from_pandas_edgelist(df, 'from', 'to')
+    #G=nx.from_pandas_edgelist(df, 'from', 'to')
     # Plot the graph
-    plot_network = plt.figure(1, figsize=(14, 7))
-    plt.subplot(221)
-    plt.title("Network  Topology")
-    nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
-    print("Number_of_edges  ",Number_of_edges)
-    return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total
+    #plot_network = plt.figure(1, figsize=(14, 7))
+    #plt.subplot(221)
+    #plt.title("Network  Topology")
+    #nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
+    return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, None, Sources, Destinations, Stream_Source_Destination_total
 
 def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams,Streams_size  ):
     Number_of_Streams = Number_of_Streams+1
