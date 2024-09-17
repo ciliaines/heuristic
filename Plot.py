@@ -115,9 +115,9 @@ def info_box(Network_links, Repetition,Streams_Period, Link_order_Descriptor, St
                       margin=dict(l=10, r=10, t=10, b=10))
     return fig
 
-def combined(network_fig, gantt_fig, info_fig):
+def combined(network_fig, gantt_fig, info_fig, file_image):
     # Guardar las figuras en un solo archivo HTML (interactivo)
-    with open("combined_plot.html", "w") as f:
+    with open(file_image, "w") as f:
         f.write(network_fig.to_html(full_html=False, include_plotlyjs='cdn'))
         f.write(gantt_fig.to_html(full_html=False, include_plotlyjs=False))
         f.write(info_fig.to_html(full_html=False, include_plotlyjs=False))

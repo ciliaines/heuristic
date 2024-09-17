@@ -23,6 +23,7 @@ input_name = input + "_heuristic_" + timestamp
 file_input_topo = "Inputs/" + input + "_topo.json"
 file_input = "Solutions/" + input_timestamp + ".json"
 file_result = "Results/"+ input + "_result_" + ".json"
+file_image = "Solutions/" + input_name + ".html"
 Hyperperiod = 1000
 #Hyperperiod = 6000
 #Hyperperiod = 30000
@@ -131,7 +132,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         network_fig = network_topology(Sources,Destinations)
         gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
         info_fig = info_box(Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
-        combined(network_fig,gantt_fig,info_fig)
+        combined(network_fig,gantt_fig,info_fig, file_image)
         
         #network_topology(Sources,Destinations)
         #gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)

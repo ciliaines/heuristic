@@ -24,6 +24,7 @@ input_timestamp = input +"_" + timestamp
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue) + "_" + timestamp
 file_input = "Solutions/" + input_timestamp + ".json"
 file_resultado_input = "Resultado/" + input_timestamp + ".json"
+file_image = "Solutions/" + input_name + ".html"
 Hyperperiod = 1000
 #Hyperperiod = 6000
 #Hyperperiod = 30000
@@ -121,10 +122,16 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         ################################################################
         #Plot the values
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies  = ILP_results_visualizer(instance, Model_Descriptor_vector)
-        df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
-        information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths,input_name)
-        dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
-                     Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
+        #PLOT
+        network_fig = network_topology(Sources,Destinations)
+        gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
+        info_fig = info_box(Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
+        combined(network_fig,gantt_fig,info_fig, file_image)
+
+        # df = gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
+        #information_generator(Num_of_Frames, Streams_Period, Link_order_Descriptor, Network_links, Streams_links_paths,input_name)
+        #dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination,
+        #             Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
         ### This will store the results into a txt for further usage
 
         time_evaluation = final_time - initial_time
