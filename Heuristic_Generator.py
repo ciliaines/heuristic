@@ -1,4 +1,3 @@
-##################################### Heuristic Strategy starts here #####################################
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
 from pyomo.core import Var
@@ -92,13 +91,13 @@ def Greedy_Heuristic(model, num_stream):
             else:
                 #Constraining_engress_port(model, key_stream,link,0)
                 model.Queue_Assignment[key_stream, link] = model.Queue_Assignment[key_stream, link] + 1
+                print("cola   ",cola)
                 cola = cola+1
-                print("elsee")
+                print("elsee", cola)
                 if model.Queue_Assignment[key_stream, link].value >7 : #model.Num_Queues[link].value:
                     #success = True
                     print(" NO HAY SOLUCION ")
                     sys.exit();
-    print("cunado se egecuta la utilizacion")
     key_stream = key_stream +1
     #primero comprobar la utilizacion
     utilizacion = 0.25
@@ -136,13 +135,13 @@ def Greedy_Heuristic(model, num_stream):
 
 def Schedule_flow(key_stream, value_stream, model,cola):
     for frame in range(model.Num_of_Frames_Dic[key_stream]):
-        print("key_stream sf  ", key_stream, frame)
         a = 0
         b = 1
         # Generar un vector con el primer y segundo valor
         send_link = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
         link = send_link
         key_link = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
+        print("---------------key_stream  ", key_stream,"  key link  ",key_link, "  frame  ", frame)
         reciving_link= (model.Streams_paths_Dic[key_stream][-2], model.Streams_paths_Dic[key_stream][-1])
         model.Lower_bound[key_stream, key_link, frame] = 0.0
         model.Upper_bound[key_stream, key_link, frame] = model.Streams_Period[key_stream]
@@ -151,6 +150,7 @@ def Schedule_flow(key_stream, value_stream, model,cola):
         contador = 1
         intentos = 0
         while contador < len(model.Streams_paths_Dic[key_stream]):
+            print("contador   ", contador, " stream  ",len(model.Streams_paths_Dic[key_stream]))
             #Ecuacion 45
             link_anterior = (model.Streams_paths_Dic[key_stream][a-1],model.Streams_paths_Dic[key_stream][b-1])
             key_link_anterior = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link_anterior or value_stream == tuple(reversed(link_anterior))),None)          
@@ -160,8 +160,8 @@ def Schedule_flow(key_stream, value_stream, model,cola):
             print("key_link    ", key_link)
             print("tiempo  ", tiempo[0], "tiempo 2 ", tiempo[1],  "Upper ",  model.Upper_bound[key_stream, key_link, frame].value)
             if model.Upper_bound[key_stream, key_link, frame].value == model.Hyperperiod.value+1:
+                print("FALLA", model.Hyperperiod.value)
                 return False, key_link
-                print("FALLA")
             elif tiempo[1] <= model.Upper_bound[key_stream, key_link, frame].value:
                 Add_Solution(key_link, tiempo, model, key_stream, cola)       
                 model.Lower_bound[key_stream, key_link, frame] = tiempo[0]
@@ -183,7 +183,8 @@ def Schedule_flow(key_stream, value_stream, model,cola):
                 a -= 1
                 b -= 1
                 #si el link es el send link, el link next no existe, por lo tanto es broke y reuturn false
-                if link == send_link or intentos == 3:
+                if link == send_link:
+                    print("LINK SENDLIN", link, send_link)
                     return False, key_link
                 link_next = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
                 link = link_next
@@ -197,6 +198,7 @@ def Schedule_flow(key_stream, value_stream, model,cola):
                 print("key_link    ", key_link)
                 print("Lower else  ",model.Lower_bound[key_stream, key_link, frame].value)
                 print("Upper else  ",model.Upper_bound[key_stream, key_link, frame].value)
+            print("Stream    ", model.Streams_Period[key_stream])
             print("Lower TOTAL  ",model.Lower_bound[key_stream, key_link, frame].value)
             print("Upper TOTAL  ",model.Upper_bound[key_stream, key_link, frame].value)
             
@@ -233,13 +235,17 @@ def Latency_Cal(key_stream, model):
         contador +=1
 
 def Earliest_offset(model, frame, key_link, key_stream,cola):
+    print("cola   ",cola)
     tiempo= 0.0
     #print(f"Lower_bound[{key_stream, key_link, frame}] = {value(model.Lower_bound[key_stream, key_link, frame])}")
     a = model.Lower_bound[key_stream, key_link, frame].value
+    print("lower bound   ", a)
     if flexibility_solution.get(cola) is not None:
         if flexibility_solution.get(cola).get(key_link) is not None:
             b = Earliest_queue_available_time(key_link, model.Streams_Period[key_stream], cola)
+            print("earliest  b ",b)
             mayor_max = max(a, b)
+            #print(" a  ",a)
             if len(flexibility_solution.get(cola)) == 1:
                 tiempo = (mayor_max, flexibility_solution.get(cola)[key_link][-1][-1]+model.Frame_Duration[key_stream, frame, key_link])
             else:
@@ -251,12 +257,11 @@ def Earliest_offset(model, frame, key_link, key_stream,cola):
             #print("no existe ",tiempo)
     else:
         tiempo = (a, a+model.Frame_Duration[key_stream,frame,key_link])
-    #print("tiempo  ", tiempo, "stream period  ",model.Streams_Period[key_stream])
-    #if tiempo[0] == model.Streams_Period[key_stream]:
-    #    tiempo = (-1, -1)
+        print("tiempo  ", tiempo)
     return tiempo
 
 def Latest_queue_available_time(key_link, Streams_Period,model,cola):
+    print("cola  ",cola)
     values_flexibility_solution = flexibility_solution.get(cola)
     values = values_flexibility_solution.get(key_link)
     #values = {key: flexibility_solution[cola] for key in key_link}
@@ -276,14 +281,14 @@ def Earliest_queue_available_time(key_link, Streams_Period, cola):
     print("values   ", values)
     if values is not None:
         tiempo = values[-1][-1]
-        print("tiempo   ", tiempo)
-        print("range  ", range(len(values)))
+        #print("tiempo   ", tiempo)
+        #print("range  ", range(len(values)))
         for i in range(len(values) - 1):
-            print("values[i][1]",values[i][1]," != values[i + 1][0]", values[i + 1][0])
-            if values[i][1] != values[i + 1][0]:
-                tiempo =  values[i][1]
-                print("tiempooooo  ", tiempo)
-                break #quiere decir que no hay solucion marcarlo y asi en los ficheros
+            #print("values[i][1]",values[i][1]," != values[i + 1][0]", values[i + 1][0])
+            if values[i][1] != values[i + 1][0] and values[i][1] + 12 <= values[i + 1][0] :
+                    tiempo =  values[i][1]
+                    print("tiempo   ",tiempo )
+                    break #quiere decir que no hay solucion marcarlo y asi en los ficheros
     else:
         tiempo = 0.0 #Streams_Period
     return tiempo
