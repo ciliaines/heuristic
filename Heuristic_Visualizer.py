@@ -125,31 +125,21 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
             #utilizacion = False
             num_stream = num_stream + 1
 
-        final_time = time.time()
+        
+        final_time = time.time()        ### This will store the results into a txt for further usage
+        time_evaluation = final_time - initial_time
+        
         ################################################################
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies = Heuristic_results_visualizer(instance, Model_Descriptor_vector)
-        #PLOT
-        network_fig = network_topology(Sources,Destinations)
-        gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
-        info_fig = info_box(Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
-        combined(network_fig,gantt_fig,info_fig, file_image)
-        
-        #network_topology(Sources,Destinations)
-        #gantt_chart_generator(Result_offsets, Repetitions, Streams_Period)
-        #information_generator(Repetitions, Streams_Period, Link_order_Descriptor, Network_links, 
-        #Streams_links_paths, input_name)
-
-        #dataframe_printer(instance, Clean_offsets_collector, Results_latencies, Feasibility_indicator, Adjacency_Matrix, Stream_Source_Destination, Link_order_Descriptor, Links_per_Stream, Frames_per_Stream, Deathline_Stream, Streams_Period, Streams_size)
-        #Escribir la topologia escogida en un json para ejecutarla ams tarde, se podria en la rama diario
-        Write(input, input_timestamp, Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination)        
-
+        Write(input, input_timestamp,Number_of_Streams,Streams_Period,Deathline_Stream,Streams_size,Stream_Source_Destination)
+        set_offset=""
+        lower_latency=""
+        queues_link=""
+        queues_stream=""
         #guardar varibale del tiempo en un archovp
         with open ('variable.txt', 'w') as file:
             file.write(timestamp)
         
-
-        ### This will store the results into a txt for further usage
-        time_evaluation = final_time - initial_time
         with open('Results/' + input_name + '.txt', 'a') as f :
             f.write("\n")
             f.write("Execution time:    ")
@@ -159,17 +149,26 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                 for j in instance.Links:
                     for k in instance.Frames:
                         if Model_Descriptor_vector [i][k][j] :
-                            f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n")
+                           f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n")
+                           set_offset+="The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n"
             f.write("############### This is the set of latencies ######################" + "\n")
             for stream in instance.Streams:
                 f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n")
+                lower_latency +="The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n"
             f.write("############### This is the set of queues ######################" + "\n")
             for link in instance.Links:
                 f.write("The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value+1) + "\n")
+                queues_link +="The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value+1) + "\n"
             f.write("############### This is the set of queues per stream and link######################" + "\n")
             for stream in instance.Streams:
                 for link in instance.Links:
                     f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
+                    queues_stream += "The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n"
+        #PLOT
+        network_fig = network_topology(Sources,Destinations)
+        gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
+        info_fig = info_box(time_evaluation,Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths,set_offset,lower_latency,queues_link,queues_stream)
+        combined(network_fig,gantt_fig,info_fig, file_image)
     except ValueError:
         print("One error has occurred")
 

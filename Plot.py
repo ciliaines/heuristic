@@ -98,12 +98,19 @@ def gantt_chart(Result_offsets, Repetitions, Streams_Period):
     return fig
 
 # Generar un cuadro de información
-def info_box(Network_links, Repetition,Streams_Period, Link_order_Descriptor, Streams_links_path):
-    text = """Network links:"""+str(Network_links)+""" <br>
+def info_box(Tiempo, Network_links, Repetition,Streams_Period, Link_order_Descriptor, Streams_links_path, offset, latency, queue_link, queue_stream):
+    text = """
+    Time:"""+str(Tiempo)+""" <br>
+    Network links:"""+str(Network_links)+""" <br>
     Frames per stream:"""+str(Repetition)+""" <br>
     Stream periods: """+str(Streams_Period)+""" <br>
     Indexed link order per stream: """+str(Link_order_Descriptor)+""" <br>
-    Stream paths: """+str(Streams_links_path)+""""""
+    Stream paths: """+str(Streams_links_path)+""" <br>
+    Offset: """+str(offset)+""" <br>
+    Latency: """+str(latency)+""" <br>
+    Queue link: """+str(queue_link)+""" <br>
+    Queue stream: """+str(queue_stream)+""" <br>
+    """
                                                                                                                                                                                                                                             
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=[0.5], y=[0.5], text=[text],
