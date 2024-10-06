@@ -98,18 +98,13 @@ def gantt_chart(Result_offsets, Repetitions, Streams_Period):
     return fig
 
 # Generar un cuadro de información
-def info_box(Tiempo, Network_links, Repetition,Streams_Period, Link_order_Descriptor, Streams_links_path, offset, latency, queue_link, queue_stream):
+def info_box(Network_links, Repetition,Streams_Period, Link_order_Descriptor, Streams_links_path):
     text = """
-    Time:"""+str(Tiempo)+""" <br>
     Network links:"""+str(Network_links)+""" <br>
     Frames per stream:"""+str(Repetition)+""" <br>
     Stream periods: """+str(Streams_Period)+""" <br>
     Indexed link order per stream: """+str(Link_order_Descriptor)+""" <br>
     Stream paths: """+str(Streams_links_path)+""" <br>
-    Offset: """+str(offset)+""" <br>
-    Latency: """+str(latency)+""" <br>
-    Queue link: """+str(queue_link)+""" <br>
-    Queue stream: """+str(queue_stream)+""" <br>
     """
                                                                                                                                                                                                                                             
     fig = go.Figure()
@@ -119,15 +114,36 @@ def info_box(Tiempo, Network_links, Repetition,Streams_Period, Link_order_Descri
     fig.update_layout(title="Information Box", showlegend=False,
                       xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
                       yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                      margin=dict(l=10, r=10, t=10, b=10))
+                      margin=dict(l=10, r=10, t=30, b=30))
     return fig
 
-def combined(network_fig, gantt_fig, info_fig, file_image):
+# Generar un cuadro de información
+def result_box(Tiempo, offset, latency, queue_link, queue_stream):
+    text = """
+    Time experiment: """+str(Tiempo)+""" <br>
+    Latency:   """+str(latency)+""" <br>
+
+    """
+
+    
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=[0.5], y=[0.5], text=[text],
+                             mode="text",
+                             textposition="middle right"))
+    fig.update_layout(title="Results Box", showlegend=False,
+                      xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                      yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                      margin=dict(l=10, r=10, t=30, b=30))
+                          
+    return fig
+
+def combined(network_fig, gantt_fig, info_fig, result_fig, file_image):
     # Guardar las figuras en un solo archivo HTML (interactivo)
     with open(file_image, "w") as f:
         f.write(network_fig.to_html(full_html=False, include_plotlyjs='cdn'))
         f.write(gantt_fig.to_html(full_html=False, include_plotlyjs=False))
         f.write(info_fig.to_html(full_html=False, include_plotlyjs=False))
+        f.write(result_fig.to_html(full_html=False, include_plotlyjs=False))
     
    
     
@@ -141,4 +157,3 @@ def combined(network_fig, gantt_fig, info_fig, file_image):
 #network_fig.write_image("network_topology.png")
 #gantt_fig.write_image("gantt_chart.png")
 #info_fig.write_image("info_box.png")
-

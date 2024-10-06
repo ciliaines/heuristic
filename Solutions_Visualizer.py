@@ -2,6 +2,7 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import argparse
 
 from RanNet_Generator import *
 from Djikstra_Path_Calculator import *
@@ -15,15 +16,20 @@ from Plot import *
 #leer la variable timestamp
 with open('variable.txt', 'r') as file:
     timestamp = file.read().strip()
-print("timestamp  ", timestamp)
-latency=1
-queue=0
+
+parser = argparse.ArgumentParser(description="two parameters, latency and queue")
+parser.add_argument('latency', type=str, help='latency')
+parser.add_argument('queue', type=str, help='queue')
+args = parser.parse_args()
+
+#latency=1
+#queue=0
 
 input = "input1"
 input_timestamp = input +"_" + timestamp
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue) + "_" + timestamp
 file_input = "Solutions/" + input_timestamp + ".json"
-file_resultado_input = "Resultado/" + input_timestamp + ".json"
+file_resultado_input = "Topology/" + input_timestamp + ".json"
 file_image = "Solutions/" + input_name + ".html"
 Hyperperiod = 1000
 #Hyperperiod = 6000
@@ -137,22 +143,22 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                     for k in instance.Frames:
                         if Model_Descriptor_vector [i][k][j] :
                             f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Frame_Offset[i,j,k].value) + "\n")
-                            set_offset = "The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Frame_Offset[i,j,k].value) + "\n"
+                            set_offset += "The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Frame_Offset[i,j,k].value) + "<br>"
 
             f.write("############### This is the set of latencies ######################" + "\n")
             for stream in instance.Streams:
                 f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Lower_Latency[stream].value) + "\n")
-                lower_latency="The lower latency of Stream " + str(stream) + " is " + str(instance.Lower_Latency[stream].value) + "\n"
+                lower_latency+="The lower latency of Stream " + str(stream) + " is " + str(instance.Lower_Latency[stream].value) + "<br>"
             f.write("############### This is the set of queues ######################" + "\n")
             for link in instance.Links:
                 f.write("The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value) + "\n")
-                queues_link="The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value) + "\n"
+                queues_link+="The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value) + "<br>"
 
             f.write("############### This is the set of queues per stream and link######################" + "\n")
             for stream in instance.Streams:
                 for link in instance.Links:
                     f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
-                    queues_stream="The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n"
+                    queues_stream+="The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "<br>"
 
         #PLOT       
         network_fig = network_topology(Sources,Destinations)

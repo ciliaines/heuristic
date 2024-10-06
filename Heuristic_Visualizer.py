@@ -150,25 +150,26 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                     for k in instance.Frames:
                         if Model_Descriptor_vector [i][k][j] :
                            f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n")
-                           set_offset+="The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n"
+                           set_offset+="   The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "<br>"
             f.write("############### This is the set of latencies ######################" + "\n")
             for stream in instance.Streams:
                 f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n")
-                lower_latency +="The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n"
+                lower_latency += str(stream) + " is " + str(instance.Latency[stream].value) + "<br>"
             f.write("############### This is the set of queues ######################" + "\n")
             for link in instance.Links:
                 f.write("The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value+1) + "\n")
-                queues_link +="The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value+1) + "\n"
+                queues_link +="     The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value+1) + "<br>"
             f.write("############### This is the set of queues per stream and link######################" + "\n")
             for stream in instance.Streams:
                 for link in instance.Links:
                     f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
-                    queues_stream += "The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n"
+                    queues_stream += "     The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "<br>"
         #PLOT
         network_fig = network_topology(Sources,Destinations)
         gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
-        info_fig = info_box(time_evaluation,Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths,set_offset,lower_latency,queues_link,queues_stream)
-        combined(network_fig,gantt_fig,info_fig, file_image)
+        info_fig = info_box(Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
+        result_fig = result_box(time_evaluation, set_offset,lower_latency,queues_link,queues_stream)
+        combined(network_fig,gantt_fig,info_fig,result_fig, file_image)
     except ValueError:
         print("One error has occurred")
 
@@ -176,3 +177,4 @@ for n in [4]:
     for i in range(1):
         # Evaluation_Function(number_of_nodes, connection_probability, number of streams)
         Evaluation_function(2, 1, n)
+

@@ -3,7 +3,7 @@ from datetime import datetime
 
 def Write(input,input_timestamp, Number_of_Streams, Streams_Period, Deathline_Stream, Streams_size, Stream_Source_Destination):
     original_file = 'Inputs/'+input+'_topo.json'
-    duplicate_file = 'Resultado/'+ input_timestamp + '.json'
+    duplicate_file = 'Topology/'+ input_timestamp + '.json'
     with open(original_file, 'r', encoding='utf-8') as file:
        data = json.load(file)
     part_duplicate = data.get('switches', {})
