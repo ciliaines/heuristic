@@ -119,22 +119,36 @@ def info_box(Network_links, Repetition,Streams_Period, Link_order_Descriptor, St
 
 # Generar un cuadro de información
 def result_box(Tiempo, offset, latency, queue_link, queue_stream):
-    text = """
-    Time experiment: """+str(Tiempo)+""" <br>
-    Latency:   """+str(latency)+""" <br>
+    #text = """ Time experiment: """+str(Tiempo)+""" <br>
+    #Latency:   """+str(latency)+""" <br>
+    #"""
+    text= str(latency)
 
-    """
-
+    rows = [row for row in text.strip().split("<br>") if row]
+    print("rows", rows)
+    keys=[]
+    values=[]
+    for row in rows:
+        if "is" in row:
+            key, value = row.split(" is ")
+            keys.append(key.strip())
+            values.append(value.strip())
     
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=[0.5], y=[0.5], text=[text],
-                             mode="text",
-                             textposition="middle right"))
-    fig.update_layout(title="Results Box", showlegend=False,
-                      xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                      yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                      margin=dict(l=10, r=10, t=30, b=30))
-                          
+    #fig = go.Figure()
+    #fig.add_trace(go.Scatter(x=[0.5], y=[0.5], text=[text],mode="text",textposition="middle right"))
+    fig = go.Figure(data=[go.Table(
+        header=dict(values=['Stream', 'Latency'],
+                    fill_color='paleturquoise',
+                    align='left'),
+        cells=dict(values=[keys,values],
+                    fill_color='lavender',
+                    align='left'))
+    ])
+
+    #fig.update_layout(title="Results Box", showlegend=False,xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+    #                  yaxis=dict(showgrid=False, zeroline=False, showticklabels=False), margin=dict(l=10, r=10, t=30, b=30))
+
+    fig.update_layout(width=500, height=300, title_text="Results Table")                     
     return fig
 
 def combined(network_fig, gantt_fig, info_fig, result_fig, file_image):
