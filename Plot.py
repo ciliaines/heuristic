@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 import plotly.express as px
+from plotly.subplots import make_subplots
 import networkx as nx
 import pandas as pd
 
@@ -119,36 +120,99 @@ def info_box(Network_links, Repetition,Streams_Period, Link_order_Descriptor, St
 
 # Generar un cuadro de información
 def result_box(Tiempo, offset, latency, queue_link, queue_stream):
-    #text = """ Time experiment: """+str(Tiempo)+""" <br>
-    #Latency:   """+str(latency)+""" <br>
-    #"""
-    text= str(latency)
+    #Tablas
+    fig = make_subplots(rows=1, cols=4, specs=[[{"type":"table"},{"type":"table"}, {"type":"table"}, {"type":"table"}]])
+    #Tiempo
+    fig.add_trace(go.Table(
+        header=dict(values=['Tiempo'],
+                    fill_color='paleturquoise',
+                    align='left'),
+        cells=dict(values=[Tiempo],
+                    fill_color='lavender',
+                    align='left')
+        ),
+        row=1,
+        col=1,
+    )
 
-    rows = [row for row in text.strip().split("<br>") if row]
-    print("rows", rows)
-    keys=[]
-    values=[]
+    #Latencia
+    rows = [row for row in str(latency).strip().split("<br>") if row]
+    stream=[]
+    latency=[]
     for row in rows:
         if "is" in row:
             key, value = row.split(" is ")
-            keys.append(key.strip())
-            values.append(value.strip())
-    
-    #fig = go.Figure()
-    #fig.add_trace(go.Scatter(x=[0.5], y=[0.5], text=[text],mode="text",textposition="middle right"))
-    fig = go.Figure(data=[go.Table(
+            stream.append(key.strip())
+            latency.append(value.strip())
+
+    fig.add_trace(go.Table(
         header=dict(values=['Stream', 'Latency'],
                     fill_color='paleturquoise',
                     align='left'),
-        cells=dict(values=[keys,values],
-                    fill_color='lavender',
-                    align='left'))
-    ])
+        cells=dict(values=[stream,latency],
+                   fill_color='lavender',
+                    align='left')
+        ),
+        row=1,
+        col=2,
+    )
 
+    #Queue
+    rows = [row for row in str(queue_link).strip().split("<br>") if row]
+    links=[]
+    queue=[]
+    total=0
+    for row in rows:
+        if "is" in row:
+            key, value = row.split(" is ")
+            total +=int(value)
+            links.append(key.strip())
+            queue.append(value.strip())
+    links.append("Total")
+    queue.append(total)
+
+    fig.add_trace(go.Table(
+        header=dict(values=['Links', 'Queue'],
+                    fill_color='paleturquoise',
+                    align='left'),
+        cells=dict(values=[links,queue],
+                    fill_color='lavender',
+                    align='left')
+        ),
+        row=1,
+        col=3,
+    )
+
+    rows = [row for row in str(offset).strip().split("<br>") if row]
+    stream=[]
+    link=[]
+    offset=[]
+
+    for row in rows:
+        if "is" in row:
+            key1, key2 = row.split(" for ")
+            key2, value = key2.split(" is ")
+            stream.append(key1.strip())
+            link.append(key2.strip())
+            offset.append(value.strip())
+
+
+    fig.add_trace(go.Table(
+        header=dict(values=['Stream','Links', 'Offset'],
+                    fill_color='paleturquoise',
+                    align='left'),
+        cells=dict(values=[stream,link,offset],
+                    fill_color='lavender',
+                    align='left')
+        ),
+        row=1,
+        col=4,
+    )
+    
     #fig.update_layout(title="Results Box", showlegend=False,xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
     #                  yaxis=dict(showgrid=False, zeroline=False, showticklabels=False), margin=dict(l=10, r=10, t=30, b=30))
 
-    fig.update_layout(width=500, height=300, title_text="Results Table")                     
+    fig.update_layout(width=1000, height=600, title_text="Results Table")                     
     return fig
 
 def combined(network_fig, gantt_fig, info_fig, result_fig, file_image):
@@ -158,16 +222,3 @@ def combined(network_fig, gantt_fig, info_fig, result_fig, file_image):
         f.write(gantt_fig.to_html(full_html=False, include_plotlyjs=False))
         f.write(info_fig.to_html(full_html=False, include_plotlyjs=False))
         f.write(result_fig.to_html(full_html=False, include_plotlyjs=False))
-    
-   
-    
-# Crear las tres figuras
-#network_fig = create_network_topology()
-#gantt_fig = create_gantt_chart()
-#info_fig = create_info_box()
-
-
-# Guardar una de las figuras como PNG
-#network_fig.write_image("network_topology.png")
-#gantt_fig.write_image("gantt_chart.png")
-#info_fig.write_image("info_box.png")

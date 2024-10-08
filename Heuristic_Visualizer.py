@@ -150,20 +150,23 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                     for k in instance.Frames:
                         if Model_Descriptor_vector [i][k][j] :
                            f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n")
-                           set_offset+="   The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "<br>"
+                           set_offset+= str(i) + " for " +str(j)+  " is " + str(instance.Lower_bound[i,j,k].value) + "<br>"
+                            #" frame " + str(k) +
             f.write("############### This is the set of latencies ######################" + "\n")
             for stream in instance.Streams:
                 f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n")
                 lower_latency += str(stream) + " is " + str(instance.Latency[stream].value) + "<br>"
+
             f.write("############### This is the set of queues ######################" + "\n")
             for link in instance.Links:
                 f.write("The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value+1) + "\n")
-                queues_link +="     The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value+1) + "<br>"
+                queues_link += str(link) + " is " + str(instance.Num_Queues[link].value+1) + "<br>"
+
             f.write("############### This is the set of queues per stream and link######################" + "\n")
             for stream in instance.Streams:
                 for link in instance.Links:
                     f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
-                    queues_stream += "     The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "<br>"
+                    queues_stream += str(link) + " for " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "<br>"
         #PLOT
         network_fig = network_topology(Sources,Destinations)
         gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
