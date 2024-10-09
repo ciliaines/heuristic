@@ -5,9 +5,10 @@ import networkx as nx
 import pandas as pd
 
 # Generar un gráfico de red (network topology)
-def network_topology(Sources, Destinations):
+def network_info_topology(name,Sources, Destinations,Network_links, Repetition,Streams_Period, Link_order_Descriptor, Streams_links_path):
+
+    fig = make_subplots(rows=1, cols=2, subplot_titles=("Network Topology", "Information Box"))
     # Crear una red simple con NetworkX
-    
     df = pd.DataFrame({'from':Sources, 'to':Destinations})
     G = nx.from_pandas_edgelist(df,'from','to')
     
@@ -29,7 +30,8 @@ def network_topology(Sources, Destinations):
         x=edge_x, y=edge_y,
         line=dict(width=4, color='black'),
         hoverinfo='none',
-        mode='lines')
+        mode='lines',
+        name="links")
                                                                                                                         
     node_x = []
     node_y = []
@@ -43,24 +45,35 @@ def network_topology(Sources, Destinations):
         x=node_x, y=node_y,
         mode='markers+text',
         text=list(G.nodes),
-        textposition="bottom center",
+        textposition="top center",
         marker=dict(size=30, color='blue'),
-        hoverinfo='text')
-                                                                                                                                                                            
-    fig = go.Figure(data=[edge_trace, node_trace])
-    fig.update_layout(title="Network Topology", showlegend=False,
-            xaxis=dict(
-                showgrid=False,  # Quitar líneas de la grilla en el eje x
-                zeroline=False,  # Quitar línea del origen en el eje x
-                showticklabels=False,  # Quitar etiquetas en el eje x
-            ),
-            yaxis=dict(
-                showgrid=False,  # Quitar líneas de la grilla en el eje y
-                zeroline=False,  # Quitar línea del origen en el eje y
-                showticklabels=False,  # Quitar etiquetas en el eje y
-            )
-    )
-                                                                                                                                                                                    
+        hoverinfo='text',
+        name="edges")
+
+    fig.add_trace(edge_trace, row=1, col=1)
+    fig.add_trace(node_trace, row=1, col=1)
+
+    text = """
+    Network links:"""+str(Network_links)+""" <br>
+    Frames per stream:"""+str(Repetition)+""" <br>
+    Stream periods: """+str(Streams_Period)+""" <br>
+    Indexed link order per stream: """+str(Link_order_Descriptor)+""" <br>
+    Stream paths: """+str(Streams_links_path)+""" <br>
+    """
+    text_trace = go.Scatter(x=[0.5], y=[0.5], text=[text],
+                             mode="text", 
+                             textposition="top center",
+                             name="info")
+
+    fig.add_trace(text_trace, row=1, col=2)
+    fig.update_layout(height=1200, width=1600, title_text=name,
+                    xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                    yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))       
+    fig.update_xaxes(showgrid=False, zeroline=False, showticklabels=False, row=1, col=1 )                                                                                                                                                                    
+    fig.update_yaxes(showgrid=False, zeroline=False, showticklabels=False, row=1, col=1 )                                                                                                                                                                    
+    fig.update_xaxes(showgrid=False, zeroline=False, showticklabels=False, row=1, col=2 )                                                                                                                                                                    
+    fig.update_yaxes(showgrid=False, zeroline=False, showticklabels=False, row=1, col=2 )                                                                                                                                                                    
+
     return fig
 
 # Generar un gráfico de Gantt
@@ -98,33 +111,13 @@ def gantt_chart(Result_offsets, Repetitions, Streams_Period):
                                                                                                                                                                                                                 
     return fig
 
-# Generar un cuadro de información
-def info_box(Network_links, Repetition,Streams_Period, Link_order_Descriptor, Streams_links_path):
-    text = """
-    Network links:"""+str(Network_links)+""" <br>
-    Frames per stream:"""+str(Repetition)+""" <br>
-    Stream periods: """+str(Streams_Period)+""" <br>
-    Indexed link order per stream: """+str(Link_order_Descriptor)+""" <br>
-    Stream paths: """+str(Streams_links_path)+""" <br>
-    """
-                                                                                                                                                                                                                                            
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=[0.5], y=[0.5], text=[text],
-                             mode="text",
-                             textposition="middle right"))
-    fig.update_layout(title="Information Box", showlegend=False,
-                      xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                      yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                      margin=dict(l=10, r=10, t=30, b=30))
-    return fig
-
-# Generar un cuadro de información
+# Generar tablas de resultado
 def result_box(Tiempo, offset, latency, queue_link, queue_stream):
     #Tablas
     fig = make_subplots(rows=1, cols=4, specs=[[{"type":"table"},{"type":"table"}, {"type":"table"}, {"type":"table"}]])
     #Tiempo
     fig.add_trace(go.Table(
-        header=dict(values=['Tiempo'],
+        header=dict(values=['Time'],
                     fill_color='paleturquoise',
                     align='left'),
         cells=dict(values=[Tiempo],
@@ -215,10 +208,10 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
     fig.update_layout(width=1000, height=600, title_text="Results Table")                     
     return fig
 
-def combined(network_fig, gantt_fig, info_fig, result_fig, file_image):
+def combined(network_fig, gantt_fig, result_fig, file_image):
     # Guardar las figuras en un solo archivo HTML (interactivo)
     with open(file_image, "w") as f:
         f.write(network_fig.to_html(full_html=False, include_plotlyjs='cdn'))
         f.write(gantt_fig.to_html(full_html=False, include_plotlyjs=False))
-        f.write(info_fig.to_html(full_html=False, include_plotlyjs=False))
+        #f.write(info_fig.to_html(full_html=False, include_plotlyjs=False))
         f.write(result_fig.to_html(full_html=False, include_plotlyjs=False))

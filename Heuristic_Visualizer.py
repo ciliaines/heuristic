@@ -168,11 +168,11 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                     f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
                     queues_stream += str(link) + " for " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "<br>"
         #PLOT
-        network_fig = network_topology(Sources,Destinations)
+        network_info_fig = network_info_topology(input_name,Sources,Destinations,Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
         gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
-        info_fig = info_box(Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
+        #info_fig = info_box(Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
         result_fig = result_box(time_evaluation, set_offset,lower_latency,queues_link,queues_stream)
-        combined(network_fig,gantt_fig,info_fig,result_fig, file_image)
+        combined(network_info_fig, gantt_fig, result_fig, file_image)
     except ValueError:
         print("One error has occurred")
 
