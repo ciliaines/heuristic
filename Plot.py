@@ -6,7 +6,6 @@ import pandas as pd
 
 # Generar un gráfico de red (network topology)
 def network_info_topology(name,Sources, Destinations,Network_links, Repetition,Streams_Period, Link_order_Descriptor, Streams_links_path):
-
     fig = make_subplots(rows=1, cols=2, subplot_titles=("Network Topology", "Information Box"))
     # Crear una red simple con NetworkX
     df = pd.DataFrame({'from':Sources, 'to':Destinations})
@@ -50,6 +49,7 @@ def network_info_topology(name,Sources, Destinations,Network_links, Repetition,S
         hoverinfo='text',
         name="edges")
 
+
     fig.add_trace(edge_trace, row=1, col=1)
     fig.add_trace(node_trace, row=1, col=1)
 
@@ -78,7 +78,6 @@ def network_info_topology(name,Sources, Destinations,Network_links, Repetition,S
 
 # Generar un gráfico de Gantt
 def gantt_chart(Result_offsets, Repetitions, Streams_Period):
-
     data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
     Repetitions = [repetition + 1 for repetition in Repetitions]
     color=['black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'grey', 'orange', 'pink','fuchsia']
@@ -127,7 +126,6 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
         row=1,
         col=1,
     )
-
     #Latencia
     rows = [row for row in str(latency).strip().split("<br>") if row]
     stream=[]
@@ -155,6 +153,7 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
     links=[]
     queue=[]
     total=0
+
     for row in rows:
         if "is" in row:
             key, value = row.split(" is ")
@@ -175,7 +174,6 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
         row=1,
         col=3,
     )
-
     rows = [row for row in str(offset).strip().split("<br>") if row]
     stream=[]
     link=[]
