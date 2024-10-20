@@ -1,4 +1,0 @@
-
-Execution time:    0.501359224319458
-############### This is the set of offsets ######################
-The offset of stream 0 link 0 frame 0 is 0.0

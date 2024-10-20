@@ -1,3 +1,0 @@
-
-Execution time:    0.39386773109436035
-############### This is the set of offsets ######################

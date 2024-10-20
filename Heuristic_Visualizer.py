@@ -1,7 +1,6 @@
 # This set of functions is for the visualization of the values of the ILP 
 import pandas as pd
-import openpyxl
-#import matplotlib.pyplot as plt
+from openpyxl import load_workbook 
 
 from RanNet_Generator import *
 from Djikstra_Path_Calculator import *
@@ -137,31 +136,61 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         lower_latency=""
         queues_link=""
         queues_stream=""
+
+        file_path_time = 'heuristico_time.xlsx'
+        file_path_offset = 'heuristico_offset.xlsx'
+        file_path_latencies = 'heuristico_latencies.xlsx'
+        file_path_queues = 'heuristico_queues.xlsx'
+
+         
+       # df_existing = pd.read_excel(file_path)
+        wb_time = load_workbook(file_path_time)
+        wb_offset = load_workbook(file_path_offset)
+        wb_latencies = load_workbook(file_path_latencies)
+        wb_queues = load_workbook(file_path_queues)
+
+        ws_time = wb_time.active
+        ws_offset = wb_offset.active
+        ws_latencies =wb_latencies.active
+        ws_queues = wb_queues.active
         #guardar varibale del tiempo en un archovp
+
         with open ('variable.txt', 'w') as file:
             file.write(timestamp)
         
         with open('Results/' + input_name + '.txt', 'a') as f :
-            f.write("\n")
+            #Time
             f.write("Execution time:    ")
             f.write(str(time_evaluation) + "\n")
-            f.write("############### This is the set of offsets ######################" + "\n")
-            header = ["Experimento", "Stream", "Link", "Frame", "Offset" ]
-            data_offset=[]
-            data_offset.append(header)
+            header = ["Experimento", "Time"]
+            body = [input_name, time_evaluation]
+            row =ws_time.max_row + 1
+            ws_time.append(body)
+            wb_time.save(file_path_time)
+
+            
+            f.write("############### This is the set of offsets ######################" + "\n")       
             for i in instance.Streams:
                 for j in instance.Links:
                     for k in instance.Frames:
                         if Model_Descriptor_vector [i][k][j] :
                             f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n")
-                            set_offset+= str(i) + " for " +str(j)+  " is " + str(instance.Lower_bound[i,j,k].value) + "<br>"
+                            set_offset+= str(i) + " for " +str(j)+ " frame "+str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "<br>"
+                            header = ["Experimento", "Stream", "Link", "Frame", "Offset" ]
                             body = [input_name, str(i), str(j),  str(k), str(instance.Lower_bound[i,j,k].value)]
-                            data_offset.append(body)
+                            row =ws_offset.max_row + 1
+                            ws_offset.append(body)
+                            wb_offset.save(file_path_offset)
 
             f.write("############### This is the set of latencies ######################" + "\n")
             for stream in instance.Streams:
                 f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n")
                 lower_latency += str(stream) + " is " + str(instance.Latency[stream].value) + "<br>"
+                header = ["Experimento", "Stream", "Latency" ]
+                body = [input_name, str(stream),str(instance.Latency[stream].value) ]
+                row =ws_latencies.max_row + 1
+                ws_latencies.append(body)
+                wb_latencies.save(file_path_latencies)
 
             f.write("############### This is the set of queues ######################" + "\n")
             for link in instance.Links:
@@ -173,11 +202,13 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                 for link in instance.Links:
                     f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
                     queues_stream += str(link) + " for " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "<br>"
-        workbook = openpyxl.Workbook()
-        sheet = workbook.active
-        for row in data_offset:
-            sheet.append(row)
-        workbook.save("excel.xlsx")
+                    header = ["Experimento", "Link", "Stream", "Queue" ]
+                    body = [input_name, str(link), str(stream), str(instance.Queue_Assignment[stream, link].value) ]
+                    row =ws_queues.max_row + 1
+                    ws_queues.append(body)
+                    wb_queues.save(file_path_queues)
+
+        
 
         #PLOT
         network_info_fig = network_info_topology(input_name,Sources,Destinations,Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
@@ -192,4 +223,3 @@ for n in [4]:
     for i in range(1):
         # Evaluation_Function(number_of_nodes, connection_probability, number of streams)
         Evaluation_function(2, 1, n)
-

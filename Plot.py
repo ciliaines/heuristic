@@ -176,22 +176,29 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
     rows = [row for row in str(offset).strip().split("<br>") if row]
     stream=[]
     link=[]
+    frame=[]
     offset=[]
 
     for row in rows:
         if "is" in row:
             key1, key2 = row.split(" for ")
-            key2, value = key2.split(" is ")
+            key2, key3 = key2.split(" frame ")
+            key3, value = key3.split(" is ")
+            print("key 1  "+key1)
+            print("key 2  "+key2)
+            print("key 3  "+key3)
+            print("value  "+value)
             stream.append(key1.strip())
             link.append(key2.strip())
+            frame.append(key3.strip())
             offset.append(value.strip())
 
 
     fig.add_trace(go.Table(
-        header=dict(values=['Stream','Links', 'Offset'],
+        header=dict(values=['Stream','Links', 'Frame', 'Offset'],
                     fill_color='paleturquoise',
                     align='left'),
-        cells=dict(values=[stream,link,offset],
+        cells=dict(values=[stream,link,frame,offset],
                     fill_color='lavender',
                     align='left')
         ),
