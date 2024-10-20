@@ -31,6 +31,7 @@ input_name = input + "_ilp_" + str(latency) + "_" + str(queue) + "_" + timestamp
 file_input = "Solutions/" + input_timestamp + ".json"
 file_resultado_input = "Topology/" + input_timestamp + ".json"
 file_image = "Solutions/" + input_name + ".html"
+
 Hyperperiod = 1000
 #Hyperperiod = 6000
 #Hyperperiod = 30000
@@ -83,11 +84,7 @@ def ILP_results_visualizer(instance, Model_Descriptor_vector):
 
 def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Streams) :
 
-### This is just the part where the program can select betweeen generating a new network
-#Number_of_edges, Connection_probability = 2 , 0.8
-#Number_of_Streams = 5
-
-################################################################
+    ################################################################
     # Generation of random Network
     try :
         initial_time = time.time()
@@ -146,8 +143,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                             set_offset += str(i) + " for " +str(j)+ " is " + str(instance.Frame_Offset[i,j,k].value) + "<br>"
             f.write("############### This is the set of latencies ######################" + "\n")
             for stream in instance.Streams:
-                f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Lower_Latency[stream].value) + "\n")
-                lower_latency+= str(stream) + " is " + str(instance.Lower_Latency[stream].value) + "<br>"
+                f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n")
+                lower_latency+= str(stream) + " is " + str(instance.Latency[stream].value) + "<br>"
             f.write("############### This is the set of queues ######################" + "\n")
             for link in instance.Links:
                 f.write("The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value) + "\n")

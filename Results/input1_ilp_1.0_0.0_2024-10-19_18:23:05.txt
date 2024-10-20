@@ -1,0 +1,19 @@
+
+Execution time:    0.07126522064208984
+############### This is the set of offsets ######################
+The offset of stream 0 link 1 frame 0 is 76.0
+The offset of stream 0 link 1 frame 1 is 88.0
+The offset of stream 0 link 2 frame 0 is 88.0
+The offset of stream 0 link 2 frame 1 is 100.0
+############### This is the set of latencies ######################
+The lower latency of Stream 0 is 36.0
+############### This is the set of queues ######################
+The number of queues of link 0 is 0.0
+The number of queues of link 1 is 1.0
+The number of queues of link 2 is 1.0
+The number of queues of link 3 is 0.0
+############### This is the set of queues per stream and link######################
+The number of queues of Link 0 stream 0 is 0
+The number of queues of Link 1 stream 0 is -0.0
+The number of queues of Link 2 stream 0 is -0.0
+The number of queues of Link 3 stream 0 is 0

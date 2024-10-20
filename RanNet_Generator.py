@@ -46,10 +46,8 @@ def Matrix_Validator(element_list):
 # This function generates the Random Network 
 def Random_Network_Generator(Number_of_edges, Connection_probability) :
     ensurer = False
-    #print("Random network generator:")
     while ensurer == False :
         g = erdos_renyi_graph(Number_of_edges, Connection_probability)
-
         Network_nodes =  list(g.nodes)
         Network_links = list(g.edges)
         Sources = [link[0] for link in Network_links]
@@ -84,10 +82,7 @@ def Random_Network_Generator(Number_of_edges, Connection_probability) :
 # This function generates the Network 
 def Network_Generator(Number_of_edges, Connection_probability) :
     ensurer = False
-
     Number_of_edges=7
-
-    #print("Network generator:")
     while ensurer == False :
         g = erdos_renyi_graph(Number_of_edges, Connection_probability)
 
@@ -96,7 +91,6 @@ def Network_Generator(Number_of_edges, Connection_probability) :
 
         Sources = [link[0] for link in Network_links]
         Destinations = [link[1] for link in Network_links]
-        #print("While random network generator:", Network_nodes, Network_links, Sources, Destinations)
 
         # Checks if the random values are suitable for the Adjacency Matrix
         try: 
@@ -120,7 +114,6 @@ def Network_Generator(Number_of_edges, Connection_probability) :
     plt.subplot(221)
     plt.title("Network Topology")
     nx.draw(G, with_labels=True)
-    #print("Random network generator:", Network_nodes, Network_links, Adjacency_Matrix)
 
     return Network_nodes, Network_links, Adjacency_Matrix, plot_network
 
@@ -128,13 +121,9 @@ def Network_Generator(Number_of_edges, Connection_probability) :
 # This function is placed here because it needs both parameters from the network and the Streams 
 def Random_flows_generator(Number_of_Streams, Number_of_edges) :
     Stream_Source_Destination = []
-    #print("Number_of_Streams",Number_of_Streams)
     for i in range(Number_of_Streams) :
         Stream_Source_Destination.append(random.sample(range(0, Number_of_edges), 2))
-        #print("Stream_Source_Destination",Stream_Source_Destination)
     return Stream_Source_Destination
-
-
 
 # This function is placed here because it needs both parameters from the network and the Streams 
 def Flows_generator(Number_of_Streams, Number_of_edges) :

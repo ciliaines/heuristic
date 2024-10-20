@@ -105,7 +105,6 @@ def all_paths_matrix_generator(Network_nodes, network) :
 
 # Determining the path for each Stream generating a list of all the nodes from source to destination
 def Streams_paths_generator(all_paths_matrix, Stream_Source_Destination) :
-    #print("all_paths_matrix:", all_paths_matrix)
     Streams_paths = [0 for i in range(len(Stream_Source_Destination))]
     n = 0
 
@@ -131,7 +130,6 @@ def Streams_paths_generator(all_paths_matrix, Stream_Source_Destination) :
 def Streams_links_paths_generator(Streams_paths):
     Streams_links_paths = []
     for stream in Streams_paths :
-        #print(stream[1:])
         n = 1
         stream_allocator = []
         for i in stream[1:]:
@@ -156,7 +154,6 @@ def Link_order_Descriptor_generator(Streams_links_paths, Network_links) :
     return Link_order_Descriptor
 
 def Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Streams_size):
-    #print(Streams_size)
     #Generate a diccionary generar un diccionario del stream source destination para asi mantener al informcaion
     Stream_Source_Destination_Dic = {key: value for key, value in enumerate(Stream_Source_Destination)}
     #Generate a diccionaty with the list Stream_size
@@ -174,7 +171,6 @@ def Sort_flow(Stream_Source_Destination, Deathline_Stream, Streams_Period, Strea
 
     # Shot keys less to high
     sort_keys = sorted(keys, key=sort_keys)
-    #print("SORT KEYS",sort_keys)
     # sort deadthline line dictory short
     Sort_Deathline_Stream = {key: Deathline_Stream[key] for key in sort_keys}
     # keys list

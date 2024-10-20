@@ -36,14 +36,13 @@ Frame_Duration
 # Boolean function that indicates if a combination of Frame Link and Stream exists or not
 def frame_exists(Model_Descriptor_vector, stream, frame) :
     return len([*filter(lambda x: x >= 1, Model_Descriptor_vector[stream][frame])])
-#Objective Function
 
+#Objective Function
 def Latency_Num_Queues_rule(model):
   return sum(model.Num_Queues[link] for link in model.Links )
- #    return (0.9) * sum(model.Latency[stream] - model.Lower_Latency[stream] for link in model.Links ) + (0.1) * sum(model.Num_Queues[stream] - 1 for stream in model.Streams )
+  #return (0.9) * sum(model.Latency[stream] - model.Lower_Latency[stream] for link in model.Links ) + (0.1) * sum(model.Num_Queues[stream] - 1 for stream in model.Streams )
 
 #Constraints
-
 class ILP_Raagard_solver :
                   
     def __init__(self, Number_of_Streams, Network_links, \
@@ -70,7 +69,6 @@ class ILP_Raagard_solver :
         self.latency = latency
         self.queue = queue
 
-        print("self.Num_of_Frame    ",self.Num_of_Frames)
         self.model = AbstractModel()
         self.model.Streams = Set(initialize= range(self.Number_of_Streams)) # Num of streams
         self.model.Repetitions = Set(initialize= range(int(max(Repetitions) + 1))) # This is the maximum number of Repetitions
@@ -90,7 +88,7 @@ class ILP_Raagard_solver :
         self.model.Num_of_Frames = Param(self.model.Streams, initialize=Num_of_Frames)
     
         # Variables
-        #        self.model.Frame_Offset = Var(self.model.Streams, self.model.Links, self.model.Frames, within=PositiveIntegers, initialize=1)
+        #self.model.Frame_Offset = Var(self.model.Streams, self.model.Links, self.model.Frames, within=PositiveIntegers, initialize=1)
         self.model.Frame_Offset = Var(self.model.Streams, self.model.Links, self.model.Frames, within=NonNegativeIntegers, initialize=0)
         self.model.Aux_Same_Queue = Var(self.model.Streams, self.model.Links, self.model.Streams, within=Binary, initialize=0)
         self.model.Queue_Assignment = Var(self.model.Streams, self.model.Links, within=NonNegativeIntegers, initialize=0)
@@ -100,7 +98,7 @@ class ILP_Raagard_solver :
         #Variables of the Objective Function
         self.model.Lower_Latency = Var(self.model.Streams, within=NonNegativeReals, initialize=0)
         self.model.Latency = Var(self.model.Streams, within=Integers, initialize=0)
-        #        self.model.Num_Queues = Var(self.model.Links, within=PositiveIntegers, initialize=1)
+        #self.model.Num_Queues = Var(self.model.Links, within=PositiveIntegers, initialize=1)
         self.model.Num_Queues = Var(self.model.Links, within=NonNegativeIntegers, initialize=20)
 
                                                                                                                                                                                                                                                  
@@ -204,17 +202,13 @@ class ILP_Raagard_solver :
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links, self.model.Streams, self.model.Frames, self.model.Repetitions, self.model.Repetitions)
         def Constraint_41_rule(model, stream, frame, link, stream_2, frame_2, repetition, repetition_2):
             if frame_exists(self.Model_Descriptor_vector, stream, frame) and frame_exists(self.Model_Descriptor_vector, stream_2, frame_2) and self.Model_Descriptor[(stream, frame, link)] and self.Model_Descriptor[(stream_2, frame_2, link)] and self.Link_order_Descriptor[stream].index(link) and self.Link_order_Descriptor[stream_2].index(link) and self.Repetitions_Descriptor[stream][repetition] != 9 and self.Repetitions_Descriptor[stream_2][repetition_2] != 9 and stream != stream_2:
-                #print("solution 41 ", self.Repetitions_Descriptor[stream][repetition] * model.Period[stream] + model.Frame_Offset[stream, link, frame] + model.Max_Syn_Error <= self.Repetitions_Descriptor[stream_2][repetition_2] * model.Period[stream_2] + model.Frame_Offset[stream_2,self.Link_order_Descriptor[stream_2][self.Link_order_Descriptor[stream_2].index(link)-1], frame_2] + model.Large_Number * (model.w[stream, repetition, frame, stream_2, repetition_2 ,frame_2, link] + model.Aux_Same_Queue[stream, link, stream_2] + model.Aux_Same_Queue[stream_2, link, stream]))
-                #print("model.w[stream, frame, stream_2, frame_2, link]   ",str(model.w[stream, frame, stream_2, frame_2, link]))
                 return  self.Repetitions_Descriptor[stream][repetition] * model.Period[stream] + model.Frame_Offset[stream, link, frame] + model.Max_Syn_Error <= self.Repetitions_Descriptor[stream_2][repetition_2] * model.Period[stream_2] + model.Frame_Offset[stream_2,self.Link_order_Descriptor[stream_2][self.Link_order_Descriptor[stream_2].index(link)-1], frame_2] + model.Large_Number * (model.w[stream,repetition, frame, stream_2, repetition_2, frame_2, link] + model.Aux_Same_Queue[stream, link, stream_2] + model.Aux_Same_Queue[stream_2, link, stream])
             else : 
-                #print("--- else  ", Constraint.Skip)
                 return Constraint.Skip
     
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links, self.model.Streams, self.model.Frames, self.model.Repetitions, self.model.Repetitions)
         def Constraint_42_rule(model, stream, frame, link, stream_2, frame_2, repetition, repetition_2):    
             if frame_exists(self.Model_Descriptor_vector, stream, frame) and frame_exists(self.Model_Descriptor_vector, stream_2, frame_2) and self.Model_Descriptor[(stream, frame, link)] and self.Model_Descriptor[(stream_2, frame_2, link)] and self.Link_order_Descriptor[stream].index(link) and self.Link_order_Descriptor[stream_2].index(link) and self.Repetitions_Descriptor[stream][repetition] != 9 and self.Repetitions_Descriptor[stream_2][repetition_2] != 9 and stream != stream_2:
-                #print("solution 42 ", self.Repetitions_Descriptor[stream_2][repetition_2] * model.Period[stream_2] + model.Frame_Offset[stream_2, link, frame_2] + model.Max_Syn_Error <= self.Repetitions_Descriptor[stream][repetition] * model.Period[stream] + model.Frame_Offset[stream, self.Link_order_Descriptor[stream][self.Link_order_Descriptor[stream].index(link)-1], frame] + model.Large_Number * (1 - model.w[stream, repetition, frame, stream_2, repetition_2, frame_2, link] + model.Aux_Same_Queue[stream, link, stream_2] + model.Aux_Same_Queue[stream_2, link, stream]))
                 return self.Repetitions_Descriptor[stream_2][repetition_2] * model.Period[stream_2] + model.Frame_Offset[stream_2, link, frame_2] + model.Max_Syn_Error <= self.Repetitions_Descriptor[stream][repetition] * model.Period[stream] + model.Frame_Offset[stream, self.Link_order_Descriptor[stream][self.Link_order_Descriptor[stream].index(link)-1], frame] + model.Large_Number * (1 - model.w[stream, repetition, frame, stream_2, repetition_2, frame_2, link] + model.Aux_Same_Queue[stream, link, stream_2] + model.Aux_Same_Queue[stream_2, link, stream])
             else : 
                 return Constraint.Skip
@@ -222,7 +216,6 @@ class ILP_Raagard_solver :
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links, self.model.Streams, self.model.Frames, self.model.Repetitions, self.model.Repetitions)
         def Constraint_43_rule(model, stream, frame, link, stream_2, frame_2, repetition, repetition_2):    
             if frame_exists(self.Model_Descriptor_vector, stream, frame) and frame_exists(self.Model_Descriptor_vector, stream_2, frame_2) and self.Model_Descriptor[(stream, frame, link)] and self.Model_Descriptor[(stream_2, frame_2, link)] and self.Link_order_Descriptor[stream].index(link) and self.Link_order_Descriptor[stream_2].index(link) and self.Repetitions_Descriptor[stream][repetition] != 9 and self.Repetitions_Descriptor[stream_2][repetition_2] != 9 and stream != stream_2:
-                #print("condition 43", frame, stream, link, frame_2, stream_2)
                 return model.Frame_Offset[stream_2, link, frame_2] - model.Frame_Offset[stream, link, frame] <= self.Hyperperiod - model.Frame_Duration[stream, frame, link]
             else : 
                 return Constraint.Skip
@@ -230,7 +223,6 @@ class ILP_Raagard_solver :
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links, self.model.Streams, self.model.Frames, self.model.Repetitions, self.model.Repetitions)
         def Constraint_44_rule(model, stream, frame, link, stream_2, frame_2, repetition, repetition_2):    
             if frame_exists(self.Model_Descriptor_vector, stream, frame) and frame_exists(self.Model_Descriptor_vector, stream_2, frame_2) and self.Model_Descriptor[(stream, frame, link)] and self.Model_Descriptor[(stream_2, frame_2, link)] and self.Link_order_Descriptor[stream].index(link) and self.Link_order_Descriptor[stream_2].index(link) and self.Repetitions_Descriptor[stream][repetition] != 9 and self.Repetitions_Descriptor[stream_2][repetition_2] != 9 and stream != stream_2:
-                #print("condition 44", frame, stream, link, frame_2, stream_2)
                 return model.Frame_Offset[stream, link, frame] - model.Frame_Offset[stream_2, link, frame_2] <= self.Hyperperiod - model.Frame_Duration[stream_2, frame_2, link]
             else : 
                 return Constraint.Skip
@@ -238,7 +230,6 @@ class ILP_Raagard_solver :
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links, self.model.Streams, self.model.Frames, self.model.Repetitions, self.model.Repetitions)
         def Constraint_45_rule(model, stream, frame, link, stream_2, frame_2, repetition, repetition_2):    
             if frame_exists(self.Model_Descriptor_vector, stream, frame) and frame_exists(self.Model_Descriptor_vector, stream_2, frame_2) and self.Model_Descriptor[(stream, frame, link)] and self.Model_Descriptor[(stream_2, frame_2, link)] and self.Link_order_Descriptor[stream].index(link) and self.Link_order_Descriptor[stream_2].index(link) and self.Repetitions_Descriptor[stream][repetition] != 9 and self.Repetitions_Descriptor[stream_2][repetition_2] != 9 and stream != stream_2:
-                #print("condition 45", frame, stream, link, frame_2, stream_2)
                 return self.Repetitions[stream_2] * model.Period[stream_2] + model.Frame_Offset[stream_2, link, frame_2] - model.Frame_Offset[stream, link, frame] <= self.Hyperperiod - model.Frame_Duration[stream, frame, link] - 0.0001
             else : 
                 return Constraint.Skip
@@ -246,7 +237,6 @@ class ILP_Raagard_solver :
         @self.model.Constraint(self.model.Streams, self.model.Frames, self.model.Links, self.model.Streams, self.model.Frames, self.model.Repetitions, self.model.Repetitions)
         def Constraint_46_rule(model, stream, frame, link, stream_2, frame_2, repetition, repetition_2):    
             if frame_exists(self.Model_Descriptor_vector, stream, frame) and frame_exists(self.Model_Descriptor_vector, stream_2, frame_2) and self.Model_Descriptor[(stream, frame, link)] and self.Model_Descriptor[(stream_2, frame_2, link)] and self.Link_order_Descriptor[stream].index(link) and self.Link_order_Descriptor[stream_2].index(link) and self.Repetitions_Descriptor[stream][repetition] != 9 and self.Repetitions_Descriptor[stream_2][repetition_2] != 9 and stream != stream_2:
-                #print("condition 46", frame, stream, link, frame_2, stream_2)
                 return self.Repetitions[stream] * model.Period[stream] + model.Frame_Offset[stream, link, frame] - model.Frame_Offset[stream_2, link, frame_2] <= self.Hyperperiod - model.Frame_Duration[stream_2, frame_2, link] - 0.0001
             else : 
                 return Constraint.Skip
@@ -255,7 +245,6 @@ class ILP_Raagard_solver :
         #unused_links_generator(Network_links, Link_ord er_Descriptor)
         def Constraint_reliever_rule(model, link):
             if link in self.unused_links :
-                #print("applying for link", link)
                 return model.Num_Queues[link] == 0
             else : 
                 return Constraint.Skip

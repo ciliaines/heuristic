@@ -37,28 +37,16 @@ def Read(file_input):
         for link in data["links"]:
             Name_link = link["name"]
             Number = link["number"]
-            #print("Name_link  ", Name_link)
-            #print("Number   ", Number)
             #Number_enlace = Number_enlace + [(int(x), int(y)) for x in Name_link for y in Number]
             Devices = list()
             for e in link["devices"]:
                 Devices = Devices + [int(x) for x in e]             
             Stream_Source_Destination_total.append(Devices)
-        #print("Number_enlace   ",Number_enlace)
       
     Adjacency_Matrix = adj(Network_links)
     Sources = [link[0] for link in Network_links]
     Destinations = [link[1] for link in Network_links]
 
-    # Build a dataframe with the Source and destination connections
-    #df = pd.DataFrame({ 'from': Sources , 'to': Destinations})
-    # Build the graph
-    #G=nx.from_pandas_edgelist(df, 'from', 'to')
-    # Plot the graph
-    #plot_network = plt.figure(1, figsize=(14, 7))
-    #plt.subplot(221)
-    #plt.title("Network  Topology")
-    #nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, None, Sources, Destinations, Stream_Source_Destination_total
 
 def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams,Streams_size  ):
@@ -88,11 +76,6 @@ def Random(Stream_Source_Destination_total, Hiperperiod, Stream_Source_Destinati
         size_pos = [15000, 30000, 60000, 90000, 150000]
     size = random.choice(size_pos)
     Streams_size = Streams_size + [size]             
-
-    #print("Stream_Source_Destination    ", Stream_Source_Destination)
-    #print("Streams_Period   ", Streams_Period)
-    #print("Number_of_Streams    ", Number_of_Streams)
-    #print("Streams_size     ", Streams_size)
 
     return Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size
 
@@ -159,4 +142,5 @@ def Read_Complete(file_result):
     plt.subplot(221)
     plt.title("Network  Topology")
     nx.draw(G, with_labels=True,  node_size=200, font_size=7, edge_color='gray', width=1.0)
+
     return Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination, Streams_size, Streams_Period, Streams_Period_list, Deathline_Stream, Number_of_Streams

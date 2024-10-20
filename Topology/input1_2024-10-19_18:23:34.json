@@ -1,0 +1,84 @@
+{
+    "switches": [
+        {
+            "name": "0",
+            "final": "true",
+            "ports": [
+                {
+                    "name": "eth1",
+                    "connectsTo": "3"
+                }
+            ]
+        },
+        {
+            "name": "1",
+            "final": "true",
+            "ports": [
+                {
+                    "name": "eth1",
+                    "connectsTo": "3"
+                }
+            ]
+        },
+        {
+            "name": "2",
+            "final": "true",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "3"
+                }
+            ]
+        },
+        {
+            "name": "3",
+            "final": "false",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "0"
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "1"
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "2"
+                },
+                {
+                    "name": "eth3",
+                    "connectsTo": "4"
+                }
+            ]
+        },
+        {
+            "name": "4",
+            "final": "true",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "3"
+                }
+            ]
+        }
+    ],
+    "flows": [
+        {
+            "name": 0,
+            "period": 100,
+            "deathline": 300,
+            "packetSize": 1500,
+            "sourceDevice": 1,
+            "endDevices": 4
+        },
+        {
+            "name": 1,
+            "period": 500,
+            "deathline": 1500,
+            "packetSize": 1500,
+            "sourceDevice": 0,
+            "endDevices": 2
+        }
+    ]
+}

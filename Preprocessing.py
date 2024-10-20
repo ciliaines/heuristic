@@ -70,7 +70,6 @@ def Repetitions_generator(Streams_Period, Streams, Hyperperiod) :
     for repetition in Repetitions :
         Repetitions_Matrix.append([1 for rep in range(int(repetition))])
 
-   #print("Getting Repetitions", Repetitions, "and Streams", Streams)
     if max(Repetitions) == 0 :
         Repetitions_Descriptor = [[0] for stream in Streams ]
     else :
@@ -117,7 +116,3 @@ def unused_links_generator(Network_links, Link_order_Descriptor):
         if totalizer == 0:
             unused_links.append(i)
     return unused_links
-
-
-
-

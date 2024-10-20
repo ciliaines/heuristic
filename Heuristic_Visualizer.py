@@ -1,5 +1,6 @@
 # This set of functions is for the visualization of the values of the ILP 
 import pandas as pd
+import openpyxl
 #import matplotlib.pyplot as plt
 
 from RanNet_Generator import *
@@ -14,6 +15,7 @@ import textwrap
 from Plot import *
 from datetime import datetime
 
+
 now = datetime.now()
 timestamp = now.strftime("%Y-%m-%d_%H:%M:%S")
 
@@ -24,6 +26,7 @@ file_input_topo = "Inputs/" + input + "_topo.json"
 file_input = "Solutions/" + input_timestamp + ".json"
 file_result = "Results/"+ input + "_result_" + ".json"
 file_image = "Solutions/" + input_name + ".html"
+
 Hyperperiod = 1000
 #Hyperperiod = 6000
 #Hyperperiod = 30000
@@ -121,8 +124,6 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
 
             instance, results = scheduler.instance, scheduler.results
             utilizacion = Greedy_Heuristic(instance, num_stream)
-            #print("utilizacion   ", utilizacion)
-            #utilizacion = False
             num_stream = num_stream + 1
 
         
@@ -145,13 +146,18 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
             f.write("Execution time:    ")
             f.write(str(time_evaluation) + "\n")
             f.write("############### This is the set of offsets ######################" + "\n")
+            header = ["Experimento", "Stream", "Link", "Frame", "Offset" ]
+            data_offset=[]
+            data_offset.append(header)
             for i in instance.Streams:
                 for j in instance.Links:
                     for k in instance.Frames:
                         if Model_Descriptor_vector [i][k][j] :
-                           f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n")
-                           set_offset+= str(i) + " for " +str(j)+  " is " + str(instance.Lower_bound[i,j,k].value) + "<br>"
-                            #" frame " + str(k) +
+                            f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Lower_bound[i,j,k].value) + "\n")
+                            set_offset+= str(i) + " for " +str(j)+  " is " + str(instance.Lower_bound[i,j,k].value) + "<br>"
+                            body = [input_name, str(i), str(j),  str(k), str(instance.Lower_bound[i,j,k].value)]
+                            data_offset.append(body)
+
             f.write("############### This is the set of latencies ######################" + "\n")
             for stream in instance.Streams:
                 f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n")
@@ -167,6 +173,12 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                 for link in instance.Links:
                     f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
                     queues_stream += str(link) + " for " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "<br>"
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        for row in data_offset:
+            sheet.append(row)
+        workbook.save("excel.xlsx")
+
         #PLOT
         network_info_fig = network_info_topology(input_name,Sources,Destinations,Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
         gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)

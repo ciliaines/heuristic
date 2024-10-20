@@ -1,0 +1,111 @@
+
+Execution time:    2.992521286010742
+############### This is the set of offsets ######################
+The offset of stream 0 link 0 frame 0 is 1000.0
+The offset of stream 0 link 1 frame 0 is -0.0
+The offset of stream 1 link 1 frame 0 is 12.0
+The offset of stream 1 link 1 frame 1 is 24.0
+The offset of stream 1 link 3 frame 0 is -0.0
+The offset of stream 1 link 3 frame 1 is 12.0
+The offset of stream 2 link 0 frame 0 is 476.0
+The offset of stream 2 link 0 frame 1 is 524.0
+The offset of stream 2 link 0 frame 2 is 536.0
+The offset of stream 2 link 0 frame 3 is 548.0
+The offset of stream 2 link 0 frame 4 is 560.0
+The offset of stream 2 link 0 frame 5 is 572.0
+The offset of stream 2 link 0 frame 6 is 584.0
+The offset of stream 2 link 0 frame 7 is 596.0
+The offset of stream 2 link 0 frame 8 is 608.0
+The offset of stream 2 link 0 frame 9 is 620.0
+The offset of stream 2 link 0 frame 10 is 632.0
+The offset of stream 2 link 0 frame 11 is 644.0
+The offset of stream 2 link 0 frame 12 is 656.0
+The offset of stream 2 link 0 frame 13 is 668.0
+The offset of stream 2 link 0 frame 14 is 680.0
+The offset of stream 2 link 0 frame 15 is 692.0
+The offset of stream 2 link 0 frame 16 is 704.0
+The offset of stream 2 link 0 frame 17 is 716.0
+The offset of stream 2 link 0 frame 18 is 728.0
+The offset of stream 2 link 0 frame 19 is 740.0
+The offset of stream 2 link 0 frame 20 is 752.0
+The offset of stream 2 link 0 frame 21 is 764.0
+The offset of stream 2 link 0 frame 22 is 776.0
+The offset of stream 2 link 0 frame 23 is 788.0
+The offset of stream 2 link 0 frame 24 is 800.0
+The offset of stream 2 link 0 frame 25 is 812.0
+The offset of stream 2 link 0 frame 26 is 824.0
+The offset of stream 2 link 0 frame 27 is 836.0
+The offset of stream 2 link 0 frame 28 is 848.0
+The offset of stream 2 link 0 frame 29 is 860.0
+The offset of stream 2 link 0 frame 30 is 872.0
+The offset of stream 2 link 0 frame 31 is 884.0
+The offset of stream 2 link 0 frame 32 is 896.0
+The offset of stream 2 link 0 frame 33 is 908.0
+The offset of stream 2 link 0 frame 34 is 920.0
+The offset of stream 2 link 0 frame 35 is 932.0
+The offset of stream 2 link 0 frame 36 is 944.0
+The offset of stream 2 link 0 frame 37 is 956.0
+The offset of stream 2 link 0 frame 38 is 968.0
+The offset of stream 2 link 0 frame 39 is 980.0
+The offset of stream 2 link 1 frame 0 is 488.0
+The offset of stream 2 link 1 frame 1 is 536.0
+The offset of stream 2 link 1 frame 2 is 548.0
+The offset of stream 2 link 1 frame 3 is 560.0
+The offset of stream 2 link 1 frame 4 is 572.0
+The offset of stream 2 link 1 frame 5 is 584.0
+The offset of stream 2 link 1 frame 6 is 596.0
+The offset of stream 2 link 1 frame 7 is 608.0
+The offset of stream 2 link 1 frame 8 is 620.0
+The offset of stream 2 link 1 frame 9 is 632.0
+The offset of stream 2 link 1 frame 10 is 644.0
+The offset of stream 2 link 1 frame 11 is 656.0
+The offset of stream 2 link 1 frame 12 is 668.0
+The offset of stream 2 link 1 frame 13 is 680.0
+The offset of stream 2 link 1 frame 14 is 692.0
+The offset of stream 2 link 1 frame 15 is 704.0
+The offset of stream 2 link 1 frame 16 is 716.0
+The offset of stream 2 link 1 frame 17 is 728.0
+The offset of stream 2 link 1 frame 18 is 740.0
+The offset of stream 2 link 1 frame 19 is 752.0
+The offset of stream 2 link 1 frame 20 is 764.0
+The offset of stream 2 link 1 frame 21 is 776.0
+The offset of stream 2 link 1 frame 22 is 788.0
+The offset of stream 2 link 1 frame 23 is 800.0
+The offset of stream 2 link 1 frame 24 is 812.0
+The offset of stream 2 link 1 frame 25 is 824.0
+The offset of stream 2 link 1 frame 26 is 836.0
+The offset of stream 2 link 1 frame 27 is 848.0
+The offset of stream 2 link 1 frame 28 is 860.0
+The offset of stream 2 link 1 frame 29 is 872.0
+The offset of stream 2 link 1 frame 30 is 884.0
+The offset of stream 2 link 1 frame 31 is 896.0
+The offset of stream 2 link 1 frame 32 is 908.0
+The offset of stream 2 link 1 frame 33 is 920.0
+The offset of stream 2 link 1 frame 34 is 932.0
+The offset of stream 2 link 1 frame 35 is 944.0
+The offset of stream 2 link 1 frame 36 is 956.0
+The offset of stream 2 link 1 frame 37 is 968.0
+The offset of stream 2 link 1 frame 38 is 980.0
+The offset of stream 2 link 1 frame 39 is 992.0
+############### This is the set of latencies ######################
+The lower latency of Stream 0 is 1012.0
+The lower latency of Stream 1 is 36.0
+The lower latency of Stream 2 is 528.0
+############### This is the set of queues ######################
+The number of queues of link 0 is 1.0
+The number of queues of link 1 is 1.0
+The number of queues of link 2 is 0.0
+The number of queues of link 3 is 1.0
+############### This is the set of queues per stream and link######################
+The number of queues of Link 0 stream 0 is -0.0
+The number of queues of Link 1 stream 0 is -0.0
+The number of queues of Link 2 stream 0 is 0
+The number of queues of Link 3 stream 0 is 0
+The number of queues of Link 0 stream 1 is 0
+The number of queues of Link 1 stream 1 is -0.0
+The number of queues of Link 2 stream 1 is 0
+The number of queues of Link 3 stream 1 is -0.0
+The number of queues of Link 0 stream 2 is -0.0
+The number of queues of Link 1 stream 2 is -0.0
+The number of queues of Link 2 stream 2 is 0
+The number of queues of Link 3 stream 2 is 0

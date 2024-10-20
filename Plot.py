@@ -78,6 +78,7 @@ def network_info_topology(name,Sources, Destinations,Network_links, Repetition,S
 
 # Generar un gráfico de Gantt
 def gantt_chart(Result_offsets, Repetitions, Streams_Period):
+    
     data = [[frame['Task'], frame['Start']] for frame in Result_offsets]
     Repetitions = [repetition + 1 for repetition in Repetitions]
     color=['black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'grey', 'orange', 'pink','fuchsia']
@@ -85,19 +86,17 @@ def gantt_chart(Result_offsets, Repetitions, Streams_Period):
     # For printing the full gant Chart
     New_offsets = []
     stream_index = 0
-    for repetition in Repetitions :
+    for repetition in Repetitions:
         for frame in Result_offsets:
             substring = "'S', " +  str(stream_index)
             if substring in frame["Task"] :
-                for i in range(int(repetition)) :
+                for i in range(int(repetition)):
                     Repeated_Stream = {'Task' : frame["Task"] , 'Start' : frame["Start"] + Streams_Period[stream_index]*(i), 'Color' : color[frame["Color"]]}
                     New_offsets.append(Repeated_Stream)
         stream_index = stream_index + 1
     Result_offsets = New_offsets
     data = [[frame['Task'], frame['Start'], frame['Color']] for frame in New_offsets]
     df = pd.DataFrame(data, columns = ['Process_Name', 'Start', 'Color'])
-
-    #df = px.data.gapminder().query("year == 2007").sort_values(by="gdpPercap", ascending=False)
                                                                                                                                                                                                 
     fig = go.Figure()
     fig.add_trace(go.Bar(
@@ -199,9 +198,6 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
         row=1,
         col=4,
     )
-    
-    #fig.update_layout(title="Results Box", showlegend=False,xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-    #                  yaxis=dict(showgrid=False, zeroline=False, showticklabels=False), margin=dict(l=10, r=10, t=30, b=30))
 
     fig.update_layout(width=1000, height=600, title_text="Results Table")                     
     return fig

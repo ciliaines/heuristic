@@ -11,7 +11,6 @@ Fortunately the only input is the number of streams in the network
 
 """
 
-
 ########## PARAMETERS ##########
 # Stream_size (Provided - Randomized)
 # Streams_Period (Provided - Randomized)
@@ -25,7 +24,6 @@ Fortunately the only input is the number of streams in the network
 def Random_Stream_size_and_period_generator(Number_of_Streams): 
 
     type_selector = [1,2,3,1]
-    print ("type_selector",type_selector)
     Streams_size = []
     Streams_Period = {}
     Streams_Period_list = [(v[0]) for k, v in Streams_Period.items()]
@@ -43,7 +41,6 @@ def Random_Stream_size_and_period_generator(Number_of_Streams):
             Streams_size.append(90)
             Streams_Period[(i)] = 600
             Deathline_Stream[(i)] = 1200
-        print(type_selector[i],Streams_Period[(i)])
     Streams_Period_list = [v for k,v in Streams_Period.items()]
     
     #for i in range(len(Streams_Period)):
