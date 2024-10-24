@@ -1,0 +1,154 @@
+{
+    "switches": [
+        {
+            "name": "0",
+            "scheduleType": "hypercycle",
+            "defaultTimeToTravel": 1,
+            "defaultPortSpeed": 125,
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "2",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                }
+            ]
+        },
+        {
+            "name": "1",
+            "scheduleType": "hypercycle",
+            "defaultTimeToTravel": 1,
+            "defaultPortSpeed": 125,
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "2",
+                    "timeToTravel": 2,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                }
+            ]
+        },
+        {
+            "name": "2",
+            "scheduleType": "hypercycle",
+            "defaultTimeToTravel": 1,
+            "defaultPortSpeed": 125,
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "0",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "1",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "3",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                }
+            ]
+        },
+        {
+            "name": "3",
+            "scheduleType": "hypercycle",
+            "defaultTimeToTravel": 1,
+            "defaultPortSpeed": 125,
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "2",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "4",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                }
+            ]
+        },
+        {
+            "name": "4",
+            "scheduleType": "hypercycle",
+            "defaultTimeToTravel": 1,
+            "defaultPortSpeed": 125,
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "3",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "5",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "6",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                }
+            ]
+        },
+        {
+            "name": "5",
+            "scheduleType": "hypercycle",
+            "defaultTimeToTravel": 1,
+            "defaultPortSpeed": 125,
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "4",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                }
+            ]
+        },
+        {
+            "name": "6",
+            "scheduleType": "hypercycle",
+            "defaultTimeToTravel": 1,
+            "defaultPortSpeed": 125,
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "4",
+                    "timeToTravel": 1,
+                    "maximumSlotDuration": 50,
+                    "cycleStart": 0
+                }
+            ]
+        }
+    ],
+    "flows": [
+        {
+            "name": 0,
+            "period": 1000,
+            "deathline": 3000,
+            "packetSize": 90000,
+            "sourceDevice": 1,
+            "endDevices": 5
+        }
+    ]
+}

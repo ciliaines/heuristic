@@ -110,9 +110,9 @@ def gantt_chart(Result_offsets, Repetitions, Streams_Period):
     return fig
 
 # Generar tablas de resultado
-def result_box(Tiempo, offset, latency, queue_link, queue_stream):
+def result_box(Tiempo, Hyperperiodo, offset, latency, queue_link, queue_stream):
     #Tablas
-    fig = make_subplots(rows=1, cols=4, specs=[[{"type":"table"},{"type":"table"}, {"type":"table"}, {"type":"table"}]])
+    fig = make_subplots(rows=1, cols=5, specs=[[{"type":"table"},{"type":"table"},{"type":"table"}, {"type":"table"}, {"type":"table"}]])
     #Tiempo
     fig.add_trace(go.Table(
         header=dict(values=['Time'],
@@ -124,6 +124,19 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
         ),
         row=1,
         col=1,
+    )
+    #Hyperperiodo
+    print("kvbkajb")
+    fig.add_trace(go.Table(
+        header=dict(values=['Hyperperiod'],
+                    fill_color='paleturquoise',
+                    align='left'),
+        cells=dict(values=[Hyperperiodo],
+                    fill_color='lavender',
+                     align='left')
+         ),
+         row=1,
+         col=2,
     )
     #Latencia
     rows = [row for row in str(latency).strip().split("<br>") if row]
@@ -144,7 +157,7 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
                     align='left')
         ),
         row=1,
-        col=2,
+        col=3,
     )
 
     #Queue
@@ -171,7 +184,7 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
                     align='left')
         ),
         row=1,
-        col=3,
+        col=4,
     )
     rows = [row for row in str(offset).strip().split("<br>") if row]
     stream=[]
@@ -184,10 +197,6 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
             key1, key2 = row.split(" for ")
             key2, key3 = key2.split(" frame ")
             key3, value = key3.split(" is ")
-            print("key 1  "+key1)
-            print("key 2  "+key2)
-            print("key 3  "+key3)
-            print("value  "+value)
             stream.append(key1.strip())
             link.append(key2.strip())
             frame.append(key3.strip())
@@ -203,7 +212,7 @@ def result_box(Tiempo, offset, latency, queue_link, queue_stream):
                     align='left')
         ),
         row=1,
-        col=4,
+        col=5,
     )
 
     fig.update_layout(width=1000, height=600, title_text="Results Table")                     

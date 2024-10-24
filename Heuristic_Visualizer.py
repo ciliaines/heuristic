@@ -18,17 +18,19 @@ from datetime import datetime
 now = datetime.now()
 timestamp = now.strftime("%Y-%m-%d_%H:%M:%S")
 
+Hyperperiod = 1000
+#Hyperperiod = 6000
+#Hyperperiod = 30000
+
 input = "input1"
-input_timestamp = "input1_" + timestamp
+input_timestamp = input + "_" + timestamp
 input_name = input + "_heuristic_" + timestamp
-file_input_topo = "Inputs/" + input + "_topo.json"
+file_input_topo = "Inputs/" + input + "_topo" +".json"
 file_input = "Solutions/" + input_timestamp + ".json"
 file_result = "Results/"+ input + "_result_" + ".json"
 file_image = "Solutions/" + input_name + ".html"
 
-Hyperperiod = 1000
-#Hyperperiod = 6000
-#Hyperperiod = 30000
+
 
 def Heuristic_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
@@ -95,8 +97,10 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
             #Read from the JSON files
             if num_stream == 0:
                 Number_of_edges, Number_of_Streams, Network_nodes, Network_links, Adjacency_Matrix, plot_network, Sources, Destinations, Stream_Source_Destination_total = Read(file_input_topo)
-            Stream_Source_Destination,Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size = Random(Stream_Source_Destination_total, Hyperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size)
-            ################################################################
+            Stream_Source_Destination,Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size = Random(Stream_Source_Destination_total, Hyperperiod, Stream_Source_Destination, Streams_Period, Deathline_Stream, Number_of_Streams, Streams_size)  
+            print("Stream_Source_Destination   ",Stream_Source_Destination)
+            print("Streams_size      ",Streams_size)
+            ###############################################################
             #Djikstra scheduler
             network = Network_Topology(Adjacency_Matrix) 
             all_paths_matrix = all_paths_matrix_generator(Network_nodes, network)
@@ -159,6 +163,9 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
             file.write(timestamp)
         
         with open('Results/' + input_name + '.txt', 'a') as f :
+            #Hyperperiod
+            f.write("Hyperperiod:    ")
+            f.write(str(Hyperperiod) + "\n")
             #Time
             f.write("Execution time:    ")
             f.write(str(time_evaluation) + "\n")
@@ -214,7 +221,7 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         network_info_fig = network_info_topology(input_name,Sources,Destinations,Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
         gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
         #info_fig = info_box(Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
-        result_fig = result_box(time_evaluation, set_offset,lower_latency,queues_link,queues_stream)
+        result_fig = result_box(time_evaluation,Hyperperiod, set_offset,lower_latency,queues_link,queues_stream)
         combined(network_info_fig, gantt_fig, result_fig, file_image)
     except ValueError:
         print("One error has occurred")

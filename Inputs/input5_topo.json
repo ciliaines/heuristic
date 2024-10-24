@@ -136,63 +136,63 @@
         ],    
         "links": [
                 {
-                        "name": "flow1",
+                        "name": 1,
                         "devices": ["0","1","2"]
                 },
                 {
-                        "name": "flow2",
+                        "name": 2,
                         "devices": ["0","1","3"]
                 },
                 {
-                        "name": "flow3",
+                        "name": 3,
                         "devices": ["0","1","4","5"]
                 },
                 {
-                        "name": "flow4",
+                        "name": 4,
                         "devices": ["0","1","4","6"]
                 },            
                 {
-                        "name": "flow5",
+                        "name": 5,
                         "devices": ["2","1","0"]
                 },
                 {
-                        "name": "flow6",
+                        "name": 6,
                         "devices": ["2","1","3"]
                 },
                 {
-                        "name": "flow7",
+                        "name": 7,
                         "devices": ["2","1","4","5"]
                 },
                 {
-                        "name": "flow8",
+                        "name": 8,
                         "devices": ["2","1","4","6"]
                 },     
                 {
-                        "name": "flow9",
+                        "name": 9,
                         "devices": ["3","1","0"]
                 },
                 {
-                        "name": "flow10",
+                        "name": 10,
                         "devices": ["3","1","2"]
                 },
                 {
-                        "name": "flow11",
+                        "name": 11,
                         "devices": ["3","1","4","5"]
                 },
                 {
-                        "name": "flow12",
+                        "name": 12,
                         "devices": ["3","1","4","6"]
                 },            
                 {
-                        "name": "flow13",
+                        "name": 13,
                         "devices": ["5","4","6"]
                 },
                 {
-                        "name": "flow14",
+                        "name": 14,
                         "devices": ["5","4","1","3"]
                 },
                 {
-                        "name": "flow15",
+                        "name": 15,
                         "devices": ["5","4","1","2"]
                 },
                 {

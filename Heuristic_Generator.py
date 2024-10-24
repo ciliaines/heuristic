@@ -87,6 +87,7 @@ def Greedy_Heuristic(model, num_stream):
                 success = True
             else:
                 #Constraining_engress_port(model, key_stream,link,0)
+                #print("solution  ",flexibility_solution )
                 model.Queue_Assignment[key_stream, link] = model.Queue_Assignment[key_stream, link] + 1
                 cola = cola+1
                 if model.Queue_Assignment[key_stream, link].value >7 : #model.Num_Queues[link].value:
@@ -158,6 +159,7 @@ def Schedule_flow(key_stream, value_stream, model,cola):
                 #si el link es el send link, el link next no existe, por lo tanto es broke y reuturn false
                 if link == send_link:
                     return False, key_link
+                    
                 link_next = (model.Streams_paths_Dic[key_stream][a], model.Streams_paths_Dic[key_stream][b])
                 link = link_next
                 key_link_next = next((key_stream for key_stream, value_stream in model.Network_links_Dic.items() if value_stream == link or value_stream == tuple(reversed(link))),None)
@@ -165,7 +167,7 @@ def Schedule_flow(key_stream, value_stream, model,cola):
                 if key_link_next is not None:
                     model.Lower_bound[key_stream, key_link_next, frame] = Earliest_queue_available_time(key_link_next, model.Streams_Period[key_stream],cola)
                 contador -=1
-                intentos +=1            
+                intentos +=1      
         frame = frame +1
     return model.Latency[key_stream].value <= model.Deathline_Stream[key_stream], key_link
 

@@ -1,7 +1,8 @@
 #This set of functions is for the visualization of the values of the ILP 
 
 import pandas as pd
-import matplotlib.pyplot as plt
+from openpyxl import load_workbook
+#import matplotlib.pyplot as plt
 import argparse
 
 from RanNet_Generator import *
@@ -25,16 +26,19 @@ args = parser.parse_args()
 latency=float(args.latency)
 queue=float(args.queue)
 
+Hyperperiod = 1000
+#Hyperperiod = 6000
+#Hyperperiod = 30000
+
 input = "input1"
 input_timestamp = input +"_" + timestamp
+input_l_q = "ilp_" + str(latency) + "_" + str(queue)
 input_name = input + "_ilp_" + str(latency) + "_" + str(queue) + "_" + timestamp
 file_input = "Solutions/" + input_timestamp + ".json"
 file_resultado_input = "Topology/" + input_timestamp + ".json"
 file_image = "Solutions/" + input_name + ".html"
 
-Hyperperiod = 1000
-#Hyperperiod = 6000
-#Hyperperiod = 30000
+
 
 def ILP_results_visualizer(instance, Model_Descriptor_vector):
     print("############### This is the set of offsets ######################")
@@ -122,6 +126,8 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                         Repetitions, Repetitions_Descriptor, unused_links, Frame_Duration, latency, queue)
         instance, results = scheduler.instance, scheduler.results
         final_time = time.time()
+        time_evaluation = final_time - initial_time
+
         ################################################################
         #Plot the values
         Feasibility_indicator, Result_offsets, Clean_offsets_collector, Results_latencies  = ILP_results_visualizer(instance, Model_Descriptor_vector)
@@ -129,22 +135,60 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
         lower_latency=""
         queues_link=""
         queues_stream=""
-        time_evaluation = final_time - initial_time
-        with open('Results/' + input_name + '.txt', 'a') as f :
-            f.write("\n")
+
+        file_path_time = input_l_q+'_time.xlsx'
+        file_path_offset = input_l_q+'_offset.xlsx'
+        file_path_latencies = input_l_q+'_latencies.xlsx'
+        file_path_queues = input_l_q+'_queues.xlsx'
+
+        wb_time = load_workbook(file_path_time)
+        wb_offset = load_workbook(file_path_offset)
+        wb_latencies = load_workbook(file_path_latencies)
+        wb_queues = load_workbook(file_path_queues)
+
+        ws_time = wb_time.active
+        ws_offset = wb_offset.active
+        ws_latencies =wb_latencies.active
+        ws_queues = wb_queues.active
+
+        with open('Results/' + input_name  + '.txt', 'a') as f :
+            #Time
             f.write("Execution time:    ")
             f.write(str(time_evaluation) + "\n")
+            #Hyperperiod 
+            f.write("Hyperperiod:    ")
+            f.write(str(Hyperperiod) + "\n")
+            
+            header = ["Experimento", "Time"]
+            body = [input_name, time_evaluation]
+            row =ws_time.max_row + 1
+            ws_time.append(body)
+            wb_time.save(file_path_time)
+
             f.write("############### This is the set of offsets ######################" + "\n")
             for i in instance.Streams:
                 for j in instance.Links:
                     for k in instance.Frames:
                         if Model_Descriptor_vector [i][k][j] :
-                            f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Frame_Offset[i,j,k].value) + "\n")
-                            set_offset += str(i) + " for " +str(j)+ " is " + str(instance.Frame_Offset[i,j,k].value) + "<br>"
+                             f.write("The offset of stream " + str(i) + " link " +str(j)+ " frame " + str(k) + " is " + str(instance.Frame_Offset[i,j,k].value) + "\n")
+                             set_offset += str(i) + " for " +str(j)+ " frame "+str(k)+ " is " + str(instance.Frame_Offset[i,j,k].value) + "<br>"
+                             header = ["Experimento", "Stream", "Link", "Frame", "Offset" ]
+                             body = [input_name, str(i), str(j),  str(k), str(instance.Frame_Offset[i,j,k].value)]
+                             row =ws_offset.max_row + 1
+                             ws_offset.append(body)
+                             wb_offset.save(file_path_offset)
+
             f.write("############### This is the set of latencies ######################" + "\n")
             for stream in instance.Streams:
                 f.write("The lower latency of Stream " + str(stream) + " is " + str(instance.Latency[stream].value) + "\n")
                 lower_latency+= str(stream) + " is " + str(instance.Latency[stream].value) + "<br>"
+                header = ["Experimento", "Stream", "Latency" ]
+                body = [input_name, str(stream), str(instance.Latency[stream].value)]
+                row =ws_latencies.max_row + 1
+                ws_latencies.append(body)
+                wb_latencies.save(file_path_latencies)
+
+
             f.write("############### This is the set of queues ######################" + "\n")
             for link in instance.Links:
                 f.write("The number of queues of link " + str(link) + " is " + str(instance.Num_Queues[link].value) + "\n")
@@ -155,12 +199,17 @@ def Evaluation_function(Number_of_edges, Connection_probability,Number_of_Stream
                 for link in instance.Links:
                     f.write("The number of queues of Link " + str(link) + " stream " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "\n")
                     queues_stream+= str(link) + " for " + str(stream) + " is " + str(instance.Queue_Assignment[stream, link].value) + "<br>"
+                    header = ["Experimento", "Link", "Stream", "Queue" ]
+                    body = [input_name, str(link), str(stream), str(instance.Queue_Assignment[stream, link].value) ]
+                    row =ws_queues.max_row + 1
+                    ws_queues.append(body)
+                    wb_queues.save(file_path_queues)
 
         #PLOT       
         network_info_fig = network_info_topology(input_name, Sources,Destinations,Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths)
         gantt_fig = gantt_chart(Result_offsets, Repetitions, Streams_Period)
         #info_fig = info_box(Network_links, Repetitions, Streams_Period, Link_order_Descriptor, Streams_links_paths,set_offset,lower_latency,queues_link,queues_stream )
-        result_fig = result_box(time_evaluation,set_offset,lower_latency,queues_link,queues_stream)
+        result_fig = result_box(time_evaluation,Hyperperiod,set_offset,lower_latency,queues_link,queues_stream)
         combined(network_info_fig,gantt_fig,result_fig, file_image)
     except ValueError:
         print("One error has occurred")

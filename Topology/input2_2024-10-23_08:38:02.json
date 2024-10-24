@@ -1,0 +1,140 @@
+{
+    "switches": [
+        {
+            "name": "0",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "1"
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "2"
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "3"
+                },
+                {
+                    "name": "eth3",
+                    "connectsTo": "4"
+                },
+                {
+                    "name": "eth4",
+                    "connectsTo": "5"
+                }
+            ]
+        },
+        {
+            "name": "1",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "0"
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "2"
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "5"
+                }
+            ]
+        },
+        {
+            "name": "2",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "0"
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "1"
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "3"
+                }
+            ]
+        },
+        {
+            "name": "3",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "0"
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "2"
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "4"
+                }
+            ]
+        },
+        {
+            "name": "4",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "0"
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "3"
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "5"
+                }
+            ]
+        },
+        {
+            "name": "5",
+            "ports": [
+                {
+                    "name": "eth0",
+                    "connectsTo": "0"
+                },
+                {
+                    "name": "eth1",
+                    "connectsTo": "1"
+                },
+                {
+                    "name": "eth2",
+                    "connectsTo": "4"
+                }
+            ]
+        }
+    ],
+    "flows": [
+        {
+            "name": 0,
+            "period": 500,
+            "deathline": 1500,
+            "packetSize": 1500,
+            "sourceDevice": 4,
+            "endDevices": 3
+        },
+        {
+            "name": 1,
+            "period": 100,
+            "deathline": 300,
+            "packetSize": 1500,
+            "sourceDevice": 4,
+            "endDevices": 5
+        },
+        {
+            "name": 2,
+            "period": 500,
+            "deathline": 1500,
+            "packetSize": 3000,
+            "sourceDevice": 1,
+            "endDevices": 5
+        }
+    ]
+}

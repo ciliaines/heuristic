@@ -36,7 +36,7 @@ def Read(file_input):
                     change = False
         for link in data["links"]:
             Name_link = link["name"]
-            Number = link["number"]
+            #Number = link["number"]
             #Number_enlace = Number_enlace + [(int(x), int(y)) for x in Name_link for y in Number]
             Devices = list()
             for e in link["devices"]:
